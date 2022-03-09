@@ -1,14 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" prefHeight="600.0" prefWidth="800.0" spacing="20.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.feuerwehrdemo.HelloController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-    </padding>
-   <Label fx:id="welcomeText" />
-    <Button id="button" fx:id="fahrzeuge" alignment="CENTER" onAction="#onHelloButtonClick" prefHeight="33.0" prefWidth="89.0" text="Fahrzeuge" />
+<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1080.0" spacing="20.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.feuerwehrdemo.HelloController">
+   <AnchorPane prefHeight="711.0" prefWidth="1071.0">
+      <children>
+         <AnchorPane prefHeight="182.0" prefWidth="1080.0">
+            <children>
+               <ImageView fx:id="logo" fitHeight="272.0" fitWidth="243.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@logo.png" />
+                  </image>
+               </ImageView>
+               <Label fx:id="anzahlFahrzeuge" layoutX="691.0" layoutY="34.0" prefHeight="33.0" prefWidth="156.0" style="-fx-font-weight: bold;" text="Verfügbare Fahrzeuge" />
+               <Label fx:id="anzahlFeuerwehrleute" layoutX="375.0" layoutY="34.0" prefHeight="33.0" prefWidth="180.0" style="-fx-font-weight: bold;" text="Verfügbare Feuerwehrleute" />
+               <Label fx:id="verfuegbareLkwFahrer" layoutX="387.0" layoutY="74.0" prefHeight="33.0" prefWidth="156.0" text="Lkw-Fahrer: X" />
+               <Label fx:id="verfuegbarePkwFahrer" layoutX="387.0" layoutY="107.0" prefHeight="33.0" prefWidth="156.0" text="Pkw-Fahrer: X" />
+               <Label fx:id="verfuegbareEinsatzLeitfahrzeuge" layoutX="691.0" layoutY="74.0" prefHeight="33.0" prefWidth="156.0" text="Einsatz-Leitfahrzeuge" />
+               <Label fx:id="verfuegbareTLFahrzeug" layoutX="691.0" layoutY="107.0" prefHeight="33.0" prefWidth="156.0" text="Tank-Löschfahrzeuge" />
+               <Label fx:id="verfuegbareManschaftstransporter" layoutX="691.0" layoutY="140.0" prefHeight="33.0" prefWidth="156.0" text="Mannschaftstransporter" />
+               <Label fx:id="verfuegbareLeiterwagen" layoutX="691.0" layoutY="173.0" prefHeight="33.0" prefWidth="156.0" text="Leiterwagen" />
+            </children>
+         </AnchorPane>
+         <TabPane layoutY="231.0" prefHeight="488.0" prefWidth="1080.0" tabClosingPolicy="UNAVAILABLE">
+           <tabs>
+             <Tab text="Einsätze">
+               <content>
+                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                        <children>
+                           <Button fx:id="einsatzBeendenSubmit" layoutX="367.0" layoutY="367.0" mnemonicParsing="false" onAction="#onDeleteOperationClick" prefHeight="33.0" prefWidth="173.0" text="Einsatz beenden" />
+                           <Button fx:id="einsatzErstellenSubmit" layoutX="21.0" layoutY="367.0" mnemonicParsing="false" onAction="#onCreateOperationClick" prefHeight="33.0" prefWidth="221.0" text="Einsatz erstellen" />
+                           <Label layoutX="635.0" layoutY="14.0" prefHeight="47.0" prefWidth="441.0" style="-fx-font-weight: bold;" text="Aktive Einsätze" />
+                           <TableView fx:id="aktiveEinsatzTabelle" layoutX="635.0" layoutY="54.0" prefHeight="368.0" prefWidth="442.0">
+                             <columns>
+                               <TableColumn fx:id="aktiveEinsatzId" prefWidth="36.0" text="ID" />
+                               <TableColumn fx:id="aktiveEinsatzart" prefWidth="75.0" text="Einsatzart" />
+                                 <TableColumn fx:id="aktiveFeuerwehrleute" prefWidth="99.0" text="Feuerwehrleute" />
+                                 <TableColumn fx:id="aktiveFahrzeuge" prefWidth="75.0" text="Fahrzeuge" />
+                                 <TableColumn fx:id="aktiveSonderattribute" prefWidth="105.0" text="Sonderattribute" />
+                             </columns>
+                           </TableView>
+                           <TextField fx:id="einsatzIdBeenden" layoutX="368.0" layoutY="321.0" prefHeight="26.0" prefWidth="172.0" promptText="Einsatz ID" />
+                           <Label layoutX="21.0" layoutY="21.0" prefHeight="33.0" prefWidth="119.0" style="-fx-font-weight: bold;" text="Einsatzerstellung" />
+                           <TextField fx:id="anzahlELFTextField" layoutX="35.0" layoutY="170.0" prefHeight="26.0" prefWidth="200.0" promptText="Anzahl Einsatz-Leitfahrzeuge" />
+                           <TextField fx:id="anzahlMTTextField" layoutX="34.0" layoutY="272.0" prefHeight="26.0" prefWidth="203.0" promptText="Anzahl Mannschaftstransporter" />
+                           <TextField fx:id="anzahlTLTextField" layoutX="35.0" layoutY="215.0" prefHeight="26.0" prefWidth="203.0" promptText="Anzahl Tank-Löschfahrzeuge" />
+                           <TextField fx:id="anzahlLWTextField" layoutX="37.0" layoutY="321.0" prefHeight="26.0" prefWidth="201.0" promptText="Anzahl Leiterwagen" />
+                           <TextField fx:id="anzahlFLTextField" layoutX="33.0" layoutY="123.0" prefHeight="26.0" prefWidth="202.0" promptText="Anzahl Feuerwehrleute" />
+                           <MenuButton fx:id="einsatzartMenuButton" alignment="CENTER" contentDisplay="CENTER" layoutX="27.0" layoutY="68.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="209.0" text="Einsatzart auswählen">
+                             <items>
+                               <MenuItem fx:id="wohnungsbrandButton" mnemonicParsing="false" onAction="#fillParameter" text="Wohungsbrand" />
+                               <MenuItem fx:id="verkehrsunfallButton" mnemonicParsing="false" onAction="#fillParameter" text="Verkehrsunfall" />
+                                 <MenuItem fx:id="NaturkatastropheButton" mnemonicParsing="false" onAction="#fillParameter" text="Naturkatastrophe" />
+                                 <MenuItem fx:id="IndustrieunfallButton" mnemonicParsing="false" onAction="#fillParameter" text="Industrieunfall" />
+                             </items>
+                           </MenuButton>
+                        </children>
+                     </AnchorPane>
+               </content>
+             </Tab>
+               <Tab text="Ressourcen">
+                 <content>
+                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="218.0" prefWidth="958.0" />
+                 </content>
+               </Tab>
+           </tabs>
+         </TabPane>
+      </children>
+   </AnchorPane>
 </VBox>

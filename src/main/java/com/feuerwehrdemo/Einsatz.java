@@ -90,6 +90,7 @@ public class Einsatz {
      * @param id zugewiesene Einsatz-id die bei Einsatz-Erstellung generiert wurde
      */
     public static void removeEinsatz(int id) {
-
+        // Einsatz aus aktiveEinsaetze löschen
+        // Ressourcen wieder freigeben
     }
 }

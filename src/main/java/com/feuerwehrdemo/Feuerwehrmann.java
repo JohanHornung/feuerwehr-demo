@@ -27,18 +27,7 @@ public class Feuerwehrmann {
             // Feuerwehrmann wieder verfügbar
         else team[id].verfuegbar = true;
 
-        // Aktualisierung von Ressourcen
-        int LkwSum = 0;
-        int PkwSum = 0;
-        for (int i = 0; i < team.length; i++) {
-            if (team[i].verfuegbar) {
-                if (team[i].fahrerTyp == "Lkw") {
-                    LkwSum += 1;
-                } else {
-                    PkwSum += 1;
-                }
-            }
-        }
+
 //        System.out.println(LkwSum);
 //        System.out.println(PkwSum);
 
