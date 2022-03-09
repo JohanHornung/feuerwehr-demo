@@ -26,12 +26,12 @@
                </ImageView>
                <Label fx:id="anzahlFahrzeuge" layoutX="691.0" layoutY="34.0" prefHeight="33.0" prefWidth="156.0" style="-fx-font-weight: bold;" text="Verfügbare Fahrzeuge" />
                <Label fx:id="anzahlFeuerwehrleute" layoutX="375.0" layoutY="34.0" prefHeight="33.0" prefWidth="180.0" style="-fx-font-weight: bold;" text="Verfügbare Feuerwehrleute" />
-               <Label fx:id="verfuegbareLkwFahrer" layoutX="387.0" layoutY="74.0" prefHeight="33.0" prefWidth="156.0" text="Lkw-Fahrer: X" />
+               <Label fx:id="verfuegbareLkwFahrer" layoutX="387.0" layoutY="74.0" prefHeight="33.0" prefWidth="120.0" text="Lkw-Fahrer: X" />
                <Label fx:id="verfuegbarePkwFahrer" layoutX="387.0" layoutY="107.0" prefHeight="33.0" prefWidth="156.0" text="Pkw-Fahrer: X" />
-               <Label fx:id="verfuegbareEinsatzLeitfahrzeuge" layoutX="691.0" layoutY="74.0" prefHeight="33.0" prefWidth="156.0" text="Einsatz-Leitfahrzeuge" />
-               <Label fx:id="verfuegbareTLFahrzeug" layoutX="691.0" layoutY="107.0" prefHeight="33.0" prefWidth="156.0" text="Tank-Löschfahrzeuge" />
-               <Label fx:id="verfuegbareManschaftstransporter" layoutX="691.0" layoutY="140.0" prefHeight="33.0" prefWidth="156.0" text="Mannschaftstransporter" />
-               <Label fx:id="verfuegbareLeiterwagen" layoutX="691.0" layoutY="173.0" prefHeight="33.0" prefWidth="156.0" text="Leiterwagen" />
+               <Label fx:id="verfuegbareEinsatzLeitfahrzeuge" layoutX="703.0" layoutY="74.0" prefHeight="33.0" prefWidth="180.0" text="Einsatz-Leitfahrzeuge: X" />
+               <Label fx:id="verfuegbareTLFahrzeuge" layoutX="703.0" layoutY="107.0" prefHeight="33.0" prefWidth="180.0" text="Tank-Löschfahrzeuge: X" />
+               <Label fx:id="verfuegbareManschaftstransporter" layoutX="703.0" layoutY="140.0" prefHeight="33.0" prefWidth="180.0" text="Mannschaftstransporter: X" />
+               <Label fx:id="verfuegbareLeiterwagen" layoutX="703.0" layoutY="173.0" prefHeight="33.0" prefWidth="180.0" text="Leiterwagen: X" />
             </children>
          </AnchorPane>
          <TabPane layoutY="231.0" prefHeight="488.0" prefWidth="1080.0" tabClosingPolicy="UNAVAILABLE">
@@ -61,10 +61,10 @@
                            <TextField fx:id="anzahlFLTextField" layoutX="33.0" layoutY="123.0" prefHeight="26.0" prefWidth="202.0" promptText="Anzahl Feuerwehrleute" />
                            <MenuButton fx:id="einsatzartMenuButton" alignment="CENTER" contentDisplay="CENTER" layoutX="27.0" layoutY="68.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="209.0" text="Einsatzart auswählen">
                              <items>
-                               <MenuItem fx:id="wohnungsbrandButton" mnemonicParsing="false" onAction="#fillParameter" text="Wohungsbrand" />
-                               <MenuItem fx:id="verkehrsunfallButton" mnemonicParsing="false" onAction="#fillParameter" text="Verkehrsunfall" />
-                                 <MenuItem fx:id="NaturkatastropheButton" mnemonicParsing="false" onAction="#fillParameter" text="Naturkatastrophe" />
-                                 <MenuItem fx:id="IndustrieunfallButton" mnemonicParsing="false" onAction="#fillParameter" text="Industrieunfall" />
+                               <MenuItem fx:id="wohnungsbrandButton" mnemonicParsing="false" onAction="#fillWohnungsbrandParameter" text="Wohnungsbrand" />
+                               <MenuItem fx:id="verkehrsunfallButton" mnemonicParsing="false" onAction="#fillVerkehrsunfallParameter" text="Verkehrsunfall" />
+                                 <MenuItem fx:id="naturkatastropheButton" mnemonicParsing="false" onAction="#fillNaturkatastropheParameter" text="Naturkatastrophe" />
+                                 <MenuItem fx:id="industrieunfallButton" mnemonicParsing="false" onAction="#fillIndustrieunfallParameter" text="Industrieunfall" />
                              </items>
                            </MenuButton>
                         </children>
