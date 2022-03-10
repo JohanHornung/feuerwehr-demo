@@ -73,6 +73,9 @@ public class HelloController {
     private Button einsatzErstellenSubmit;
 
     @FXML
+    private Button einsatzParameterResetButton;
+
+    @FXML
     private TextField einsatzIdBeenden;
 
     @FXML
@@ -110,6 +113,7 @@ public class HelloController {
     public void initialize() {
         Feuerwehrmann[] team = new Feuerwehrmann[FIREFIGHTER_CAP];
         Fahrzeug[] garage = new Fahrzeug[VERHICLES_CAP];
+
         // Feuerwehrleute & Fahrzeuge werden initialisiert
         fillResources(team, garage);
 
@@ -121,8 +125,6 @@ public class HelloController {
         verfuegbareLkwFahrer.setText(anzahlLkwFahrer);
         verfuegbarePkwFahrer.setText(anzahlPkwFahrer);
 
-
-
         // Array aus Labels für Fahrzeugkategorien
         Label[] verfuegbareFahrzeuge = {
                 verfuegbareEinsatzLeitfahrzeuge,
@@ -130,11 +132,10 @@ public class HelloController {
                 verfuegbareManschaftstransporter,
                 verfuegbareLeiterwagen,
         };
-        // Array von Fahrzeugkategorien als Strings
 
         HashMap<String, Integer> vehicleCount = countVehicles(garage);
 
-        assert vehicleCount.values().size() != Fahrzeug.fahrzeugKategorien.length : "Anzahl der Fahrzeugkategorien fehlerhaft";
+        assert vehicleCount.values().size() == Fahrzeug.fahrzeugKategorien.length : "Anzahl der Fahrzeugkategorien fehlerhaft";
 
         for (int i = 0; i < Fahrzeug.fahrzeugKategorien.length; i++) {
             // Output Text ("Anzahl von <Fahrzeugkategorie>: <Wert>")
@@ -264,16 +265,55 @@ public class HelloController {
                 "Keine passenden Einsazparameter gefunden, " +
                 "Einsatzart" + einsatzart + " Unbekannt");
 
+        // Werte werden in die Textfelder eingesetzt
+        setTextFieldValue(einsatzTextfelder, einsatzParameter);
+    }
+
+    /**
+     * @author Johan Hornung
+     * @param textFelder Array von Text Feldern dessen Werte geändert werden
+     * @param values werden eingesetzt
+     */
+    void setTextFieldValue(TextField[] textFelder, int[] values) {
+        assert textFelder.length == values.length : "Anzahl von Text Feldern und Werten stimmt nicht überein";
         // Iteration durch das Array von TextFeldern
-        Iterator it = Arrays.stream(einsatzTextfelder).iterator();
+        Iterator it = Arrays.stream(textFelder).iterator();
+        // Für Array von Werten
         int i = 0;
         while (it.hasNext()) {
+            // einzelnes Text Feld
             TextField textField = (TextField) it.next();
-            textField.setText(String.valueOf(einsatzParameter[i]));
+            // Sonderfall: wenn alle Werte in values Array 0 sind, dann wird zurückgesetzt
+            if (Arrays.stream(values).sum() == 0) {
+                textField.setText("");
+            } else {
+                textField.setText(String.valueOf(values[i]));
+            }
             i++;
         }
     }
+    /**
+     * Methode setzt Text Felder der Einsatz Parameter zurück sowie den Menu Button für Einsatzartauswahl
+     *
+     * @author Moritz Schmidt
+     * @param event On Action event (Buttons)
+     */
+    @FXML
+    void onEinsatzParameterResetClick(ActionEvent event) {
+        TextField[] einsatzTextfelder = {
+                anzahlFLTextField,
+                anzahlELFTextField,
+                anzahlTLTextField,
+                anzahlMTTextField,
+                anzahlLWTextField,
+        };
+        // Menü Button wird zurückgesetzt
+        einsatzartMenuButton.setText("Einsatzart auswählen");
+        // Text Felder werden zurückgesetzt
+        int[] defaultValues = new int[einsatzTextfelder.length];
+        setTextFieldValue(einsatzTextfelder, defaultValues);
 
+    }
     @FXML
     void fillIndustrieunfallParameter(ActionEvent event) {
         // gewählte Einsatzart abspeichern
@@ -314,6 +354,7 @@ public class HelloController {
         // Parameter in Textfelder einsetzen
         fillEinsatzParameter(einsatzart);
     }
+
 
     @FXML
     void onCreateOperationClick(ActionEvent event) {
