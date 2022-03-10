@@ -51,7 +51,7 @@
                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                         <children>
                            <Button fx:id="einsatzBeendenSubmit" layoutX="367.0" layoutY="367.0" mnemonicParsing="false" onAction="#onDeleteOperationClick" prefHeight="33.0" prefWidth="173.0" text="Einsatz beenden" />
-                           <Button fx:id="einsatzErstellenSubmit" layoutX="21.0" layoutY="367.0" mnemonicParsing="false" onAction="#onCreateOperationClick" prefHeight="33.0" prefWidth="221.0" text="Einsatz erstellen" />
+                           <Button fx:id="einsatzErstellenSubmit" layoutX="140.0" layoutY="367.0" mnemonicParsing="false" onAction="#onCreateOperationClick" prefHeight="33.0" prefWidth="124.0" text="Einsatz erstellen" />
                            <Label layoutX="635.0" layoutY="14.0" prefHeight="47.0" prefWidth="441.0" style="-fx-font-weight: bold;" text="Aktive Einsätze" />
                            <TableView fx:id="aktiveEinsatzTabelle" layoutX="635.0" layoutY="54.0" prefHeight="368.0" prefWidth="442.0">
                              <columns>
@@ -69,7 +69,7 @@
                            <TextField fx:id="anzahlTLTextField" layoutX="35.0" layoutY="215.0" prefHeight="26.0" prefWidth="203.0" promptText="Anzahl Tank-Löschfahrzeuge" />
                            <TextField fx:id="anzahlLWTextField" layoutX="37.0" layoutY="321.0" prefHeight="26.0" prefWidth="201.0" promptText="Anzahl Leiterwagen" />
                            <TextField fx:id="anzahlFLTextField" layoutX="33.0" layoutY="123.0" prefHeight="26.0" prefWidth="202.0" promptText="Anzahl Feuerwehrleute" />
-                           <MenuButton fx:id="einsatzartMenuButton" alignment="CENTER" contentDisplay="CENTER" layoutX="27.0" layoutY="68.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="209.0" text="Einsatzart auswählen">
+                           <MenuButton fx:id="einsatzartMenuButton" alignment="CENTER" contentDisplay="CENTER" layoutX="21.0" layoutY="68.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="245.0" text="Einsatzart auswählen">
                              <items>
                                <MenuItem fx:id="wohnungsbrandButton" mnemonicParsing="false" onAction="#fillWohnungsbrandParameter" text="Wohnungsbrand" />
                                <MenuItem fx:id="verkehrsunfallButton" mnemonicParsing="false" onAction="#fillVerkehrsunfallParameter" text="Verkehrsunfall" />
@@ -77,6 +77,7 @@
                                  <MenuItem fx:id="industrieunfallButton" mnemonicParsing="false" onAction="#fillIndustrieunfallParameter" text="Industrieunfall" />
                              </items>
                            </MenuButton>
+                           <Button fx:id="einsatzParameterResetButton" layoutX="21.0" layoutY="367.0" mnemonicParsing="false" onAction="#onEinsatzParameterResetClick" prefHeight="33.0" prefWidth="109.0" text="Zurücksetzen" />
                         </children>
                      </AnchorPane>
                </content>

@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public class HelloController {
-
+    // Feste Anzahl von Ressourcen
     public final int FIREFIGHTER_CAP = 80;
     public final int VERHICLES_CAP = 18;
 
@@ -66,15 +66,6 @@ public class HelloController {
     @FXML
     private TextField anzahlTLTextField;
 
-    @FXML
-    // Array aus Textfelder für Einsatzparameter
-    private TextField[] einsatzTextfelder = {
-            anzahlFLTextField,
-            anzahlELFTextField,
-            anzahlTLTextField,
-            anzahlMTTextField,
-            anzahlLWTextField,
-    };
     @FXML
     private Button einsatzBeendenSubmit;
 
@@ -245,20 +236,36 @@ public class HelloController {
          *
          * @author Johan Hornung
          * @param einsatzart String gewählte Einsatzart
-         * @param textFelder Label[] von zu ausfüllenden Textfeldern
          * @see Einsatz
          */
-    void fillTextFeldEinsatzParameter(String einsatzart, TextField[] textFelder) {
+    void fillEinsatzParameter(String einsatzart) {
+        // Array aus Textfelder für Einsatzparameter
+        TextField[] einsatzTextfelder = {
+                anzahlFLTextField,
+                anzahlELFTextField,
+                anzahlTLTextField,
+                anzahlMTTextField,
+                anzahlLWTextField,
+        };
+        // Passende EinsatzParameter
         int[] einsatzParameter = new int[4];
+        // Falls keine passenden Einsatzparameter gefunden wurden
         boolean found = false;
         // Suche nach richtigen Einsatzparameter für jeweilige Einsatzart
         for (int i = 0; i < Einsatz.einsatzarten.length; i++) {
             if (einsatzart.equals(Einsatz.einsatzarten[i])) {
+                found = true;
+                // Respektive Reihenfolge in String[] einsatzarten und in int[][] minParameter
                 einsatzParameter = Einsatz.minParameter[i];
             }
         }
+        // Beendung des Programms
+        if (!found) throw new AssertionError(
+                "Keine passenden Einsazparameter gefunden, " +
+                "Einsatzart" + einsatzart + " Unbekannt");
+
         // Iteration durch das Array von TextFeldern
-        Iterator it = Arrays.stream(textFelder).iterator();
+        Iterator it = Arrays.stream(einsatzTextfelder).iterator();
         int i = 0;
         while (it.hasNext()) {
             TextField textField = (TextField) it.next();
@@ -274,7 +281,7 @@ public class HelloController {
         // ausgewählte Einsatzart im Menu button anzeigen
         einsatzartMenuButton.setText(einsatzart);
         // Parameter in Textfelder einsetzen
-        fillTextFeldEinsatzParameter(einsatzart, einsatzTextfelder);
+        fillEinsatzParameter(einsatzart);
     }
     @FXML
     void fillNaturkatastropheParameter(ActionEvent event) {
@@ -283,7 +290,7 @@ public class HelloController {
         // ausgewählte Einsatzart im Menu button anzeigen
         einsatzartMenuButton.setText(einsatzart);
         // Parameter in Textfelder einsetzen
-        fillTextFeldEinsatzParameter(einsatzart, einsatzTextfelder);
+        fillEinsatzParameter(einsatzart);
 
     }
 
@@ -294,7 +301,7 @@ public class HelloController {
         // ausgewählte Einsatzart im Menu button anzeigen
         einsatzartMenuButton.setText(einsatzart);
         // Parameter in Textfelder einsetzen
-        fillTextFeldEinsatzParameter(einsatzart, einsatzTextfelder);
+        fillEinsatzParameter(einsatzart);
 
     }
 
@@ -305,7 +312,7 @@ public class HelloController {
         // ausgewählte Einsatzart im Menu button anzeigen
         einsatzartMenuButton.setText(einsatzart);
         // Parameter in Textfelder einsetzen
-        fillTextFeldEinsatzParameter(einsatzart, einsatzTextfelder);
+        fillEinsatzParameter(einsatzart);
     }
 
     @FXML
