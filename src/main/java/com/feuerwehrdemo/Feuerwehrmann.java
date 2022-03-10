@@ -12,6 +12,11 @@ public class Feuerwehrmann {
         this.verfuegbar = verfuegbar;
         this.fahrerTyp = fahrerTyp;
     }
+    @Override
+    public String toString() {
+        // TODO: 10.03.22 Mögliche Ausgabe Text für Feuerwehrmänner
+        return null;
+    }
     public static void changeStatusTeam(Feuerwehrmann[] team) {
         // Ändern der Verfügbarkeit
         Scanner sc = new Scanner(System.in);
@@ -26,10 +31,5 @@ public class Feuerwehrmann {
         if (status < 3) team[id].verfuegbar = false;
             // Feuerwehrmann wieder verfügbar
         else team[id].verfuegbar = true;
-
-
-//        System.out.println(LkwSum);
-//        System.out.println(PkwSum);
-
     }
 }

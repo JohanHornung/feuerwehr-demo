@@ -110,6 +110,11 @@ public class HelloController {
     private MenuItem wohnungsbrandButton;
 
     @FXML
+    /**
+     * Methode wird bei der initialisierung der Anwendung (App.main()) ausgeführt und erledigt folgende Schritte:
+     *      - Erstellt und befüllt Array von Feuerwehrmännern und Fahrzeugen
+     *      - Zählt Ressourcen durch und schreibt jeweilige Werte in die grafischen Text Felder
+     */
     public void initialize() {
         Feuerwehrmann[] team = new Feuerwehrmann[FIREFIGHTER_CAP];
         Fahrzeug[] garage = new Fahrzeug[VERHICLES_CAP];
@@ -119,9 +124,10 @@ public class HelloController {
 
         // Durchzählen von verfügbaren Feuerwehrleuten (pro Fahrer Typ)
         HashMap firefightersCount = countFirefighters(team);
-        // Text Felder ausfüllen
+        // Auslesen der Werte pro fahrer Typ
         String anzahlLkwFahrer = firefightersCount.get("Lkw-Fahrer").toString();
         String anzahlPkwFahrer = firefightersCount.get("Pkw-Fahrer").toString();
+        // Text Felder ausfüllen
         verfuegbareLkwFahrer.setText(anzahlLkwFahrer);
         verfuegbarePkwFahrer.setText(anzahlPkwFahrer);
 
@@ -132,9 +138,9 @@ public class HelloController {
                 verfuegbareManschaftstransporter,
                 verfuegbareLeiterwagen,
         };
-
+        // Durchzählen von verfügbaren Fahrzeugen (pro Kategorie)
         HashMap<String, Integer> vehicleCount = countVehicles(garage);
-
+        // An diesem Punkt muss das Programm beendet werden falls ein Logik-Fehler vorhanden ist
         assert vehicleCount.values().size() == Fahrzeug.fahrzeugKategorien.length : "Anzahl der Fahrzeugkategorien fehlerhaft";
 
         for (int i = 0; i < Fahrzeug.fahrzeugKategorien.length; i++) {
@@ -275,6 +281,7 @@ public class HelloController {
      * @param values werden eingesetzt
      */
     void setTextFieldValue(TextField[] textFelder, int[] values) {
+        // An diesem Punkt muss das Programm beendet werden falls ein Logik-Fehler vorhanden ist
         assert textFelder.length == values.length : "Anzahl von Text Feldern und Werten stimmt nicht überein";
         // Iteration durch das Array von TextFeldern
         Iterator it = Arrays.stream(textFelder).iterator();
@@ -292,6 +299,22 @@ public class HelloController {
             i++;
         }
     }
+
+    /**
+     * @author Luca Langer
+     * @param menuItem dessen Wert ausgelesen wird, im Menü Button angezeigt wird
+     */
+    void setButtonParameter(MenuItem menuItem) {
+        // gewählte Einsatzart abspeichern
+        String einsatzart = menuItem.getText();
+        // ausgewählte Einsatzart im Menu button anzeigen
+        einsatzartMenuButton.setText(einsatzart);
+        // Parameter in Textfelder einsetzen
+        fillEinsatzParameter(einsatzart);
+    }
+    /*
+    //////////////////////////// JAVAFX EVENT METHODEN /////////////////////////////////
+     */
     /**
      * Methode setzt Text Felder der Einsatz Parameter zurück sowie den Menu Button für Einsatzartauswahl
      *
@@ -300,6 +323,7 @@ public class HelloController {
      */
     @FXML
     void onEinsatzParameterResetClick(ActionEvent event) {
+        // Array aus Textfelder für Einsatzparameter
         TextField[] einsatzTextfelder = {
                 anzahlFLTextField,
                 anzahlELFTextField,
@@ -312,58 +336,34 @@ public class HelloController {
         // Text Felder werden zurückgesetzt
         int[] defaultValues = new int[einsatzTextfelder.length];
         setTextFieldValue(einsatzTextfelder, defaultValues);
-
     }
     @FXML
     void fillIndustrieunfallParameter(ActionEvent event) {
-        // gewählte Einsatzart abspeichern
-        String einsatzart = industrieunfallButton.getText();
-        // ausgewählte Einsatzart im Menu button anzeigen
-        einsatzartMenuButton.setText(einsatzart);
-        // Parameter in Textfelder einsetzen
-        fillEinsatzParameter(einsatzart);
+        setButtonParameter(industrieunfallButton);
     }
     @FXML
     void fillNaturkatastropheParameter(ActionEvent event) {
-        // gewählte Einsatzart abspeichern
-        String einsatzart = naturkatastropheButton.getText();
-        // ausgewählte Einsatzart im Menu button anzeigen
-        einsatzartMenuButton.setText(einsatzart);
-        // Parameter in Textfelder einsetzen
-        fillEinsatzParameter(einsatzart);
+        setButtonParameter(naturkatastropheButton);
 
     }
-
     @FXML
     void fillVerkehrsunfallParameter(ActionEvent event) {
-        // gewählte Einsatzart abspeichern
-        String einsatzart = verkehrsunfallButton.getText();
-        // ausgewählte Einsatzart im Menu button anzeigen
-        einsatzartMenuButton.setText(einsatzart);
-        // Parameter in Textfelder einsetzen
-        fillEinsatzParameter(einsatzart);
-
+        setButtonParameter(verkehrsunfallButton);
     }
-
     @FXML
     void fillWohnungsbrandParameter(ActionEvent event) {
-        // gewählte Einsatzart abspeichern
-        String einsatzart = wohnungsbrandButton.getText();
-        // ausgewählte Einsatzart im Menu button anzeigen
-        einsatzartMenuButton.setText(einsatzart);
-        // Parameter in Textfelder einsetzen
-        fillEinsatzParameter(einsatzart);
+        setButtonParameter(wohnungsbrandButton);
     }
 
 
     @FXML
     void onCreateOperationClick(ActionEvent event) {
-
+        // TODO: 10.03.22 Algorithmus für Einsatzerstellung schreiben 
     }
 
     @FXML
     void onDeleteOperationClick(ActionEvent event) {
-
+        // TODO: 10.03.22 Algorithmus für Einsatzbeendung schreiben
     }
 
 }

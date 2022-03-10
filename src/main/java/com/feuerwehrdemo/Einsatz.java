@@ -35,10 +35,7 @@ public class Einsatz {
      * @param einsatzart
      * @return
      */
-    public static boolean checkResources(int einsatzart) {
-        // TODO: check if current resources are enough to satisfy needed resources
-        return true;
-    };
+
     /**
      *
      * @param einsatzart aus 4 möglichen Einsatzarten

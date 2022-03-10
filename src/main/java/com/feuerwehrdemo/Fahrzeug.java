@@ -1,8 +1,5 @@
 package com.feuerwehrdemo;
 
-import java.util.HashMap;
-import java.util.Scanner;
-
 public class Fahrzeug {
     public enum Kategorie {
         EINSATZLEITFAHRZEUG,
@@ -41,6 +38,11 @@ public class Fahrzeug {
             default -> 2;
         };
 
+    }
+    @Override
+    public String toString() {
+        // TODO: 10.03.22 Mögliche Ausgabe Text für Fahrzeuge
+        return null;
     }
     /**
      *
