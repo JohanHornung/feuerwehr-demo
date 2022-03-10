@@ -25,23 +25,23 @@
                      <Image url="@logo.png" />
                   </image>
                </ImageView>
-               <Label fx:id="anzahlFahrzeuge" layoutX="717.0" layoutY="12.0" prefHeight="33.0" prefWidth="156.0" style="-fx-font-weight: bold;" text="Verfügbare Fahrzeuge" />
+               <Label fx:id="anzahlFahrzeuge" layoutX="742.0" layoutY="12.0" prefHeight="33.0" prefWidth="156.0" style="-fx-font-weight: bold;" text="Verfügbare Fahrzeuge" />
                <Label fx:id="anzahlFeuerwehrleute" layoutX="340.0" layoutY="12.0" prefHeight="33.0" prefWidth="180.0" style="-fx-font-weight: bold;" text="Verfügbare Feuerwehrleute" />
                <Label fx:id="verfuegbareLkwFahrer" alignment="CENTER" contentDisplay="CENTER" layoutX="352.0" layoutY="69.0" prefHeight="33.0" prefWidth="53.0" style="-fx-font-size: 28;" text="X" />
                <Label fx:id="verfuegbarePkwFahrer" alignment="CENTER" layoutX="430.0" layoutY="69.0" prefHeight="33.0" prefWidth="60.0" style="-fx-font-size: 28;" text="X" />
-               <Label fx:id="verfuegbareEinsatzLeitfahrzeuge" alignment="CENTER" layoutX="670.0" layoutY="45.0" prefHeight="34.0" prefWidth="47.0" style="-fx-font-size: 28;" text="X" />
-               <Label fx:id="verfuegbareTLFahrzeuge" alignment="CENTER" layoutX="827.0" layoutY="45.0" prefHeight="34.0" prefWidth="92.0" style="-fx-font-size: 28;" text="X" />
-               <Label fx:id="verfuegbareManschaftstransporter" alignment="CENTER" layoutX="653.0" layoutY="127.0" prefHeight="34.0" prefWidth="80.0" style="-fx-font-size: 28;" text="X">
+               <Label fx:id="verfuegbareEinsatzLeitfahrzeuge" alignment="CENTER" layoutX="695.0" layoutY="45.0" prefHeight="34.0" prefWidth="47.0" style="-fx-font-size: 28;" text="X" />
+               <Label fx:id="verfuegbareTLFahrzeuge" alignment="CENTER" layoutX="852.0" layoutY="45.0" prefHeight="34.0" prefWidth="92.0" style="-fx-font-size: 28;" text="X" />
+               <Label fx:id="verfuegbareManschaftstransporter" alignment="CENTER" layoutX="678.0" layoutY="127.0" prefHeight="34.0" prefWidth="80.0" style="-fx-font-size: 28;" text="X">
                   <font>
                      <Font name="System Font" size="28.0" />
                   </font></Label>
-               <Label fx:id="verfuegbareLeiterwagen" alignment="CENTER" layoutX="833.0" layoutY="127.0" prefHeight="34.0" prefWidth="80.0" style="-fx-font-size: 28;" text="X" />
+               <Label fx:id="verfuegbareLeiterwagen" alignment="CENTER" layoutX="858.0" layoutY="127.0" prefHeight="34.0" prefWidth="80.0" style="-fx-font-size: 28;" text="X" />
                <Label layoutX="340.0" layoutY="118.0" prefHeight="33.0" prefWidth="80.0" text="Lkw-Fahrer" />
                <Label layoutX="430.0" layoutY="118.0" prefHeight="33.0" prefWidth="80.0" text="Pkw-Fahrer" />
-               <Label layoutX="639.0" layoutY="79.0" prefHeight="33.0" prefWidth="130.0" text="Einsatzleitfahrzeuge" />
-               <Label layoutX="808.0" layoutY="80.0" prefHeight="33.0" prefWidth="130.0" text="Tank-Löschfahrzeuge" />
-               <Label layoutX="625.0" layoutY="161.0" prefHeight="33.0" prefWidth="146.0" text="Mannschaftstransporter" />
-               <Label layoutX="833.0" layoutY="161.0" prefHeight="33.0" prefWidth="80.0" text="Leiterwagen" />
+               <Label layoutX="664.0" layoutY="79.0" prefHeight="33.0" prefWidth="130.0" text="Einsatzleitfahrzeuge" />
+               <Label layoutX="833.0" layoutY="80.0" prefHeight="33.0" prefWidth="130.0" text="Tank-Löschfahrzeuge" />
+               <Label layoutX="650.0" layoutY="161.0" prefHeight="33.0" prefWidth="146.0" text="Mannschaftstransporter" />
+               <Label layoutX="858.0" layoutY="161.0" prefHeight="33.0" prefWidth="80.0" text="Leiterwagen" />
             </children>
          </AnchorPane>
          <TabPane layoutY="231.0" prefHeight="488.0" prefWidth="1080.0" tabClosingPolicy="UNAVAILABLE">

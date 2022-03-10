@@ -141,20 +141,20 @@ public class HelloController {
         };
         // Array von Fahrzeugkategorien als Strings
 
-//        HashMap<Fahrzeug.Kategorie, Integer> vehicleCount = countVehicles(garage, fahrzeugKategorien);
-//        Fahrzeug.Kategorie[] vehicleCategories = Fahrzeug.Kategorie.values();
-//        assert vehicleCount.values().size() != fahrzeugKategorien.length : "Anzahl der Fahrzeugkategorien fehlerhaft";
-//
-//        for (int i = 0; i < fahrzeugKategorien.length; i++) {
-//            // Output Text ("Anzahl von <Fahrzeugkategorie>: <Wert>")
-//            String text = fahrzeugKategorien[i] + ": " + vehicleCount.get(vehicleCategories[i]);
-//            // Label wird beschrieben
-//            verfuegbareFahrzeuge[i].setText(text);
-//        }
+        HashMap<String, Integer> vehicleCount = countVehicles(garage);
+
+        assert vehicleCount.values().size() != Fahrzeug.fahrzeugKategorien.length : "Anzahl der Fahrzeugkategorien fehlerhaft";
+
+        for (int i = 0; i < Fahrzeug.fahrzeugKategorien.length; i++) {
+            // Output Text ("Anzahl von <Fahrzeugkategorie>: <Wert>")
+            String text = vehicleCount.get(Fahrzeug.fahrzeugKategorien[i]).toString();
+            // Label wird beschrieben
+            verfuegbareFahrzeuge[i].setText(text);
+        }
     }
 
     /**
-     * Methode welche die initialen Einsatzressourcen (Fahrzeuge & Feuerwehrleute) konfiguriert
+     * Methode welche die initialen Einsatzressourcen (Fahrzeuge + Feuerwehrleute) konfiguriert
      * @param team Array von Feuerwehrleuten (Feuerwehrmann Objekt) wird befüllt
      * @see Feuerwehrmann
      * @param garage Array von Fahrzeugen (Fahrzeug Objekt) wird befüllt
@@ -179,27 +179,25 @@ public class HelloController {
         int amount = 0;
 
         for (String category: Fahrzeug.fahrzeugKategorien) {
-            System.out.println(category);
             amount += anzahlVerfuegbar.get(category);
-//            System.out.println(amount);
+
             for (int i = start; i < amount; i++) {
                 garage[i] = new Fahrzeug(i, category, true);
-                System.out.println(i);
-
             }
-            start += amount;
+            start += (amount - start);
         }
     }
     /**
+     * Methode zählt verfügbare Fahrzeuge pro Kategorie
      *
+     * @author Luca Langer
      * @param garage Array von Fahrzeugen (Fahrzeug Objekt)
      * @see Fahrzeug
-     * @return Hashmap mit Anzahl der verfügbaren Fahrzeugkategorien
+     * @return Hashmap mit Anzahl der verfügbaren Fahrzeuge (value) pro Kategorie (key)
      */
     // Durchzählen von verfügbaren Fahrzeugen (pro Kategorie)
-    public static HashMap<String, Integer> countVehicles(Fahrzeug[] garage, String[] fahrzeugKategorien) {
+    public static HashMap<String, Integer> countVehicles(Fahrzeug[] garage) {
         HashMap<String, Integer> vehicleCount = new HashMap<>();
-        // TODO: 09.03.22 Bug bei fillResources() für Fahrzeuge finden
         // initialisierung
         for (int i = 0; i < Fahrzeug.fahrzeugKategorien.length; i++) {
             vehicleCount.put(Fahrzeug.fahrzeugKategorien[i], 0);
@@ -208,17 +206,19 @@ public class HelloController {
         for (Fahrzeug fahrzeug: garage) {
             // Wenn das Fahrzeug nicht verfügbar ist wird es ignoriert
             if (fahrzeug.verfuegbar) {
-                // Die jeweilige Anzahl Fahrzeugkategorie wird erhöht
+                // Die jeweilige Anzahl Fahrzeugkategorie wird um 1 erhöht
                 vehicleCount.replace(fahrzeug.kategorie, vehicleCount.get(fahrzeug.kategorie) + 1);
             }
         }
         return vehicleCount;
     }
     /**
+     * Methode zählt verfügbare Feuerwehrmänner pro fahrer Typ
      *
+     * @author Luca Langer
      * @param team Array von Feuerwehrleuten (Feuerwehrmann Objekten)
      * @see Feuerwehrmann
-     * @return Hashmap mit Anzahl der verfügbaren FahrerTypen
+     * @return Hashmap mit Anzahl der verfügbaren Feuerwehrmänner (value) pro fahrer Typ (key)
      */
     public static HashMap<String, Integer> countFirefighters(Feuerwehrmann[] team) {
         HashMap<String, Integer> firefighters = new HashMap<>();
@@ -240,22 +240,25 @@ public class HelloController {
         return firefighters;
     };
         /**
+         * Methode zum automatischen Ausfüllen der mininmalen Einsatzparameter in die
+         * jeweiligen Textfelder
+         *
          * @author Johan Hornung
-         * @param einsatzart String der gewählten Einsatzart
-         * @param felder Array von zu ausfüllenden Textfeldern
+         * @param einsatzart String gewählte Einsatzart
+         * @param textFelder Label[] von zu ausfüllenden Textfeldern
          * @see Einsatz
          */
-    void fillTextFeldEinsatzParameter(String einsatzart, TextField[] felder) {
-
-        final HashMap<String, int[]> parameterMap = new HashMap<>();
+    void fillTextFeldEinsatzParameter(String einsatzart, TextField[] textFelder) {
+        int[] einsatzParameter = new int[4];
+        boolean found = false;
+        // Suche nach richtigen Einsatzparameter für jeweilige Einsatzart
         for (int i = 0; i < Einsatz.einsatzarten.length; i++) {
-            parameterMap.put(Einsatz.einsatzarten[i], Einsatz.minParameter[i]);
+            if (einsatzart.equals(Einsatz.einsatzarten[i])) {
+                einsatzParameter = Einsatz.minParameter[i];
+            }
         }
-
-        int[] einsatzParameter = parameterMap.get(einsatzart);
-        assert felder.length != einsatzParameter.length: "Anzahl der Einsatz Parameter und Textfelder fehlerhaft";
         // Iteration durch das Array von TextFeldern
-        Iterator it = Arrays.stream(felder).iterator();
+        Iterator it = Arrays.stream(textFelder).iterator();
         int i = 0;
         while (it.hasNext()) {
             TextField textField = (TextField) it.next();
