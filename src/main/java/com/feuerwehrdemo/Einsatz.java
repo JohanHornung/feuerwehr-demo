@@ -10,7 +10,18 @@ public class Einsatz {
     public String einsatzart;
     public HashMap<String, Integer> parameter;
 
-
+    public static final String[] einsatzarten = {
+            "Wohnungsbrand",
+            "Verkehrsunfall",
+            "Naturkatastrophe",
+            "Industrieunfall"
+    };
+    public static final int[][] minParameter = {
+            {22, 1, 2, 1, 1},
+            {16, 1, 1, 1, 0},
+            {55, 3, 3, 3, 2},
+            {40, 3, 2, 2, 2}
+    };
 
 
     public Einsatz(int id, String einsatzart, HashMap<String, Integer> parameter) {
@@ -18,39 +29,6 @@ public class Einsatz {
         this.einsatzart = einsatzart;
         this.parameter = parameter;
     }
-
-
-    public static void fillResources(Feuerwehrmann[] team, Fahrzeug[] garage) {
-        Fahrzeug.anzahlVerfuegbar.put(Fahrzeug.Kategorie.EINSATZLEITFAHRZEUG, 4);
-        Fahrzeug.anzahlVerfuegbar.put(Fahrzeug.Kategorie.TANKLOESCHFAHRZEUG, 5);
-        Fahrzeug.anzahlVerfuegbar.put(Fahrzeug.Kategorie.MANNSCHAFTSTRANSPORTER, 4);
-        Fahrzeug.anzahlVerfuegbar.put(Fahrzeug.Kategorie.LEITERWAGEN, 5);
-
-        // Feuerwehrleute
-        String fahrerTyp = "Pkw";
-        for (int i = 0; i < 80; i++) {
-            team[i] = new Feuerwehrmann(i, true, fahrerTyp);
-            if (i >= 69) fahrerTyp = "Lkw";
-        }
-        // Fahrzeuge
-        int start = 0;
-        for (Fahrzeug.Kategorie key: Fahrzeug.Kategorie.values()) {
-            int amount = Fahrzeug.anzahlVerfuegbar.get(key);
-            System.out.println(amount);
-            for (int i = start; i < amount; i++) {
-//                System.out.println(i);
-                garage[i] = new Fahrzeug(i, key, true);
-
-            }
-            start += amount;
-        }
-    }
-    /**
-     *
-     * @param team Array von Feuerwehrmänner dessen Verfügbarkeit geändert wird
-     * @see Feuerwehrmann
-     *
-     */
 
     /**
      *

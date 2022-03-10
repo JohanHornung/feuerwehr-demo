@@ -18,6 +18,9 @@ import java.util.Iterator;
 
 public class HelloController {
 
+    public final int FIREFIGHTER_CAP = 80;
+    public final int VERHICLES_CAP = 18;
+
     @FXML
     private MenuItem industrieunfallButton;
 
@@ -114,16 +117,16 @@ public class HelloController {
 
     @FXML
     public void initialize() {
-        Feuerwehrmann[] team = new Feuerwehrmann[80];
-        Fahrzeug[] garage = new Fahrzeug[18];
+        Feuerwehrmann[] team = new Feuerwehrmann[FIREFIGHTER_CAP];
+        Fahrzeug[] garage = new Fahrzeug[VERHICLES_CAP];
         // Feuerwehrleute & Fahrzeuge werden initialisiert
-        Einsatz.fillResources(team, garage);
+        fillResources(team, garage);
 
         // Durchzählen von verfügbaren Feuerwehrleuten (pro Fahrer Typ)
         HashMap firefightersCount = countFirefighters(team);
         // Text Felder ausfüllen
-        String anzahlLkwFahrer = "Lkw-Fahrer: " + firefightersCount.get("Lkw-Fahrer");
-        String anzahlPkwFahrer = "Pkw-Fahrer: " + firefightersCount.get("Pkw-Fahrer");
+        String anzahlLkwFahrer = firefightersCount.get("Lkw-Fahrer").toString();
+        String anzahlPkwFahrer = firefightersCount.get("Pkw-Fahrer").toString();
         verfuegbareLkwFahrer.setText(anzahlLkwFahrer);
         verfuegbarePkwFahrer.setText(anzahlPkwFahrer);
 
@@ -137,12 +140,7 @@ public class HelloController {
                 verfuegbareLeiterwagen,
         };
         // Array von Fahrzeugkategorien als Strings
-        String[] fahrzeugKategorien = {
-                "Einsatz-Leitfahrzeuge",
-                "Tank-Löschfahrzeuge",
-                "Mannschaftstransporter",
-                "Leiterwagen"
-        };
+
 //        HashMap<Fahrzeug.Kategorie, Integer> vehicleCount = countVehicles(garage, fahrzeugKategorien);
 //        Fahrzeug.Kategorie[] vehicleCategories = Fahrzeug.Kategorie.values();
 //        assert vehicleCount.values().size() != fahrzeugKategorien.length : "Anzahl der Fahrzeugkategorien fehlerhaft";
@@ -156,19 +154,55 @@ public class HelloController {
     }
 
     /**
+     * Methode welche die initialen Einsatzressourcen (Fahrzeuge & Feuerwehrleute) konfiguriert
+     * @param team Array von Feuerwehrleuten (Feuerwehrmann Objekt) wird befüllt
+     * @see Feuerwehrmann
+     * @param garage Array von Fahrzeugen (Fahrzeug Objekt) wird befüllt
+     * @see Fahrzeug
+     */
+    public void fillResources(Feuerwehrmann[] team, Fahrzeug[] garage) {
+        HashMap<String, Integer> anzahlVerfuegbar = new HashMap<>();
+        for (int i = 0; i < Fahrzeug.fahrzeugKategorien.length; i++) {
+            anzahlVerfuegbar.put(Fahrzeug.fahrzeugKategorien[i], Fahrzeug.fahrzeugAnzahl[i]);
+        }
+
+        // Feuerwehrleute
+        String fahrerTyp = "Pkw";
+        // 70 Pkw-Fahrer
+        for (int i = 0; i < FIREFIGHTER_CAP; i++) {
+            team[i] = new Feuerwehrmann(i, true, fahrerTyp);
+            // 10 Lkw-Fahrer
+            if (i >= (FIREFIGHTER_CAP - 1) - 10) fahrerTyp = "Lkw";
+        }
+        // Fahrzeuge
+        int start = 0;
+        int amount = 0;
+
+        for (String category: Fahrzeug.fahrzeugKategorien) {
+            System.out.println(category);
+            amount += anzahlVerfuegbar.get(category);
+//            System.out.println(amount);
+            for (int i = start; i < amount; i++) {
+                garage[i] = new Fahrzeug(i, category, true);
+                System.out.println(i);
+
+            }
+            start += amount;
+        }
+    }
+    /**
      *
      * @param garage Array von Fahrzeugen (Fahrzeug Objekt)
      * @see Fahrzeug
      * @return Hashmap mit Anzahl der verfügbaren Fahrzeugkategorien
      */
     // Durchzählen von verfügbaren Fahrzeugen (pro Kategorie)
-    public static HashMap<Fahrzeug.Kategorie, Integer> countVehicles(Fahrzeug[] garage, String[] fahrzeugKategorien) {
-        HashMap<Fahrzeug.Kategorie, Integer> vehicleCount = new HashMap<>();
+    public static HashMap<String, Integer> countVehicles(Fahrzeug[] garage, String[] fahrzeugKategorien) {
+        HashMap<String, Integer> vehicleCount = new HashMap<>();
         // TODO: 09.03.22 Bug bei fillResources() für Fahrzeuge finden
         // initialisierung
-        Fahrzeug.Kategorie[] vehicleCategories = Fahrzeug.Kategorie.values();
-        for (int i = 0; i < vehicleCategories.length; i++) {
-            vehicleCount.put(vehicleCategories[i], 0);
+        for (int i = 0; i < Fahrzeug.fahrzeugKategorien.length; i++) {
+            vehicleCount.put(Fahrzeug.fahrzeugKategorien[i], 0);
         }
         // Iteration durch jedes Fahrzeug in der Garage
         for (Fahrzeug fahrzeug: garage) {
@@ -212,21 +246,10 @@ public class HelloController {
          * @see Einsatz
          */
     void fillTextFeldEinsatzParameter(String einsatzart, TextField[] felder) {
-        final String[] einsatzarten = {
-                "Wohnungsbrand",
-                "Verkehrsunfall",
-                "Naturkatastrophe",
-                "Industrieunfall"
-        };
-        final int[][] minParameter = {
-                {22, 1, 2, 1, 1},
-                {16, 1, 1, 1, 0},
-                {55, 3, 3, 3, 2},
-                {40, 3, 2, 2, 2}
-        };
+
         final HashMap<String, int[]> parameterMap = new HashMap<>();
-        for (int i = 0; i < einsatzarten.length; i++) {
-            parameterMap.put(einsatzarten[i], minParameter[i]);
+        for (int i = 0; i < Einsatz.einsatzarten.length; i++) {
+            parameterMap.put(Einsatz.einsatzarten[i], Einsatz.minParameter[i]);
         }
 
         int[] einsatzParameter = parameterMap.get(einsatzart);
