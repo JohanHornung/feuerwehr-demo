@@ -69,7 +69,7 @@
                            <TextField fx:id="anzahlTLTextField" layoutX="35.0" layoutY="215.0" prefHeight="26.0" prefWidth="203.0" promptText="Anzahl Tank-Löschfahrzeuge" />
                            <TextField fx:id="anzahlLWTextField" layoutX="37.0" layoutY="321.0" prefHeight="26.0" prefWidth="201.0" promptText="Anzahl Leiterwagen" />
                            <TextField fx:id="anzahlFLTextField" layoutX="33.0" layoutY="123.0" prefHeight="26.0" prefWidth="202.0" promptText="Anzahl Feuerwehrleute" />
-                           <MenuButton fx:id="einsatzartMenuButton" alignment="CENTER" contentDisplay="CENTER" layoutX="21.0" layoutY="68.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="245.0" text="Einsatzart auswählen">
+                           <MenuButton fx:id="einsatzartMenuButton" alignment="CENTER" contentDisplay="CENTER" layoutX="21.0" layoutY="68.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="239.0" text="Einsatzart auswählen">
                              <items>
                                <MenuItem fx:id="wohnungsbrandButton" mnemonicParsing="false" onAction="#fillWohnungsbrandParameter" text="Wohnungsbrand" />
                                <MenuItem fx:id="verkehrsunfallButton" mnemonicParsing="false" onAction="#fillVerkehrsunfallParameter" text="Verkehrsunfall" />
