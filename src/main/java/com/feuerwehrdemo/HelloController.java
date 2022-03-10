@@ -19,7 +19,7 @@ import java.util.Iterator;
 public class HelloController {
     // Feste Anzahl von Ressourcen
     public final int FIREFIGHTER_CAP = 80;
-    public final int VERHICLES_CAP = 18;
+    public final int VEHICLES_CAP = 18;
 
     @FXML
     private MenuItem industrieunfallButton;
@@ -117,8 +117,10 @@ public class HelloController {
      */
     public void initialize() {
         Feuerwehrmann[] team = new Feuerwehrmann[FIREFIGHTER_CAP];
-        Fahrzeug[] garage = new Fahrzeug[VERHICLES_CAP];
+        Fahrzeug[] garage = new Fahrzeug[VEHICLES_CAP];
 
+        // Leere Hashmap der aktiven Einsätze
+        HashMap<Integer, Einsatz> activeOperations = new HashMap<>();
         // Feuerwehrleute & Fahrzeuge werden initialisiert
         fillResources(team, garage);
 
@@ -153,6 +155,8 @@ public class HelloController {
 
     /**
      * Methode welche die initialen Einsatzressourcen (Fahrzeuge + Feuerwehrleute) konfiguriert
+     *
+     * @author Johan Hornung, Luca Langer
      * @param team Array von Feuerwehrleuten (Feuerwehrmann Objekt) wird befüllt
      * @see Feuerwehrmann
      * @param garage Array von Fahrzeugen (Fahrzeug Objekt) wird befüllt
@@ -168,21 +172,26 @@ public class HelloController {
         String fahrerTyp = "Pkw";
         // 70 Pkw-Fahrer
         for (int i = 0; i < FIREFIGHTER_CAP; i++) {
+            // Feuerwehrmann ID ist der index im sich befindenden Array
             team[i] = new Feuerwehrmann(i, true, fahrerTyp);
             // 10 Lkw-Fahrer
-            if (i >= (FIREFIGHTER_CAP - 1) - 10) fahrerTyp = "Lkw";
+            // i = (FIREFIGHTER_CAP - 11) = 69 bei 70. Feuerwehrmann
+            if (i >= FIREFIGHTER_CAP - 11) fahrerTyp = "Lkw";
         }
-        // Fahrzeuge
+        // Erstellung der Fahrzeuge in die Garage
         int start = 0;
-        int amount = 0;
-
+        int currentAmount = 0;
+        // Für jede Kategorie wird eine bestimmte Anzahl an Fahrzeugen generiert
         for (String category: Fahrzeug.fahrzeugKategorien) {
-            amount += anzahlVerfuegbar.get(category);
-
-            for (int i = start; i < amount; i++) {
+            // Temporäre Anzahl der zu erstellenden Fahrzeuge
+            currentAmount += anzahlVerfuegbar.get(category);
+            // Fahrzeug ID ist der index im sich befindenden Array
+            for (int i = start; i < currentAmount; i++) {
+                // Gewünschte Anzahl an Fahrzeuge wird pro Kategorie erstellt
                 garage[i] = new Fahrzeug(i, category, true);
             }
-            start += (amount - start);
+            // Neuer "Einstiegspunkt" im Array garage für nächste Kategorie
+            start += (currentAmount - start);
         }
     }
     /**
