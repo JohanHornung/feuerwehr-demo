@@ -25,10 +25,10 @@
                      <Image url="@logo.png" />
                   </image>
                </ImageView>
-               <Label fx:id="anzahlFahrzeuge" layoutX="742.0" layoutY="12.0" prefHeight="33.0" prefWidth="156.0" style="-fx-font-weight: bold;" text="Verfügbare Fahrzeuge" />
-               <Label fx:id="anzahlFeuerwehrleute" layoutX="340.0" layoutY="12.0" prefHeight="33.0" prefWidth="180.0" style="-fx-font-weight: bold;" text="Verfügbare Feuerwehrleute" />
-               <Label fx:id="verfuegbareLkwFahrer" alignment="CENTER" contentDisplay="CENTER" layoutX="352.0" layoutY="69.0" prefHeight="33.0" prefWidth="53.0" style="-fx-font-size: 28;" text="X" />
-               <Label fx:id="verfuegbarePkwFahrer" alignment="CENTER" layoutX="430.0" layoutY="69.0" prefHeight="33.0" prefWidth="60.0" style="-fx-font-size: 28;" text="X" />
+               <Label id="title" fx:id="anzahlFahrzeuge" layoutX="742.0" layoutY="12.0" prefHeight="33.0" prefWidth="156.0" style="-fx-font-weight: bold;" text="Verfügbare Fahrzeuge" />
+               <Label id="title" fx:id="anzahlFeuerwehrleute" layoutX="340.0" layoutY="12.0" prefHeight="33.0" prefWidth="180.0" style="-fx-font-weight: bold;" text="Verfügbare Feuerwehrleute" />
+               <Label fx:id="verfuegbareLkwFahrer" alignment="CENTER" contentDisplay="CENTER" layoutX="347.0" layoutY="80.0" prefHeight="33.0" prefWidth="53.0" style="-fx-font-size: 28;" text="X" />
+               <Label fx:id="verfuegbarePkwFahrer" alignment="CENTER" layoutX="428.0" layoutY="79.0" prefHeight="33.0" prefWidth="60.0" style="-fx-font-size: 28;" text="X" />
                <Label fx:id="verfuegbareEinsatzLeitfahrzeuge" alignment="CENTER" layoutX="695.0" layoutY="45.0" prefHeight="34.0" prefWidth="47.0" style="-fx-font-size: 28;" text="X" />
                <Label fx:id="verfuegbareTLFahrzeuge" alignment="CENTER" layoutX="852.0" layoutY="45.0" prefHeight="34.0" prefWidth="92.0" style="-fx-font-size: 28;" text="X" />
                <Label fx:id="verfuegbareManschaftstransporter" alignment="CENTER" layoutX="678.0" layoutY="127.0" prefHeight="34.0" prefWidth="80.0" style="-fx-font-size: 28;" text="X">
@@ -36,8 +36,8 @@
                      <Font name="System Font" size="28.0" />
                   </font></Label>
                <Label fx:id="verfuegbareLeiterwagen" alignment="CENTER" layoutX="858.0" layoutY="127.0" prefHeight="34.0" prefWidth="80.0" style="-fx-font-size: 28;" text="X" />
-               <Label layoutX="340.0" layoutY="118.0" prefHeight="33.0" prefWidth="80.0" text="Lkw-Fahrer" />
-               <Label layoutX="430.0" layoutY="118.0" prefHeight="33.0" prefWidth="80.0" text="Pkw-Fahrer" />
+               <Label layoutX="340.0" layoutY="111.0" prefHeight="33.0" prefWidth="80.0" text="Lkw-Fahrer" />
+               <Label layoutX="430.0" layoutY="111.0" prefHeight="33.0" prefWidth="80.0" text="Pkw-Fahrer" />
                <Label layoutX="664.0" layoutY="79.0" prefHeight="33.0" prefWidth="130.0" text="Einsatzleitfahrzeuge" />
                <Label layoutX="833.0" layoutY="80.0" prefHeight="33.0" prefWidth="130.0" text="Tank-Löschfahrzeuge" />
                <Label layoutX="650.0" layoutY="161.0" prefHeight="33.0" prefWidth="146.0" text="Mannschaftstransporter" />
@@ -50,10 +50,10 @@
                <content>
                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                         <children>
-                           <Button fx:id="einsatzBeendenSubmit" layoutX="367.0" layoutY="367.0" mnemonicParsing="false" onAction="#onDeleteOperationClick" prefHeight="33.0" prefWidth="173.0" text="Einsatz beenden" />
-                           <Button fx:id="einsatzErstellenSubmit" layoutX="140.0" layoutY="367.0" mnemonicParsing="false" onAction="#onCreateOperationClick" prefHeight="33.0" prefWidth="124.0" text="Einsatz erstellen" />
-                           <Label layoutX="635.0" layoutY="14.0" prefHeight="47.0" prefWidth="441.0" style="-fx-font-weight: bold;" text="Aktive Einsätze" />
-                           <TableView fx:id="aktiveEinsatzTabelle" layoutX="635.0" layoutY="54.0" prefHeight="368.0" prefWidth="442.0">
+                           <Button fx:id="einsatzBeendenSubmit" layoutX="394.0" layoutY="375.0" mnemonicParsing="false" onAction="#onDeleteOperationClick" prefHeight="33.0" prefWidth="173.0" text="Einsatz beenden" />
+                           <Button fx:id="einsatzErstellenSubmit" layoutX="141.0" layoutY="375.0" mnemonicParsing="false" onAction="#onCreateOperationClick" prefHeight="33.0" prefWidth="124.0" text="Einsatz erstellen" />
+                           <Label id="title" layoutX="635.0" prefHeight="47.0" prefWidth="441.0" style="-fx-font-weight: bold;" text="Aktive Einsätze" />
+                           <TableView fx:id="aktiveEinsatzTabelle" layoutX="635.0" layoutY="54.0" prefHeight="354.0" prefWidth="442.0">
                              <columns>
                                <TableColumn fx:id="aktiveEinsatzId" prefWidth="36.0" text="ID" />
                                <TableColumn fx:id="aktiveEinsatzart" prefWidth="75.0" text="Einsatzart" />
@@ -62,14 +62,14 @@
                                  <TableColumn fx:id="aktiveSonderattribute" prefWidth="105.0" text="Sonderattribute" />
                              </columns>
                            </TableView>
-                           <TextField fx:id="einsatzIdBeenden" layoutX="368.0" layoutY="321.0" prefHeight="26.0" prefWidth="172.0" promptText="Einsatz ID" />
-                           <Label layoutX="21.0" layoutY="21.0" prefHeight="33.0" prefWidth="119.0" style="-fx-font-weight: bold;" text="Einsatzerstellung" />
-                           <TextField fx:id="anzahlELFTextField" layoutX="35.0" layoutY="170.0" prefHeight="26.0" prefWidth="200.0" promptText="Anzahl Einsatz-Leitfahrzeuge" />
-                           <TextField fx:id="anzahlMTTextField" layoutX="34.0" layoutY="272.0" prefHeight="26.0" prefWidth="203.0" promptText="Anzahl Mannschaftstransporter" />
-                           <TextField fx:id="anzahlTLTextField" layoutX="35.0" layoutY="215.0" prefHeight="26.0" prefWidth="203.0" promptText="Anzahl Tank-Löschfahrzeuge" />
-                           <TextField fx:id="anzahlLWTextField" layoutX="37.0" layoutY="321.0" prefHeight="26.0" prefWidth="201.0" promptText="Anzahl Leiterwagen" />
-                           <TextField fx:id="anzahlFLTextField" layoutX="33.0" layoutY="123.0" prefHeight="26.0" prefWidth="202.0" promptText="Anzahl Feuerwehrleute" />
-                           <MenuButton fx:id="einsatzartMenuButton" alignment="CENTER" contentDisplay="CENTER" layoutX="21.0" layoutY="68.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="239.0" text="Einsatzart auswählen">
+                           <TextField fx:id="einsatzIdBeenden" layoutX="395.0" layoutY="333.0" prefHeight="26.0" prefWidth="172.0" promptText="Einsatz ID" />
+                           <Label id="title" layoutX="21.0" layoutY="7.0" prefHeight="33.0" prefWidth="119.0" style="-fx-font-weight: bold;" text="Einsatzerstellung" />
+                           <TextField fx:id="anzahlELFTextField" layoutX="136.0" layoutY="122.0" prefHeight="26.0" prefWidth="73.0" promptText="Anzahl" />
+                           <TextField fx:id="anzahlMTTextField" layoutX="73.0" layoutY="278.0" prefHeight="26.0" prefWidth="70.0" promptText="Anzahl" />
+                           <TextField fx:id="anzahlTLTextField" layoutX="133.0" layoutY="205.0" prefHeight="26.0" prefWidth="80.0" promptText="Anzahl" />
+                           <TextField fx:id="anzahlLWTextField" layoutX="18.0" layoutY="205.0" prefHeight="26.0" prefWidth="68.0" promptText="Anzahl" />
+                           <TextField fx:id="anzahlFLTextField" layoutX="16.0" layoutY="122.0" prefHeight="26.0" prefWidth="73.0" promptText="Anzahl" />
+                           <MenuButton fx:id="einsatzartMenuButton" alignment="CENTER" contentDisplay="CENTER" layoutX="21.0" layoutY="41.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="233.0" text="Einsatzart auswählen">
                              <items>
                                <MenuItem fx:id="wohnungsbrandButton" mnemonicParsing="false" onAction="#fillWohnungsbrandParameter" text="Wohnungsbrand" />
                                <MenuItem fx:id="verkehrsunfallButton" mnemonicParsing="false" onAction="#fillVerkehrsunfallParameter" text="Verkehrsunfall" />
@@ -77,7 +77,13 @@
                                  <MenuItem fx:id="industrieunfallButton" mnemonicParsing="false" onAction="#fillIndustrieunfallParameter" text="Industrieunfall" />
                              </items>
                            </MenuButton>
-                           <Button fx:id="einsatzParameterResetButton" layoutX="21.0" layoutY="367.0" mnemonicParsing="false" onAction="#onEinsatzParameterResetClick" prefHeight="33.0" prefWidth="109.0" text="Zurücksetzen" />
+                           <Button fx:id="einsatzParameterResetButton" layoutX="22.0" layoutY="375.0" mnemonicParsing="false" onAction="#onEinsatzParameterResetClick" prefHeight="33.0" prefWidth="109.0" text="Zurücksetzen" />
+                           <Label layoutX="18.0" layoutY="89.0" prefHeight="33.0" prefWidth="108.0" text="Feuerwehrleute" />
+                           <Label layoutX="120.0" layoutY="89.0" prefHeight="33.0" prefWidth="146.0" text="Einsatz-Leitfahrzeuge" />
+                           <Label layoutX="116.0" layoutY="172.0" prefHeight="33.0" prefWidth="146.0" text="Tank-Löschfahrzeuge" />
+                           <Label layoutX="48.0" layoutY="245.0" prefHeight="33.0" prefWidth="156.0" text="Mannschaftstransporter" />
+                           <Label layoutX="16.0" layoutY="172.0" prefHeight="33.0" prefWidth="92.0" text="Leiterwagen" />
+                           <Label fx:id="einsatzErstellungMessage" layoutX="22.0" layoutY="337.0" prefHeight="18.0" prefWidth="363.0" style="-fx-font-weight: bold;" />
                         </children>
                      </AnchorPane>
                </content>
