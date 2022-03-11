@@ -1,4 +1,4 @@
-package com.feuerwehrdemo;
+package com;
 
 public class Fahrzeug {
     public enum Kategorie {
@@ -7,7 +7,7 @@ public class Fahrzeug {
         MANNSCHAFTSTRANSPORTER,
         LEITERWAGEN
     };
-
+//
     public int id;
     public String kategorie;
     public boolean verfuegbar;

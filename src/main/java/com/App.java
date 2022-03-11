@@ -1,4 +1,4 @@
-package com.feuerwehrdemo;
+package com;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

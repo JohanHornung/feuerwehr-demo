@@ -1,4 +1,4 @@
-package com.feuerwehrdemo;
+package com;
 
 
 import javafx.event.ActionEvent;
@@ -12,14 +12,13 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 
-public class HelloController {
+public class UserController {
     // Feste Anzahl von Ressourcen
     public final int FIREFIGHTER_CAP = 80;
     public final int VEHICLES_CAP = 18;
@@ -79,6 +78,9 @@ public class HelloController {
     private Button einsatzParameterResetButton;
 
     @FXML
+    private Button closeButton;
+
+    @FXML
     private TextField einsatzIdBeenden;
 
     @FXML
@@ -125,39 +127,12 @@ public class HelloController {
      *      - Zählt Ressourcen durch und schreibt jeweilige Werte in die grafischen Text Felder
      */
     public void initialize() {
-
         // Leere Hashmap der aktiven Einsätze
         HashMap<Integer, Einsatz> activeOperations = new HashMap<>();
         // Feuerwehrleute & Fahrzeuge werden initialisiert
         fillResources(team, garage);
-
-        // Durchzählen von verfügbaren Feuerwehrleuten (pro Fahrer Typ)
-        HashMap firefightersCount = countFirefighters(team);
-        // Auslesen der Werte pro fahrer Typ
-        String anzahlLkwFahrer = firefightersCount.get("Lkw-Fahrer").toString();
-        String anzahlPkwFahrer = firefightersCount.get("Pkw-Fahrer").toString();
-        // Text Felder ausfüllen
-        verfuegbareLkwFahrer.setText(anzahlLkwFahrer);
-        verfuegbarePkwFahrer.setText(anzahlPkwFahrer);
-
-        // Array aus Labels für Fahrzeugkategorien
-        Label[] verfuegbareFahrzeuge = {
-                verfuegbareEinsatzLeitfahrzeuge,
-                verfuegbareTLFahrzeuge,
-                verfuegbareManschaftstransporter,
-                verfuegbareLeiterwagen,
-        };
-        // Durchzählen von verfügbaren Fahrzeugen (pro Kategorie)
-        HashMap<String, Integer> vehicleCount = countVehicles(garage);
-        // An diesem Punkt muss das Programm beendet werden falls ein Logik-Fehler vorhanden ist
-        assert vehicleCount.values().size() == Fahrzeug.fahrzeugKategorien.length : "Anzahl der Fahrzeugkategorien fehlerhaft";
-
-        for (int i = 0; i < Fahrzeug.fahrzeugKategorien.length; i++) {
-            // Output Text ("Anzahl von <Fahrzeugkategorie>: <Wert>")
-            String text = vehicleCount.get(Fahrzeug.fahrzeugKategorien[i]).toString();
-            // Label wird beschrieben
-            verfuegbareFahrzeuge[i].setText(text);
-        }
+        // Ressourcen werden aktualisiert und angezeigt
+        displayResources(team, garage);
     }
 
     /**
@@ -199,6 +174,43 @@ public class HelloController {
             }
             // Neuer "Einstiegspunkt" im Array garage für nächste Kategorie
             start += (currentAmount - start);
+        }
+    }
+
+    /**
+     * Methode zählt aktuellen Bestand der Fahrzeuge und Feuerwehrleute und zeigt diesen an
+     *
+     * @author Johan Hornung
+     * @param team von Feuerwehrleuten
+     * @param garage von Fahrzeugen
+     */
+    void displayResources(Feuerwehrmann[] team, Fahrzeug[] garage) {
+        // Durchzählen von verfügbaren Feuerwehrleuten (pro Fahrer Typ)
+        HashMap firefightersCount = countFirefighters(team);
+        // Auslesen der Werte pro fahrer Typ
+        String anzahlLkwFahrer = firefightersCount.get("Lkw-Fahrer").toString();
+        String anzahlPkwFahrer = firefightersCount.get("Pkw-Fahrer").toString();
+        // Text Felder ausfüllen
+        verfuegbareLkwFahrer.setText(anzahlLkwFahrer);
+        verfuegbarePkwFahrer.setText(anzahlPkwFahrer);
+
+        // Array aus Labels für Fahrzeugkategorien
+        Label[] verfuegbareFahrzeuge = {
+                verfuegbareEinsatzLeitfahrzeuge,
+                verfuegbareTLFahrzeuge,
+                verfuegbareManschaftstransporter,
+                verfuegbareLeiterwagen,
+        };
+        // Durchzählen von verfügbaren Fahrzeugen (pro Kategorie)
+        HashMap<String, Integer> vehicleCount = countVehicles(garage);
+        // An diesem Punkt muss das Programm beendet werden falls ein Logik-Fehler vorhanden ist
+        assert vehicleCount.values().size() == Fahrzeug.fahrzeugKategorien.length : "Anzahl der Fahrzeugkategorien fehlerhaft";
+
+        for (int i = 0; i < Fahrzeug.fahrzeugKategorien.length; i++) {
+            // Output Text ("Anzahl von <Fahrzeugkategorie>: <Wert>")
+            String text = vehicleCount.get(Fahrzeug.fahrzeugKategorien[i]).toString();
+            // Label wird beschrieben
+            verfuegbareFahrzeuge[i].setText(text);
         }
     }
     /**
@@ -322,6 +334,8 @@ public class HelloController {
      * @return Array der numerischen Einsatzparameter
      */
     int[] getTextFieldValues(TextField[] textFelder) {
+        // TODO: 11.03.22 Leere Angaben und nicht numerische Werte gesondert behandeln
+
         int[] einsatzParameter = new int[textFelder.length];
         // jeder Wert aus dem Text Feld wird ausgelesen und in einsatzParameter abgespeichert
         for (int i = 0; i < textFelder.length; i++) {
@@ -486,7 +500,8 @@ public class HelloController {
         setButtonParameter(industrieunfallButton);
     }
     @FXML
-    void fillNaturkatastropheParameter(ActionEvent event) { setButtonParameter(naturkatastropheButton);
+    void fillNaturkatastropheParameter(ActionEvent event) {
+        setButtonParameter(naturkatastropheButton);
     }
     @FXML
     void fillVerkehrsunfallParameter(ActionEvent event) {
@@ -497,9 +512,15 @@ public class HelloController {
         setButtonParameter(wohnungsbrandButton);
     }
 
-
+    // TODO: 11.03.22 JavDoc für onCreateEinsatzClick()
     @FXML
-    void onCreateOperationClick(ActionEvent event) {
+    /**
+     * @author
+     * @see Fahrzeug
+     * @see Feuerwehrmann
+     * @see Einsatz
+     */
+    void onCreateEinsatzClick(ActionEvent event) {
         // TODO: 10.03.22 Algorithmus für Einsatzerstellung schreiben
         // Einsatzparameter Textfelder auslesen
         TextField[] einsatzTextfelder = {
@@ -510,9 +531,7 @@ public class HelloController {
                 anzahlLWTextField,
         };
         // Einsatzparameter werden überprüft
-        // TODO: 11.03.22 Leere Angaben und nicht numerische Werte gesondert behandeln
         int[] einsatzParameter = getTextFieldValues(einsatzTextfelder);
-        System.out.println(Arrays.toString(einsatzParameter));
         if (validEinsatzParameter(einsatzParameter)) {
             // Naricht ausgeben
             setLabelTextMessage(
@@ -522,14 +541,65 @@ public class HelloController {
             );
             // Textfelder zurücksetzen
             setTextFieldValues(einsatzTextfelder, new int[einsatzTextfelder.length]);
-            // Basierend auf Einsatz parameter das Team und die Fahrzeuge aussuchen
-            // TODO: 11.03.22 Suchprozess für Teamerstellung
+            // Basierend auf Einsatz parameter das Team-Mitglieder und die Fahrzeuge aussuchen
+            HashMap<Integer, Feuerwehrmann> fmTeam = new HashMap<>();
+            HashMap<Integer, Fahrzeug> fzTeam = new HashMap<>();
+
+            // Teamerstellung
+            // Ermittlung von anzahl an Fahrern für den Einsatz
+            int fahrerAnzahl = 0;
+            for (int i = 1; i < einsatzParameter.length; i++) fahrerAnzahl += einsatzParameter[i];
+            // Nur für Einsatzleitfahrzeuge sind Pkw-Fahrer benötigt
+            int neededPkwFahrer = einsatzParameter[1];
+            // gesamte Fahrer Anzahl - anzahl An Pkw Fahrern
+            int neededLkwFahrer = fahrerAnzahl - neededPkwFahrer;
+
+            // Es wird solange nach verfügbaren Feuerwehrleuten gesucht bis die nötige Anzahl erreicht ist
+            // Für Pkw-Fahrer
+            for (Feuerwehrmann fm: team) {
+                // Wenn ein Pkw-Fahrer verfügbar ist wird er eingesetzt
+                if (fm.fahrerTyp.equals("Pkw") && fm.verfuegbar) {
+                    // Feuerwehrmann ist jetzt nicht mehr verfügbar
+                    fm.verfuegbar = false;
+                    fmTeam.put(fm.id, fm);
+                }
+                // Suche wird beendet fall die nötige Anzahl an Pkw-Fahrern erreicht wurde
+                if (fmTeam.size() == (fahrerAnzahl - neededLkwFahrer)) break;
+            }
+            // Für Lkw-Fahrer (gleiches Prinzip)
+            for (Feuerwehrmann fm: team) {
+                if (fm.fahrerTyp.equals("Lkw") && fm.verfuegbar) {
+                    // Feuerwehrmann ist jetzt nicht mehr verfügbar
+                    fm.verfuegbar = false;
+                    fmTeam.put(fm.id, fm);
+                }
+                // Suche wird beendet falls die nötige Anzahl an Lkw-Fahrern erreicht wurde
+                if (fmTeam.size() == fahrerAnzahl) break;
+            }
+            // Programm-Logikfehler falls die nötige Anzahl an Feuerwehrleuten nicht erreicht ist
+            if (fmTeam.size() != fahrerAnzahl) {
+                System.out.println("Nicht genug Feuerwehrleute im Team!");
+            }
+            // Ressourcen Anzeige für Feuerwehrleute aktualisieren
+            displayResources(team, garage);
+            // TODO: 11.03.22 Suche nach Fahrzeugen für Einsatzerstellung
+            // Fahrzeug-Team Erstellung (Kategorie pro Kategorie)
+//            for (Fahrzeug fz: garage) {
+//          
+//            }
         }
     }
 
     @FXML
     void onDeleteOperationClick(ActionEvent event) {
         // TODO: 10.03.22 Algorithmus für Einsatzbeendung schreiben
+    }
+    @FXML
+    private void closeButtonAction(){
+        // get a handle to the stage
+        Stage stage = (Stage) closeButton.getScene().getWindow();
+        // do what you have to do
+        stage.close();
     }
 
 }
