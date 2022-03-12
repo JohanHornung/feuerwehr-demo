@@ -13,7 +13,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.MapValueFactory;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -43,7 +42,7 @@ public class UserController {
     private MenuItem naturkatastropheButton;
 
     @FXML
-    private TableView<Map> aktiveEinsatzTabelle;
+    private TableView<Map<String, String>> aktiveEinsatzTabelle;
 
     @FXML
     private TableColumn<Map, String> aktiveEinsatzId;
@@ -58,7 +57,7 @@ public class UserController {
     private TableColumn<Map, String> aktiveFeuerwehrleute;
 
     @FXML
-    private TableView<Map> aktiveFahrzeugTabelle;
+    private TableView<Map<String, String>> aktiveFahrzeugTabelle;
 
     @FXML
     private TableColumn<Map, String> aktiveFahrzeugEinsatzId;
@@ -213,7 +212,7 @@ public class UserController {
      */
     void displayResources(Feuerwehrmann[] team, Fahrzeug[] garage) {
         // Durchzählen von verfügbaren Feuerwehrleuten (pro Fahrer Typ)
-        LinkedHashMap firefightersCount = countFirefighters(team);
+        LinkedHashMap<String, Integer> firefightersCount = countFirefighters(team);
         // Auslesen der Werte pro fahrer Typ
         String anzahlLkwFahrer = firefightersCount.get("Lkw-Fahrer").toString();
         String anzahlPkwFahrer = firefightersCount.get("Pkw-Fahrer").toString();
@@ -340,12 +339,12 @@ public class UserController {
         // An diesem Punkt muss das Programm beendet werden falls ein Logik-Fehler vorhanden ist
         assert textFelder.length == values.length : "Anzahl von Text Feldern und Werten stimmt nicht überein";
         // Iteration durch das Array von TextFeldern
-        Iterator it = Arrays.stream(textFelder).iterator();
+        Iterator<TextField> it = Arrays.stream(textFelder).iterator();
         // Für Array von Werten
         int i = 0;
         while (it.hasNext()) {
             // einzelnes Text Feld
-            TextField textField = (TextField) it.next();
+            TextField textField = it.next();
             // Sonderfall: wenn alle Werte in values Array 0 sind, dann wird zurückgesetzt
             if (Arrays.stream(values).sum() == 0) {
                 textField.setText("");
@@ -561,7 +560,7 @@ public class UserController {
      * @param columnKeys Spalten Namen für das Festlegen der Spalten-Attribute
      * @param values die Reihenweise eingesetzt werden
      */
-    void fillTable(TableView table, TableColumn[] columns, String[] columnKeys, String[] values) {
+    void fillTable(TableView<Map<String, String>> table, TableColumn[] columns, String[] columnKeys, String[] values) {
         // Daten-Objekt
         ObservableList<Map<String, String>> operationMap = FXCollections.<Map<String, String>>observableArrayList();
         // Neue Hashmap mit allen nötigen Attribute (Reihe in der Tabelle)
