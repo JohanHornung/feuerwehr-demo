@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Random;
 
 public class UserController {
     // Feste Anzahl von Ressourcen
@@ -117,8 +118,10 @@ public class UserController {
     @FXML
     private MenuItem wohnungsbrandButton;
 
-    public Feuerwehrmann[] team = new Feuerwehrmann[FIREFIGHTER_CAP];
-    public Fahrzeug[] garage = new Fahrzeug[VEHICLES_CAP];
+    private Feuerwehrmann[] team = new Feuerwehrmann[FIREFIGHTER_CAP];
+    private Fahrzeug[] garage = new Fahrzeug[VEHICLES_CAP];
+    // Leere Hashmap der aktiven Einsätze
+    private HashMap<Integer, Einsatz> activeOperations = new HashMap<>();
 
     @FXML
     /**
@@ -127,8 +130,6 @@ public class UserController {
      *      - Zählt Ressourcen durch und schreibt jeweilige Werte in die grafischen Text Felder
      */
     public void initialize() {
-        // Leere Hashmap der aktiven Einsätze
-        HashMap<Integer, Einsatz> activeOperations = new HashMap<>();
         // Feuerwehrleute & Fahrzeuge werden initialisiert
         fillResources(team, garage);
         // Ressourcen werden aktualisiert und angezeigt
@@ -212,6 +213,8 @@ public class UserController {
             // Label wird beschrieben
             verfuegbareFahrzeuge[i].setText(text);
         }
+        // TODO: 12.03.22 Menu Button (Einsatzarten) anpassen, switch case
+//        wohnungsbrandButton.setVisible(false);
     }
     /**
      * Methode zählt verfügbare Fahrzeuge pro Kategorie
@@ -299,7 +302,7 @@ public class UserController {
                 "Keine passenden Einsazparameter gefunden, " +
                 "Einsatzart" + einsatzart + " Unbekannt");
 
-        // Werte werden in die Textfelder eingesetzt
+        // Werte werden in die Textfelder geschrieben
         setTextFieldValues(einsatzTextfelder, einsatzParameter);
     }
 
@@ -432,11 +435,11 @@ public class UserController {
             return false;
         }
         // Schritt 3
+        // TODO: 12.03.22 Bug: Einsatz wird erstellt obwohl aktuelle Ressourcen nicht ausreichen
         // Aktuelle Ressourcen abfragen
         HashMap<String, Integer> firefighters = countFirefighters(team);
         HashMap<String, Integer> vehicles = countVehicles(garage);
         // Mit EinsatzParameter vergleichen
-
         // Für Feuerwehrleute
         int anzahlFeuerwehrleute = einsatzParameter[0];
         // Wenn nicht genug Feuerwehrleute verfügbar
@@ -449,14 +452,14 @@ public class UserController {
             return false;
         }
         // Für Fahrzeuge
-        // (Reihenfolge der Fahrzeugkategorien respektiv, Kategorien müssen nicht ausgelesen werden)
+        // (Respektive Reihenfolge der Fahrzeugkategorien, Kategorien müssen nicht ausgelesen werden)
         int i = 1; // Anzahl der benötigten Fahrzeug startet ab dem 2. Element in einsatzParameter
         for (int vehicleCount : vehicles.values()) {
             if (einsatzParameter[i] > vehicleCount) {
                 setLabelTextMessage(
                         einsatzErstellungMessage,
                         Color.RED,
-                        "Zu wenig Fahrzeuge für " + einsatzart + "Einsatz!"
+                        "Zu wenig Fahrzeuge für " + einsatzart + " Einsatz!"
                 );
                 return false;
             }
@@ -468,8 +471,16 @@ public class UserController {
 
         return true;
     }
+    void updateActiveOperationsTable(HashMap<Integer, Einsatz> activeOperations) {
+        // TODO: 12.03.22 Methode für aktualisieren der Einsatz Tabelle
+    }
+    HashMap<Integer, String> generateSpecialAttributes(HashMap<Integer, Fahrzeug> fzTeam) {
+        // TODO: 12.03.22 Methode für Generierung der Sonderattribute
+        HashMap<Integer, String> sonderattribute = new HashMap<>();
+        return null;
+    }
     /*
-    //////////////////////////// JAVAFX EVENT METHODEN /////////////////////////////////
+    //////////////////////////// JAVAFX EVENT-BASIERTE METHODEN /////////////////////////////////
      */
     /**
      * Methode setzt Text Felder der Einsatz Parameter zurück sowie den Menu Button für Einsatzartauswahl
@@ -515,7 +526,7 @@ public class UserController {
     // TODO: 11.03.22 JavDoc für onCreateEinsatzClick()
     @FXML
     /**
-     * @author
+     * @author Johan Hornung
      * @see Fahrzeug
      * @see Feuerwehrmann
      * @see Einsatz
@@ -530,8 +541,11 @@ public class UserController {
                 anzahlMTTextField,
                 anzahlLWTextField,
         };
-        // Einsatzparameter werden überprüft
+        // Einsatzparameter werden ausgelesen und überprüft
+        String einsatzart = einsatzartMenuButton.getText();
         int[] einsatzParameter = getTextFieldValues(einsatzTextfelder);
+
+        // Hauptbedingung für Einsatzerstellung
         if (validEinsatzParameter(einsatzParameter)) {
             // Naricht ausgeben
             setLabelTextMessage(
@@ -541,11 +555,11 @@ public class UserController {
             );
             // Textfelder zurücksetzen
             setTextFieldValues(einsatzTextfelder, new int[einsatzTextfelder.length]);
-            // Basierend auf Einsatz parameter das Team-Mitglieder und die Fahrzeuge aussuchen
+            // Teamerstellung
             HashMap<Integer, Feuerwehrmann> fmTeam = new HashMap<>();
             HashMap<Integer, Fahrzeug> fzTeam = new HashMap<>();
 
-            // Teamerstellung
+            // Basierend auf Einsatz parameter das Team-Mitglieder und Fahrzeuge aussuchen
             // Ermittlung von anzahl an Fahrern für den Einsatz
             int fahrerAnzahl = 0;
             for (int i = 1; i < einsatzParameter.length; i++) fahrerAnzahl += einsatzParameter[i];
@@ -582,11 +596,51 @@ public class UserController {
             }
             // Ressourcen Anzeige für Feuerwehrleute aktualisieren
             displayResources(team, garage);
-            // TODO: 11.03.22 Suche nach Fahrzeugen für Einsatzerstellung
+            // Fahrzeug Hashmap mit Einsatzparameter
+            HashMap<String, Integer> fahrzeugParameter = new HashMap<>();
+            for (int i = 1; i < einsatzParameter.length; i++) {
+                fahrzeugParameter.put(Fahrzeug.fahrzeugKategorien[i-1], einsatzParameter[i]);
+            }
             // Fahrzeug-Team Erstellung (Kategorie pro Kategorie)
-//            for (Fahrzeug fz: garage) {
-//          
-//            }
+            for (String category : fahrzeugParameter.keySet()) {
+                // Für jede Fahrzeugkategorie wird die nötige Anzahl an Fahrzeugen gesammelt
+                int count = 0;
+                int anzahl = fahrzeugParameter.get(category);
+
+                for (Fahrzeug fz: garage) {
+                    // Wenn für die Fahrzeuge aus einer Kategorie nicht gebraucht werden wird
+                    // nicht weiter gemacht
+                    if (anzahl == 0) continue;
+                    // Treffer (gleiches Prinzip wie bei der Suche nach Feuerwehrleuten)
+                    if (category.equals(fz.kategorie) && fz.verfuegbar) {
+                        fz.verfuegbar = false;
+                        fzTeam.put(fz.id, fz);
+                        count++;
+                    }
+                    // Wenn die gewünschte Anzahl an Fahrzeugen (pro Kategorie) erreicht ist
+                    if (anzahl == count) break;
+                }
+            }
+            // Proramm-Logik Fehler
+            if (fzTeam.size() != fahrerAnzahl) {
+                System.out.println("Nicht genug Fahrzeuge im Team!");
+            }
+            // Ressourcen Anzeige aktualisieren
+            displayResources(team, garage);
+
+            // zufällig generierte id für Einsatz
+            Random r = new Random();
+            int einsatzId = r.nextInt((250) + 1);
+
+            // Einsatz Objekt wird basierend auf die Parameter (fzTeam, fmTeam) erstellt
+            Einsatz einsatz = new Einsatz(einsatzId, einsatzart, fmTeam, fzTeam);
+            // Einsatz wird in die Hashmap der aktiven Einsätze hinzugefügt
+            activeOperations.put(einsatz.id, einsatz);
+            // Einsatz Tabelle wird aktualisiert
+            updateActiveOperationsTable(activeOperations);
+            // Sonderattribute der Fahrzeuge im Einsatz werden generiert
+            HashMap<Integer, String> sonderattribute = generateSpecialAttributes(fzTeam);
+
         }
     }
 

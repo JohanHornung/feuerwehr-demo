@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -50,19 +51,17 @@
                <content>
                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                         <children>
-                           <Button fx:id="einsatzBeendenSubmit" layoutX="394.0" layoutY="375.0" mnemonicParsing="false" onAction="#onDeleteOperationClick" prefHeight="33.0" prefWidth="173.0" text="Einsatz beenden" />
                            <Button fx:id="einsatzErstellenSubmit" layoutX="141.0" layoutY="375.0" mnemonicParsing="false" onAction="#onCreateEinsatzClick" prefHeight="33.0" prefWidth="124.0" text="Einsatz erstellen" />
                            <Label id="title" layoutX="635.0" prefHeight="47.0" prefWidth="441.0" style="-fx-font-weight: bold;" text="Aktive Einsätze" />
-                           <TableView fx:id="aktiveEinsatzTabelle" layoutX="635.0" layoutY="54.0" prefHeight="354.0" prefWidth="442.0">
+                           <TableView fx:id="aktiveEinsatzTabelle" layoutX="635.0" layoutY="54.0" prefHeight="305.0" prefWidth="396.0">
                              <columns>
                                <TableColumn fx:id="aktiveEinsatzId" prefWidth="36.0" text="ID" />
                                <TableColumn fx:id="aktiveEinsatzart" prefWidth="75.0" text="Einsatzart" />
                                  <TableColumn fx:id="aktiveFeuerwehrleute" prefWidth="99.0" text="Feuerwehrleute" />
-                                 <TableColumn fx:id="aktiveFahrzeuge" prefWidth="75.0" text="Fahrzeuge" />
-                                 <TableColumn fx:id="aktiveSonderattribute" prefWidth="105.0" text="Sonderattribute" />
+                                 <TableColumn fx:id="aktiveFahrzeuge" prefWidth="87.0" text="Fahrzeuge" />
+                                 <TableColumn fx:id="aktiveSonderattribute" prefWidth="93.0" text="Sonderattribute" />
                              </columns>
                            </TableView>
-                           <TextField fx:id="einsatzIdBeenden" layoutX="395.0" layoutY="333.0" prefHeight="26.0" prefWidth="172.0" promptText="Einsatz ID" />
                            <Label id="title" layoutX="21.0" layoutY="7.0" prefHeight="33.0" prefWidth="119.0" style="-fx-font-weight: bold;" text="Einsatzerstellung" />
                            <TextField fx:id="anzahlELFTextField" layoutX="136.0" layoutY="122.0" prefHeight="26.0" prefWidth="73.0" promptText="Anzahl" />
                            <TextField fx:id="anzahlMTTextField" layoutX="73.0" layoutY="278.0" prefHeight="26.0" prefWidth="70.0" promptText="Anzahl" />
@@ -84,14 +83,30 @@
                            <Label layoutX="48.0" layoutY="245.0" prefHeight="33.0" prefWidth="156.0" text="Mannschaftstransporter" />
                            <Label layoutX="16.0" layoutY="172.0" prefHeight="33.0" prefWidth="92.0" text="Leiterwagen" />
                            <Label fx:id="einsatzErstellungMessage" layoutX="22.0" layoutY="337.0" prefHeight="18.0" prefWidth="363.0" style="-fx-font-weight: bold;" />
-                           <Button fx:id="closeButton" layoutX="373.0" layoutY="38.0" mnemonicParsing="false" onAction="#closeButtonAction" prefHeight="33.0" prefWidth="156.0" text="Anwendung schließen" />
+                           <Button fx:id="closeButton" layoutX="910.0" layoutY="375.0" mnemonicParsing="false" onAction="#closeButtonAction" prefHeight="33.0" prefWidth="156.0" text="Anwendung schließen" />
+                           <TableView fx:id="sonderattributeTabelle" layoutX="278.0" layoutY="54.0" prefHeight="262.0" prefWidth="322.0">
+                             <columns>
+                               <TableColumn prefWidth="38.0" text="ID" />
+                               <TableColumn prefWidth="96.0" text="Kategorie" />
+                                 <TableColumn prefWidth="118.0" text="Sonderattribut" />
+                                 <TableColumn prefWidth="65.0" text="Einsatz ID" />
+                             </columns>
+                           </TableView>
+                           <Label id="title" layoutX="278.0" layoutY="8.0" prefHeight="33.0" prefWidth="136.0" style="-fx-font-weight: bold;" text="Fahrzeuge im Einsatz" />
+                           <Button fx:id="einsatzBeendenSubmit" layoutX="454.0" layoutY="375.0" mnemonicParsing="false" onAction="#onDeleteOperationClick" prefHeight="33.0" prefWidth="173.0" text="Einsatz beenden" />
+                           <TextField fx:id="einsatzIdBeenden" layoutX="462.0" layoutY="333.0" prefHeight="26.0" prefWidth="110.0" promptText="Einsatz ID" />
                         </children>
                      </AnchorPane>
                </content>
              </Tab>
                <Tab text="Ressourcen">
                  <content>
-                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="218.0" prefWidth="958.0" />
+                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="218.0" prefWidth="958.0">
+                        <children>
+                           <Label id="title" layoutX="14.0" layoutY="17.0" prefHeight="33.0" prefWidth="156.0" style="-fx-font-weight: bold;" text="Bestand der Fahrzeuge" />
+                           <Label id="title" layoutX="349.0" layoutY="17.0" prefHeight="33.0" prefWidth="180.0" style="-fx-font-weight: bold;" text="Bestand der Feuerwehrleute" />
+                           <Separator layoutX="334.0" orientation="VERTICAL" prefHeight="429.0" prefWidth="9.0" />
+                        </children></AnchorPane>
                  </content>
                </Tab>
            </tabs>
