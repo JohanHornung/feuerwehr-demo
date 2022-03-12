@@ -14,15 +14,23 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Random;
+import java.util.*;
 
 public class UserController {
     // Feste Anzahl von Ressourcen
     public final int FIREFIGHTER_CAP = 80;
     public final int VEHICLES_CAP = 18;
+    // Array aus möglichen Dienstgraden für Einsatz-Leitfahrzeuge
+    // (https://de.wikipedia.org/wiki/Dienstgrade_der_Feuerwehr_in_Hessen#Dienstgrade)
+    public final String[] DIENSTGRADE = {
+            "Feuerwehrmann",
+            "Oberfeuerwehrmann",
+            "Löschmeister",
+            "Brandmeister",
+            "Oberbrandmeister",
+            "Hauptlöschmeister"
+
+    };
 
     @FXML
     private MenuItem industrieunfallButton;
@@ -179,11 +187,14 @@ public class UserController {
     }
 
     /**
-     * Methode zählt aktuellen Bestand der Fahrzeuge und Feuerwehrleute und zeigt diesen an
+     * Methode zählt aktuellen Bestand der Fahrzeuge und Feuerwehrleute
+     * und schreibt diese in die Text Felder der GUI.
      *
      * @author Johan Hornung
-     * @param team von Feuerwehrleuten
-     * @param garage von Fahrzeugen
+     * @param team von Feuerwehrleuten, Objekte der Feuerwehrmann Klasse
+     * @see Feuerwehrmann
+     * @param garage von Fahrzeugen, Objekte der Fahrzeug Klasse
+     * @see Fahrzeug
      */
     void displayResources(Feuerwehrmann[] team, Fahrzeug[] garage) {
         // Durchzählen von verfügbaren Feuerwehrleuten (pro Fahrer Typ)
@@ -374,6 +385,15 @@ public class UserController {
 
     /**
      *
+     * @param min inklusiv
+     * @param max inklusiv
+     * @return zufälliger Wert zwischen min und max
+     */
+    int randomNumberInRange(int min , int max) {
+        return new Random().nextInt((max - min) + 1) + min;
+    }
+    /**
+     *
      * @param currentParameter aktuellen Parameter
      * @param minParameter minimalen Parameter
      * @return ob beide Arrays die gleichen Werte in der gleichen Reihenfolge haben
@@ -471,17 +491,25 @@ public class UserController {
 
         return true;
     }
-    void updateActiveOperationsTable(HashMap<Integer, Einsatz> activeOperations) {
-        // TODO: 12.03.22 Methode für aktualisieren der Einsatz Tabelle
-    }
-    HashMap<Integer, String> generateSpecialAttributes(HashMap<Integer, Fahrzeug> fzTeam) {
-        // TODO: 12.03.22 Methode für Generierung der Sonderattribute
-        HashMap<Integer, String> sonderattribute = new HashMap<>();
-        return null;
-    }
     /*
     //////////////////////////// JAVAFX EVENT-BASIERTE METHODEN /////////////////////////////////
      */
+    @FXML
+    void fillIndustrieunfallParameter(ActionEvent event) {
+        setButtonParameter(industrieunfallButton);
+    }
+    @FXML
+    void fillNaturkatastropheParameter(ActionEvent event) {
+        setButtonParameter(naturkatastropheButton);
+    }
+    @FXML
+    void fillVerkehrsunfallParameter(ActionEvent event) {
+        setButtonParameter(verkehrsunfallButton);
+    }
+    @FXML
+    void fillWohnungsbrandParameter(ActionEvent event) {
+        setButtonParameter(wohnungsbrandButton);
+    }
     /**
      * Methode setzt Text Felder der Einsatz Parameter zurück sowie den Menu Button für Einsatzartauswahl
      *
@@ -506,21 +534,74 @@ public class UserController {
         int[] defaultValues = new int[einsatzTextfelder.length];
         setTextFieldValues(einsatzTextfelder, defaultValues);
     }
-    @FXML
-    void fillIndustrieunfallParameter(ActionEvent event) {
-        setButtonParameter(industrieunfallButton);
+    /**
+     * Methode generiert basierend auf die Kategorien der Fahrzeuge für den aktiven Einsatz (fzTeam)
+     * eine Hashmap von Sonderattributen. Die Generierung basiert auf sinvollen/realistischen Daten.
+     * @see Fahrzeug
+     *
+     * @author Sophie Weber
+     * @param fzTeam ausgewählte Fahrzeuge für jeweiligen Einsatz
+     * @return generierte Sonderattribute pro Fahrzeug
+     */
+    HashMap<Integer, String> generateSpecialAttributes(HashMap<Integer, Fahrzeug> fzTeam) {
+        HashMap<Integer, String> fahrzeugSonderattribute = new HashMap<>();
+
+        for (int id : fzTeam.keySet()) {
+            // Zusammengesetzter String aus "<Sonderattribut>: <Wert>"
+            String sonderattribut;
+
+            switch (fzTeam.get(id).kategorie) {
+                case "Einsatz-Leitfahrzeug":
+                    // Dienstgrad wird zufällig ausgesucht
+                    int randomIndex = new Random().nextInt(DIENSTGRADE.length);
+                    String dienstgrad = DIENSTGRADE[randomIndex];
+                    sonderattribut = "Dienstgrad des Einsatzleiters:" + dienstgrad;
+                    break;
+
+                case "Tank-Löschfahrzeug":
+                    int zufallsWert = randomNumberInRange(600, 1200);
+                    // Aufgerundet auf die nächste volle hundert (z.B. 49 -> 100)
+                    int tankkapazitaet = ((zufallsWert + 99) / 100) * 100;
+                    sonderattribut = "Tankkapazität: " + tankkapazitaet;
+                    break;
+
+                case "Mannschaftstransporter":
+                    int baujahr = randomNumberInRange(1980, 2022);
+                    sonderattribut = "Baujahr: " + baujahr;
+                    break;
+
+                case "Leiterwagen":
+                    int max_leiterhoehe = randomNumberInRange(1, 15);
+                    sonderattribut = "Maximale Leiterhöhe: " + max_leiterhoehe;
+                    break;
+
+                default:
+                    sonderattribut = "";
+            };
+            // Dem Fahrzeug das Sonderattribut zugewiesen
+            fahrzeugSonderattribute.put(id, sonderattribut);
+        }
+        return fahrzeugSonderattribute;
     }
-    @FXML
-    void fillNaturkatastropheParameter(ActionEvent event) {
-        setButtonParameter(naturkatastropheButton);
+    /**
+     *
+     * @param activeOperations
+     */
+    void updateActiveOperationsTable(HashMap<Integer, Einsatz> activeOperations) {
+        // TODO: 12.03.22 Methode für aktualisieren der Einsatz Tabelle
     }
-    @FXML
-    void fillVerkehrsunfallParameter(ActionEvent event) {
-        setButtonParameter(verkehrsunfallButton);
-    }
-    @FXML
-    void fillWohnungsbrandParameter(ActionEvent event) {
-        setButtonParameter(wohnungsbrandButton);
+    /**
+     * Aktualisiert die Tabelle (GUI) der Sonderattribute für Fahrzuge im Einsatz
+     * über die Fahrzeug ID als "primary key".
+     * Die Tabelle besteht aus den Spalten:
+     *      ID || Fahrzeugkategorie || Sonderattribut || Einsatz ID
+     *
+     * @author Johan Hornung
+     * @param fzTeam eingesetzte Fahrzeuge
+     * @param sonderattribute der eingesetzten Fahrzeuge
+     */
+    void updateSpecialAttributesTable(HashMap<Integer, Fahrzeug> fzTeam, HashMap<Integer, String> sonderattribute) {
+        // TODO: 12.03.22 Methode für Tabelle der Sonderattribute
     }
 
     // TODO: 11.03.22 JavDoc für onCreateEinsatzClick()
@@ -592,7 +673,7 @@ public class UserController {
             }
             // Programm-Logikfehler falls die nötige Anzahl an Feuerwehrleuten nicht erreicht ist
             if (fmTeam.size() != fahrerAnzahl) {
-                System.out.println("Nicht genug Feuerwehrleute im Team!");
+                throw new AssertionError("Nicht genug Feuerwehrleute im Team!");
             }
             // Ressourcen Anzeige für Feuerwehrleute aktualisieren
             displayResources(team, garage);
@@ -623,14 +704,13 @@ public class UserController {
             }
             // Proramm-Logik Fehler
             if (fzTeam.size() != fahrerAnzahl) {
-                System.out.println("Nicht genug Fahrzeuge im Team!");
+                throw new AssertionError("Nicht genug Feuerwehrleute im Team!");
             }
             // Ressourcen Anzeige aktualisieren
             displayResources(team, garage);
 
             // zufällig generierte id für Einsatz
-            Random r = new Random();
-            int einsatzId = r.nextInt((250) + 1);
+            int einsatzId = new Random().nextInt((250) + 1);
 
             // Einsatz Objekt wird basierend auf die Parameter (fzTeam, fmTeam) erstellt
             Einsatz einsatz = new Einsatz(einsatzId, einsatzart, fmTeam, fzTeam);
