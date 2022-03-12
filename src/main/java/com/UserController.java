@@ -198,7 +198,7 @@ public class UserController {
      */
     void displayResources(Feuerwehrmann[] team, Fahrzeug[] garage) {
         // Durchzählen von verfügbaren Feuerwehrleuten (pro Fahrer Typ)
-        HashMap firefightersCount = countFirefighters(team);
+        LinkedHashMap firefightersCount = countFirefighters(team);
         // Auslesen der Werte pro fahrer Typ
         String anzahlLkwFahrer = firefightersCount.get("Lkw-Fahrer").toString();
         String anzahlPkwFahrer = firefightersCount.get("Pkw-Fahrer").toString();
@@ -214,7 +214,7 @@ public class UserController {
                 verfuegbareLeiterwagen,
         };
         // Durchzählen von verfügbaren Fahrzeugen (pro Kategorie)
-        HashMap<String, Integer> vehicleCount = countVehicles(garage);
+        LinkedHashMap<String, Integer> vehicleCount = countVehicles(garage);
         // An diesem Punkt muss das Programm beendet werden falls ein Logik-Fehler vorhanden ist
         assert vehicleCount.values().size() == Fahrzeug.fahrzeugKategorien.length : "Anzahl der Fahrzeugkategorien fehlerhaft";
 
@@ -236,8 +236,8 @@ public class UserController {
      * @return Hashmap mit Anzahl der verfügbaren Fahrzeuge (value) pro Kategorie (key)
      */
     // Durchzählen von verfügbaren Fahrzeugen (pro Kategorie)
-    public static HashMap<String, Integer> countVehicles(Fahrzeug[] garage) {
-        HashMap<String, Integer> vehicleCount = new HashMap<>();
+    public static LinkedHashMap<String, Integer> countVehicles(Fahrzeug[] garage) {
+        LinkedHashMap<String, Integer> vehicleCount = new LinkedHashMap<>();
         // initialisierung
         for (int i = 0; i < Fahrzeug.fahrzeugKategorien.length; i++) {
             vehicleCount.put(Fahrzeug.fahrzeugKategorien[i], 0);
@@ -260,8 +260,8 @@ public class UserController {
      * @see Feuerwehrmann
      * @return Hashmap mit Anzahl der verfügbaren Feuerwehrmänner (value) pro fahrer Typ (key)
      */
-    public static HashMap<String, Integer> countFirefighters(Feuerwehrmann[] team) {
-        HashMap<String, Integer> firefighters = new HashMap<>();
+    public static LinkedHashMap<String, Integer> countFirefighters(Feuerwehrmann[] team) {
+        LinkedHashMap<String, Integer> firefighters = new LinkedHashMap<>();
         int LkwCount = 0;
         int PkwCount = 0;
 
@@ -396,9 +396,9 @@ public class UserController {
      *
      * @param currentParameter aktuellen Parameter
      * @param minParameter minimalen Parameter
-     * @return ob beide Arrays die gleichen Werte in der gleichen Reihenfolge haben
+     * @return ob das erste Array einen niedrigen Wert als das Zweite beinhaltet (gleiche Größe und Reihenfolge)
      */
-    boolean arrayLess(int[] currentParameter, int[] minParameter) {
+    boolean lowerValues(int[] currentParameter, int[] minParameter) {
         assert currentParameter.length == minParameter.length : "Unterschiedlich viele Elemente in den Arrays";
         for (int i = 0; i < currentParameter.length; i++) {
             if (currentParameter[i] < minParameter[i]) return true;
@@ -426,9 +426,16 @@ public class UserController {
      *
      * @author Johan Hornung
      * @param einsatzParameter Array von numerischen Parametern
+     * @param firefighters Map von aktueller Anzahl an Feuerwehrleuten (nach fahrer Typ)
+     * @param vehicles Map von aktueller Anzahl an Fahrzeugen (nach Kategorie)
+     *
      * @return gültige Einsatzparameter
      */
-    boolean validEinsatzParameter(int[] einsatzParameter) {
+    boolean validEinsatzParameter(
+            int[] einsatzParameter,
+            HashMap<String, Integer> firefighters,
+            HashMap<String, Integer> vehicles
+    ) {
         // Schritt 1
         String einsatzart = einsatzartMenuButton.getText();
         if (einsatzart.equals("Einsatzart auswählen")) {
@@ -446,7 +453,7 @@ public class UserController {
         int einsatzIndex = Arrays.asList(Einsatz.einsatzarten).indexOf(einsatzart);
         int[] minParameter = Einsatz.minParameter[einsatzIndex];
         // Wenn die angegebenen Parameter nicht der minimalen Parameter entsprechen
-        if (arrayLess(einsatzParameter, minParameter)) {
+        if (lowerValues(einsatzParameter, minParameter)) {
             setLabelTextMessage(
                     einsatzErstellungMessage,
                     Color.RED,
@@ -454,12 +461,7 @@ public class UserController {
             );
             return false;
         }
-        // Schritt 3
-        // TODO: 12.03.22 Bug: Einsatz wird erstellt obwohl aktuelle Ressourcen nicht ausreichen
-        // Aktuelle Ressourcen abfragen
-        HashMap<String, Integer> firefighters = countFirefighters(team);
-        HashMap<String, Integer> vehicles = countVehicles(garage);
-        // Mit EinsatzParameter vergleichen
+        // Schritt 3 - Aktuelle Ressourcen mit Einsatzparameter vergleichen
         // Für Feuerwehrleute
         int anzahlFeuerwehrleute = einsatzParameter[0];
         // Wenn nicht genug Feuerwehrleute verfügbar
@@ -472,7 +474,7 @@ public class UserController {
             return false;
         }
         // Für Fahrzeuge
-        // (Respektive Reihenfolge der Fahrzeugkategorien, Kategorien müssen nicht ausgelesen werden)
+        // (Respektive Reihenfolge der Fahrzeugkategorien (durch LinkedHashmap)
         int i = 1; // Anzahl der benötigten Fahrzeug startet ab dem 2. Element in einsatzParameter
         for (int vehicleCount : vehicles.values()) {
             if (einsatzParameter[i] > vehicleCount) {
@@ -594,7 +596,8 @@ public class UserController {
      * Aktualisiert die Tabelle (GUI) der Sonderattribute für Fahrzuge im Einsatz
      * über die Fahrzeug ID als "primary key".
      * Die Tabelle besteht aus den Spalten:
-     *      ID || Fahrzeugkategorie || Sonderattribut || Einsatz ID
+     *
+     * ID || Fahrzeugkategorie || Sonderattribut || Einsatz ID
      *
      * @author Johan Hornung
      * @param fzTeam eingesetzte Fahrzeuge
@@ -625,9 +628,12 @@ public class UserController {
         // Einsatzparameter werden ausgelesen und überprüft
         String einsatzart = einsatzartMenuButton.getText();
         int[] einsatzParameter = getTextFieldValues(einsatzTextfelder);
+        // Aktuelle Ressourcen abfragen
+        LinkedHashMap<String, Integer> firefighters = countFirefighters(team);
+        LinkedHashMap<String, Integer> vehicles = countVehicles(garage);
 
         // Hauptbedingung für Einsatzerstellung
-        if (validEinsatzParameter(einsatzParameter)) {
+        if (validEinsatzParameter(einsatzParameter, firefighters, vehicles)) {
             // Naricht ausgeben
             setLabelTextMessage(
                     einsatzErstellungMessage,
