@@ -79,12 +79,6 @@ public class UserController {
     private TextField anzahlFLTextField;
 
     @FXML
-    private Label anzahlFahrzeuge;
-
-    @FXML
-    private Label anzahlFeuerwehrleute;
-
-    @FXML
     private TextField anzahlLWTextField;
 
     @FXML
@@ -106,16 +100,10 @@ public class UserController {
     private Button closeButton;
 
     @FXML
-    private TextField einsatzIdBeenden;
-
-    @FXML
     private Label einsatzErstellungMessage;
 
     @FXML
     private MenuButton einsatzartMenuButton;
-
-    @FXML
-    private ImageView logo;
 
     @FXML
     private Label verfuegbareLkwFahrer;
@@ -168,22 +156,24 @@ public class UserController {
      * @see Fahrzeug
      */
     public void fillResources(Feuerwehrmann[] team, Fahrzeug[] garage) {
+        // Feuerwehrleute
+        // 70 Pkw-Fahrer
+        String fahrerTyp = "Pkw";
+        for (int i = 0; i < FIREFIGHTER_CAP; i++) {
+            // Feuerwehrmann ID ist der index im sich befindenden Array
+            team[i] = new Feuerwehrmann(i, true, fahrerTyp);
+            // i = (FIREFIGHTER_CAP - 11) = 69 bei i = 0 -> 70 Pkw-Fahrer
+            if (i >= FIREFIGHTER_CAP - 11) {
+                // 10 Lkw-Fahrer
+                fahrerTyp = "Lkw";
+            };
+        }
+        // Erstellung der Fahrzeuge in die Garage
+        // key:Fahrzeugkategorie, value: anzahl der vefügbaren Fahrzeuge für die Kategorie
         HashMap<String, Integer> anzahlVerfuegbar = new HashMap<>();
         for (int i = 0; i < Fahrzeug.fahrzeugKategorien.length; i++) {
             anzahlVerfuegbar.put(Fahrzeug.fahrzeugKategorien[i], Fahrzeug.fahrzeugAnzahl[i]);
         }
-
-        // Feuerwehrleute
-        String fahrerTyp = "Pkw";
-        // 70 Pkw-Fahrer
-        for (int i = 0; i < FIREFIGHTER_CAP; i++) {
-            // Feuerwehrmann ID ist der index im sich befindenden Array
-            team[i] = new Feuerwehrmann(i, true, fahrerTyp);
-            // 10 Lkw-Fahrer
-            // i = (FIREFIGHTER_CAP - 11) = 69 bei 70. Feuerwehrmann
-            if (i >= FIREFIGHTER_CAP - 11) fahrerTyp = "Lkw";
-        }
-        // Erstellung der Fahrzeuge in die Garage
         int start = 0;
         int currentAmount = 0;
         // Für jede Kategorie wird eine bestimmte Anzahl an Fahrzeugen generiert
@@ -618,19 +608,22 @@ public class UserController {
                 aktiveFahrzeugId,
                 aktiveFahrzeugKategorie,
                 aktiveFahrzeugSonderattribut,
+                aktiveFahrzeugEinsatzId
         };
         // Festlegen der Spalten-Attribute
         final String[] COLUMN_KEYS = {
                 "fahrzeugId",
                 "kategorie",
-                "sonderattribut"
+                "sonderattribut",
+                "einsatzId"
         };
         // Jede Reihe (Fahrzeug) wird befüllt
         for (Fahrzeug fz: fzTeam.values()) {
             String[] values = {
                     String.valueOf(fz.id),
                     fz.kategorie,
-                    sonderattribute.get(fz.id)
+                    sonderattribute.get(fz.id),
+                    String.valueOf(fz.einsatzId)
             };
             fillTable(aktiveFahrzeugTabelle, TABLE_COLUMNS, COLUMN_KEYS, values);
         }
@@ -711,6 +704,8 @@ public class UserController {
                     Color.GREEN,
                     "Einsatz wurde erfolgreich erstellt!"
             );
+            // zufällig generierte id für Einsatz Objekt
+            int einsatzId = randomNumberInRange(0, 250);
             // Textfelder zurücksetzen
             setTextFieldValues(einsatzTextfelder, new int[einsatzTextfelder.length]);
             // Teamerstellung
@@ -772,6 +767,7 @@ public class UserController {
                     // Treffer (gleiches Prinzip wie bei der Suche nach Feuerwehrleuten)
                     if (category.equals(fz.kategorie) && fz.verfuegbar) {
                         fz.verfuegbar = false;
+                        fz.einsatzId = einsatzId;
                         fzTeam.put(fz.id, fz);
                         count++;
                     }
@@ -785,9 +781,6 @@ public class UserController {
             }
             // Ressourcen Anzeige aktualisieren
             displayResources(team, garage);
-
-            // zufällig generierte id für Einsatz
-            int einsatzId = randomNumberInRange(0, 250);
 
             // Einsatz Objekt wird basierend auf die Parameter (fzTeam, fmTeam) erstellt
             Einsatz einsatz = new Einsatz(einsatzId, einsatzart, fmTeam, fzTeam);

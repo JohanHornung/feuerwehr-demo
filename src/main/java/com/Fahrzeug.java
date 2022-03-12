@@ -13,6 +13,7 @@ public class Fahrzeug {
     public boolean verfuegbar;
     public String klasse;
     public int anzahlFeuerwehrleute;
+    public int einsatzId;
     // Array von Fahrzeugkategorien als Strings
     public static String[] fahrzeugKategorien = {
             "Einsatz-Leitfahrzeug",

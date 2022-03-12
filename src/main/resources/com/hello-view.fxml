@@ -83,15 +83,15 @@
                            <Label layoutX="47.0" layoutY="264.0" prefHeight="33.0" prefWidth="156.0" text="Mannschaftstransporter" />
                            <Label layoutX="15.0" layoutY="191.0" prefHeight="33.0" prefWidth="92.0" text="Leiterwagen" />
                            <Button fx:id="closeButton" layoutX="900.0" layoutY="388.0" mnemonicParsing="false" onAction="#closeButtonAction" prefHeight="33.0" prefWidth="156.0" text="Anwendung schließen" />
-                           <TableView fx:id="aktiveFahrzeugTabelle" layoutX="631.0" layoutY="42.0" prefHeight="288.0" prefWidth="444.0">
+                           <TableView fx:id="aktiveFahrzeugTabelle" layoutX="612.0" layoutY="41.0" prefHeight="288.0" prefWidth="467.0">
                              <columns>
-                               <TableColumn fx:id="aktiveFahrzeugId" prefWidth="38.0" text="ID" />
-                               <TableColumn fx:id="aktiveFahrzeugKategorie" prefWidth="128.0" text="Kategorie" />
-                                 <TableColumn fx:id="aktiveFahrzeugSonderattribut" prefWidth="211.0" text="Sonderattribut" />
-                                 <TableColumn fx:id="aktiveFahrzeugEinsatzId" minWidth="0.0" prefWidth="66.0" text="Einsatz ID" />
+                               <TableColumn fx:id="aktiveFahrzeugId" prefWidth="31.0" text="ID" />
+                               <TableColumn fx:id="aktiveFahrzeugKategorie" prefWidth="135.0" text="Kategorie" />
+                                 <TableColumn fx:id="aktiveFahrzeugSonderattribut" prefWidth="236.0" text="Sonderattribut" />
+                                 <TableColumn fx:id="aktiveFahrzeugEinsatzId" minWidth="0.0" prefWidth="63.0" text="Einsatz ID" />
                              </columns>
                            </TableView>
-                           <Label id="title" layoutX="631.0" layoutY="7.0" prefHeight="33.0" prefWidth="136.0" style="-fx-font-weight: bold;" text="Fahrzeuge im Einsatz" />
+                           <Label id="title" layoutX="612.0" layoutY="6.0" prefHeight="33.0" prefWidth="136.0" style="-fx-font-weight: bold;" text="Fahrzeuge im Einsatz" />
                            <Button fx:id="einsatzBeendenSubmit" layoutX="427.0" layoutY="388.0" mnemonicParsing="false" onAction="#onDeleteOperationClick" prefHeight="33.0" prefWidth="173.0" text="Einsatz beenden" />
                            <TextField fx:id="einsatzIdBeenden" layoutX="427.0" layoutY="346.0" prefHeight="26.0" prefWidth="110.0" promptText="Einsatz ID" />
                         </children>
