@@ -7,6 +7,8 @@ public class Einsatz {
     public String einsatzart;
     public HashMap<Integer, Feuerwehrmann> fmParameter;
     public HashMap<Integer, Fahrzeug> fzParameter;
+    public int anzahlFeuerwehrleute;
+    public int anzahlFahrzeuge;
 
     public static final String[] einsatzarten = {
             "Wohnungsbrand",

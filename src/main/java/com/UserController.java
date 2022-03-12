@@ -1,6 +1,8 @@
 package com;
 
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -10,6 +12,8 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.MapValueFactory;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -39,22 +43,35 @@ public class UserController {
     private MenuItem naturkatastropheButton;
 
     @FXML
-    private TableView<?> aktiveEinsatzTabelle;
+    private TableView<Map> aktiveEinsatzTabelle;
 
     @FXML
-    private TableColumn<?, ?> aktiveEinsatzId;
+    private TableColumn<Map, String> aktiveEinsatzId;
 
     @FXML
-    private TableColumn<?, ?> aktiveEinsatzart;
+    private TableColumn<Map, String> aktiveEinsatzart;
 
     @FXML
-    private TableColumn<?, ?> aktiveFahrzeuge;
+    private TableColumn<Map, String> aktiveFahrzeuge;
 
     @FXML
-    private TableColumn<?, ?> aktiveFeuerwehrleute;
+    private TableColumn<Map, String> aktiveFeuerwehrleute;
 
     @FXML
-    private TableColumn<?, ?> aktiveSonderattribute;
+    private TableView<Fahrzeug> aktiveFahrzeugTabelle;
+
+    @FXML
+    private TableColumn<Fahrzeug, Integer> aktiveFahrzeugEinsatzId;
+
+    @FXML
+    private TableColumn<Fahrzeug, Integer> aktiveFahrzeugId;
+
+    @FXML
+    private TableColumn<Fahrzeug, String> aktiveFahrzeugKategorie;
+
+    @FXML
+    private TableColumn<?, String> aktiveFahrzeugSonderattribut;
+
 
     @FXML
     private TextField anzahlELFTextField;
@@ -128,8 +145,6 @@ public class UserController {
 
     private Feuerwehrmann[] team = new Feuerwehrmann[FIREFIGHTER_CAP];
     private Fahrzeug[] garage = new Fahrzeug[VEHICLES_CAP];
-    // Leere Hashmap der aktiven Einsätze
-    private HashMap<Integer, Einsatz> activeOperations = new HashMap<>();
 
     @FXML
     /**
@@ -304,7 +319,6 @@ public class UserController {
         for (int i = 0; i < Einsatz.einsatzarten.length; i++) {
             if (einsatzart.equals(Einsatz.einsatzarten[i])) {
                 found = true;
-                // Respektive Reihenfolge in String[] einsatzarten und in int[][] minParameter
                 einsatzParameter = Einsatz.minParameter[i];
             }
         }
@@ -396,7 +410,6 @@ public class UserController {
      *
      * @param currentParameter aktuellen Parameter
      * @param minParameter minimalen Parameter
-     * @return ob das erste Array einen niedrigen Wert als das Zweite beinhaltet (gleiche Größe und Reihenfolge)
      */
     boolean lowerValues(int[] currentParameter, int[] minParameter) {
         assert currentParameter.length == minParameter.length : "Unterschiedlich viele Elemente in den Arrays";
@@ -449,7 +462,6 @@ public class UserController {
         }
         // Schritt 2
 
-        // Respektive Reihenfolge in Einsatz.einsatzarten und Einsatz.minParameter
         int einsatzIndex = Arrays.asList(Einsatz.einsatzarten).indexOf(einsatzart);
         int[] minParameter = Einsatz.minParameter[einsatzIndex];
         // Wenn die angegebenen Parameter nicht der minimalen Parameter entsprechen
@@ -474,7 +486,6 @@ public class UserController {
             return false;
         }
         // Für Fahrzeuge
-        // (Respektive Reihenfolge der Fahrzeugkategorien (durch LinkedHashmap)
         int i = 1; // Anzahl der benötigten Fahrzeug startet ab dem 2. Element in einsatzParameter
         for (int vehicleCount : vehicles.values()) {
             if (einsatzParameter[i] > vehicleCount) {
@@ -586,18 +597,31 @@ public class UserController {
         return fahrzeugSonderattribute;
     }
     /**
+     * Aktualisiert die Tabelle (GUI) der aktiven Einsätze
      *
-     * @param activeOperations
+     * @param einsatz Objekt der Einsatz Klasse
+     * @see Einsatz
      */
-    void updateActiveOperationsTable(HashMap<Integer, Einsatz> activeOperations) {
-        // TODO: 12.03.22 Methode für aktualisieren der Einsatz Tabelle
+    void updateActiveOperationsTable(Einsatz einsatz) {
+        // Festlegen der Spalten-Attribute
+        aktiveEinsatzId.setCellValueFactory(new MapValueFactory<>("id"));
+        aktiveEinsatzart.setCellValueFactory(new MapValueFactory<>("einsatzart"));
+        aktiveFeuerwehrleute.setCellValueFactory(new MapValueFactory<>("anzahlFeuerwehrleute"));
+        aktiveFahrzeuge.setCellValueFactory(new MapValueFactory<>("anzahlFahrzeuge"));
+        // Daten-Objekt
+        ObservableList<Map<String, String>> operationMap = FXCollections.<Map<String, String>>observableArrayList();
+        // Neue Hashmap mit allen nötigen Attribute (Reihe in der Tabelle)
+        Map<String, String> item = new HashMap<>();
+        item.put("id", String.valueOf(einsatz.id));
+        item.put("einsatzart", einsatz.einsatzart);
+        item.put("anzahlFeuerwehrleute", String.valueOf(einsatz.fmParameter.size()));
+        item.put("anzahlFahrzeuge", String.valueOf(einsatz.fzParameter.size()));
+        // Reihe wird zur Tabelle hinzugefügt
+        operationMap.add(item);
+        aktiveEinsatzTabelle.getItems().addAll(operationMap);
     }
     /**
      * Aktualisiert die Tabelle (GUI) der Sonderattribute für Fahrzuge im Einsatz
-     * über die Fahrzeug ID als "primary key".
-     * Die Tabelle besteht aus den Spalten:
-     *
-     * ID || Fahrzeugkategorie || Sonderattribut || Einsatz ID
      *
      * @author Johan Hornung
      * @param fzTeam eingesetzte Fahrzeuge
@@ -716,16 +740,16 @@ public class UserController {
             displayResources(team, garage);
 
             // zufällig generierte id für Einsatz
-            int einsatzId = new Random().nextInt((250) + 1);
+            int einsatzId = randomNumberInRange(0, 250);
 
             // Einsatz Objekt wird basierend auf die Parameter (fzTeam, fmTeam) erstellt
             Einsatz einsatz = new Einsatz(einsatzId, einsatzart, fmTeam, fzTeam);
-            // Einsatz wird in die Hashmap der aktiven Einsätze hinzugefügt
-            activeOperations.put(einsatz.id, einsatz);
+
             // Einsatz Tabelle wird aktualisiert
-            updateActiveOperationsTable(activeOperations);
+            updateActiveOperationsTable(einsatz);
             // Sonderattribute der Fahrzeuge im Einsatz werden generiert
             HashMap<Integer, String> sonderattribute = generateSpecialAttributes(fzTeam);
+
 
         }
     }

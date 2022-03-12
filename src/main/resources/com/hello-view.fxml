@@ -51,15 +51,14 @@
                <content>
                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                         <children>
-                           <Button fx:id="einsatzErstellenSubmit" layoutX="141.0" layoutY="375.0" mnemonicParsing="false" onAction="#onCreateEinsatzClick" prefHeight="33.0" prefWidth="124.0" text="Einsatz erstellen" />
+                           <Button fx:id="einsatzErstellenSubmit" layoutX="141.0" layoutY="388.0" mnemonicParsing="false" onAction="#onCreateEinsatzClick" prefHeight="33.0" prefWidth="124.0" text="Einsatz erstellen" />
                            <Label id="title" layoutX="635.0" prefHeight="47.0" prefWidth="441.0" style="-fx-font-weight: bold;" text="Aktive Einsätze" />
-                           <TableView fx:id="aktiveEinsatzTabelle" layoutX="635.0" layoutY="54.0" prefHeight="305.0" prefWidth="396.0">
+                           <TableView fx:id="aktiveEinsatzTabelle" layoutX="635.0" layoutY="55.0" prefHeight="261.0" prefWidth="396.0">
                              <columns>
-                               <TableColumn fx:id="aktiveEinsatzId" prefWidth="36.0" text="ID" />
-                               <TableColumn fx:id="aktiveEinsatzart" prefWidth="75.0" text="Einsatzart" />
-                                 <TableColumn fx:id="aktiveFeuerwehrleute" prefWidth="99.0" text="Feuerwehrleute" />
-                                 <TableColumn fx:id="aktiveFahrzeuge" prefWidth="87.0" text="Fahrzeuge" />
-                                 <TableColumn fx:id="aktiveSonderattribute" prefWidth="93.0" text="Sonderattribute" />
+                               <TableColumn fx:id="aktiveEinsatzId" prefWidth="47.0" text="ID" />
+                               <TableColumn fx:id="aktiveEinsatzart" prefWidth="105.0" text="Einsatzart" />
+                                 <TableColumn fx:id="aktiveFeuerwehrleute" prefWidth="133.0" text="Anzahl Feuerwehrleute" />
+                                 <TableColumn fx:id="aktiveFahrzeuge" prefWidth="110.0" text="Anzahl Fahrzeuge" />
                              </columns>
                            </TableView>
                            <Label id="title" layoutX="21.0" layoutY="7.0" prefHeight="33.0" prefWidth="119.0" style="-fx-font-weight: bold;" text="Einsatzerstellung" />
@@ -76,25 +75,25 @@
                                  <MenuItem fx:id="industrieunfallButton" mnemonicParsing="false" onAction="#fillIndustrieunfallParameter" text="Industrieunfall" />
                              </items>
                            </MenuButton>
-                           <Button fx:id="einsatzParameterResetButton" layoutX="22.0" layoutY="375.0" mnemonicParsing="false" onAction="#onEinsatzParameterResetClick" prefHeight="33.0" prefWidth="109.0" text="Zurücksetzen" />
+                           <Button fx:id="einsatzParameterResetButton" layoutX="22.0" layoutY="388.0" mnemonicParsing="false" onAction="#onEinsatzParameterResetClick" prefHeight="33.0" prefWidth="109.0" text="Zurücksetzen" />
                            <Label layoutX="18.0" layoutY="89.0" prefHeight="33.0" prefWidth="108.0" text="Feuerwehrleute" />
                            <Label layoutX="120.0" layoutY="89.0" prefHeight="33.0" prefWidth="146.0" text="Einsatz-Leitfahrzeuge" />
                            <Label layoutX="116.0" layoutY="172.0" prefHeight="33.0" prefWidth="146.0" text="Tank-Löschfahrzeuge" />
                            <Label layoutX="48.0" layoutY="245.0" prefHeight="33.0" prefWidth="156.0" text="Mannschaftstransporter" />
                            <Label layoutX="16.0" layoutY="172.0" prefHeight="33.0" prefWidth="92.0" text="Leiterwagen" />
                            <Label fx:id="einsatzErstellungMessage" layoutX="22.0" layoutY="337.0" prefHeight="18.0" prefWidth="363.0" style="-fx-font-weight: bold;" />
-                           <Button fx:id="closeButton" layoutX="910.0" layoutY="375.0" mnemonicParsing="false" onAction="#closeButtonAction" prefHeight="33.0" prefWidth="156.0" text="Anwendung schließen" />
-                           <TableView fx:id="sonderattributeTabelle" layoutX="278.0" layoutY="54.0" prefHeight="262.0" prefWidth="322.0">
+                           <Button fx:id="closeButton" layoutX="875.0" layoutY="388.0" mnemonicParsing="false" onAction="#closeButtonAction" prefHeight="33.0" prefWidth="156.0" text="Anwendung schließen" />
+                           <TableView fx:id="aktiveFahrzeugTabelle" layoutX="278.0" layoutY="54.0" prefHeight="262.0" prefWidth="322.0">
                              <columns>
-                               <TableColumn prefWidth="38.0" text="ID" />
-                               <TableColumn prefWidth="96.0" text="Kategorie" />
-                                 <TableColumn prefWidth="118.0" text="Sonderattribut" />
-                                 <TableColumn prefWidth="65.0" text="Einsatz ID" />
+                               <TableColumn fx:id="aktiveFahrzeugId" prefWidth="38.0" text="ID" />
+                               <TableColumn fx:id="aktiveFahrzeugKategorie" prefWidth="96.0" text="Kategorie" />
+                                 <TableColumn fx:id="aktiveFahrzeugSonderattribut" prefWidth="118.0" text="Sonderattribut" />
+                                 <TableColumn fx:id="aktiveFahrzeugEinsatzId" prefWidth="69.0" text="Einsatz ID" />
                              </columns>
                            </TableView>
                            <Label id="title" layoutX="278.0" layoutY="8.0" prefHeight="33.0" prefWidth="136.0" style="-fx-font-weight: bold;" text="Fahrzeuge im Einsatz" />
-                           <Button fx:id="einsatzBeendenSubmit" layoutX="454.0" layoutY="375.0" mnemonicParsing="false" onAction="#onDeleteOperationClick" prefHeight="33.0" prefWidth="173.0" text="Einsatz beenden" />
-                           <TextField fx:id="einsatzIdBeenden" layoutX="462.0" layoutY="333.0" prefHeight="26.0" prefWidth="110.0" promptText="Einsatz ID" />
+                           <Button fx:id="einsatzBeendenSubmit" layoutX="427.0" layoutY="388.0" mnemonicParsing="false" onAction="#onDeleteOperationClick" prefHeight="33.0" prefWidth="173.0" text="Einsatz beenden" />
+                           <TextField fx:id="einsatzIdBeenden" layoutX="427.0" layoutY="346.0" prefHeight="26.0" prefWidth="110.0" promptText="Einsatz ID" />
                         </children>
                      </AnchorPane>
                </content>
