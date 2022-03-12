@@ -43,6 +43,7 @@
                <Label layoutX="833.0" layoutY="80.0" prefHeight="33.0" prefWidth="130.0" text="Tank-Löschfahrzeuge" />
                <Label layoutX="650.0" layoutY="161.0" prefHeight="33.0" prefWidth="146.0" text="Mannschaftstransporter" />
                <Label layoutX="858.0" layoutY="161.0" prefHeight="33.0" prefWidth="80.0" text="Leiterwagen" />
+               <Label fx:id="einsatzErstellungMessage" layoutX="245.0" layoutY="178.0" prefHeight="18.0" prefWidth="392.0" style="-fx-font-weight: bold;" />
             </children>
          </AnchorPane>
          <TabPane layoutY="231.0" prefHeight="488.0" prefWidth="1080.0" tabClosingPolicy="UNAVAILABLE">
@@ -52,22 +53,22 @@
                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                         <children>
                            <Button fx:id="einsatzErstellenSubmit" layoutX="141.0" layoutY="388.0" mnemonicParsing="false" onAction="#onCreateEinsatzClick" prefHeight="33.0" prefWidth="124.0" text="Einsatz erstellen" />
-                           <Label id="title" layoutX="635.0" prefHeight="47.0" prefWidth="441.0" style="-fx-font-weight: bold;" text="Aktive Einsätze" />
-                           <TableView fx:id="aktiveEinsatzTabelle" layoutX="635.0" layoutY="55.0" prefHeight="261.0" prefWidth="396.0">
+                           <Label id="title" layoutX="266.0" prefHeight="47.0" prefWidth="109.0" style="-fx-font-weight: bold;" text="Aktive Einsätze" />
+                           <TableView fx:id="aktiveEinsatzTabelle" layoutX="265.0" layoutY="42.0" prefHeight="289.0" prefWidth="324.0">
                              <columns>
                                <TableColumn fx:id="aktiveEinsatzId" prefWidth="47.0" text="ID" />
                                <TableColumn fx:id="aktiveEinsatzart" prefWidth="105.0" text="Einsatzart" />
-                                 <TableColumn fx:id="aktiveFeuerwehrleute" prefWidth="133.0" text="Anzahl Feuerwehrleute" />
-                                 <TableColumn fx:id="aktiveFahrzeuge" prefWidth="110.0" text="Anzahl Fahrzeuge" />
+                                 <TableColumn fx:id="aktiveFeuerwehrleute" prefWidth="99.0" text="Feuerwehrleute" />
+                                 <TableColumn fx:id="aktiveFahrzeuge" prefWidth="79.0" text="Fahrzeuge" />
                              </columns>
                            </TableView>
                            <Label id="title" layoutX="21.0" layoutY="7.0" prefHeight="33.0" prefWidth="119.0" style="-fx-font-weight: bold;" text="Einsatzerstellung" />
-                           <TextField fx:id="anzahlELFTextField" layoutX="136.0" layoutY="122.0" prefHeight="26.0" prefWidth="73.0" promptText="Anzahl" />
-                           <TextField fx:id="anzahlMTTextField" layoutX="73.0" layoutY="278.0" prefHeight="26.0" prefWidth="70.0" promptText="Anzahl" />
-                           <TextField fx:id="anzahlTLTextField" layoutX="133.0" layoutY="205.0" prefHeight="26.0" prefWidth="80.0" promptText="Anzahl" />
-                           <TextField fx:id="anzahlLWTextField" layoutX="18.0" layoutY="205.0" prefHeight="26.0" prefWidth="68.0" promptText="Anzahl" />
-                           <TextField fx:id="anzahlFLTextField" layoutX="16.0" layoutY="122.0" prefHeight="26.0" prefWidth="73.0" promptText="Anzahl" />
-                           <MenuButton fx:id="einsatzartMenuButton" alignment="CENTER" contentDisplay="CENTER" layoutX="21.0" layoutY="41.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="233.0" text="Einsatzart auswählen">
+                           <TextField fx:id="anzahlELFTextField" layoutX="135.0" layoutY="141.0" prefHeight="26.0" prefWidth="73.0" promptText="Anzahl" />
+                           <TextField fx:id="anzahlMTTextField" layoutX="72.0" layoutY="297.0" prefHeight="26.0" prefWidth="70.0" promptText="Anzahl" />
+                           <TextField fx:id="anzahlTLTextField" layoutX="132.0" layoutY="224.0" prefHeight="26.0" prefWidth="80.0" promptText="Anzahl" />
+                           <TextField fx:id="anzahlLWTextField" layoutX="17.0" layoutY="224.0" prefHeight="26.0" prefWidth="68.0" promptText="Anzahl" />
+                           <TextField fx:id="anzahlFLTextField" layoutX="15.0" layoutY="141.0" prefHeight="26.0" prefWidth="73.0" promptText="Anzahl" />
+                           <MenuButton fx:id="einsatzartMenuButton" alignment="CENTER" contentDisplay="CENTER" layoutX="9.0" layoutY="56.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="233.0" text="Einsatzart auswählen">
                              <items>
                                <MenuItem fx:id="wohnungsbrandButton" mnemonicParsing="false" onAction="#fillWohnungsbrandParameter" text="Wohnungsbrand" />
                                <MenuItem fx:id="verkehrsunfallButton" mnemonicParsing="false" onAction="#fillVerkehrsunfallParameter" text="Verkehrsunfall" />
@@ -76,22 +77,21 @@
                              </items>
                            </MenuButton>
                            <Button fx:id="einsatzParameterResetButton" layoutX="22.0" layoutY="388.0" mnemonicParsing="false" onAction="#onEinsatzParameterResetClick" prefHeight="33.0" prefWidth="109.0" text="Zurücksetzen" />
-                           <Label layoutX="18.0" layoutY="89.0" prefHeight="33.0" prefWidth="108.0" text="Feuerwehrleute" />
-                           <Label layoutX="120.0" layoutY="89.0" prefHeight="33.0" prefWidth="146.0" text="Einsatz-Leitfahrzeuge" />
-                           <Label layoutX="116.0" layoutY="172.0" prefHeight="33.0" prefWidth="146.0" text="Tank-Löschfahrzeuge" />
-                           <Label layoutX="48.0" layoutY="245.0" prefHeight="33.0" prefWidth="156.0" text="Mannschaftstransporter" />
-                           <Label layoutX="16.0" layoutY="172.0" prefHeight="33.0" prefWidth="92.0" text="Leiterwagen" />
-                           <Label fx:id="einsatzErstellungMessage" layoutX="22.0" layoutY="337.0" prefHeight="18.0" prefWidth="363.0" style="-fx-font-weight: bold;" />
-                           <Button fx:id="closeButton" layoutX="875.0" layoutY="388.0" mnemonicParsing="false" onAction="#closeButtonAction" prefHeight="33.0" prefWidth="156.0" text="Anwendung schließen" />
-                           <TableView fx:id="aktiveFahrzeugTabelle" layoutX="278.0" layoutY="54.0" prefHeight="262.0" prefWidth="322.0">
+                           <Label layoutX="17.0" layoutY="108.0" prefHeight="33.0" prefWidth="108.0" text="Feuerwehrleute" />
+                           <Label layoutX="119.0" layoutY="108.0" prefHeight="33.0" prefWidth="146.0" text="Einsatz-Leitfahrzeuge" />
+                           <Label layoutX="115.0" layoutY="191.0" prefHeight="33.0" prefWidth="146.0" text="Tank-Löschfahrzeuge" />
+                           <Label layoutX="47.0" layoutY="264.0" prefHeight="33.0" prefWidth="156.0" text="Mannschaftstransporter" />
+                           <Label layoutX="15.0" layoutY="191.0" prefHeight="33.0" prefWidth="92.0" text="Leiterwagen" />
+                           <Button fx:id="closeButton" layoutX="900.0" layoutY="388.0" mnemonicParsing="false" onAction="#closeButtonAction" prefHeight="33.0" prefWidth="156.0" text="Anwendung schließen" />
+                           <TableView fx:id="aktiveFahrzeugTabelle" layoutX="631.0" layoutY="42.0" prefHeight="288.0" prefWidth="444.0">
                              <columns>
                                <TableColumn fx:id="aktiveFahrzeugId" prefWidth="38.0" text="ID" />
-                               <TableColumn fx:id="aktiveFahrzeugKategorie" prefWidth="96.0" text="Kategorie" />
-                                 <TableColumn fx:id="aktiveFahrzeugSonderattribut" prefWidth="118.0" text="Sonderattribut" />
-                                 <TableColumn fx:id="aktiveFahrzeugEinsatzId" prefWidth="69.0" text="Einsatz ID" />
+                               <TableColumn fx:id="aktiveFahrzeugKategorie" prefWidth="128.0" text="Kategorie" />
+                                 <TableColumn fx:id="aktiveFahrzeugSonderattribut" prefWidth="211.0" text="Sonderattribut" />
+                                 <TableColumn fx:id="aktiveFahrzeugEinsatzId" minWidth="0.0" prefWidth="66.0" text="Einsatz ID" />
                              </columns>
                            </TableView>
-                           <Label id="title" layoutX="278.0" layoutY="8.0" prefHeight="33.0" prefWidth="136.0" style="-fx-font-weight: bold;" text="Fahrzeuge im Einsatz" />
+                           <Label id="title" layoutX="631.0" layoutY="7.0" prefHeight="33.0" prefWidth="136.0" style="-fx-font-weight: bold;" text="Fahrzeuge im Einsatz" />
                            <Button fx:id="einsatzBeendenSubmit" layoutX="427.0" layoutY="388.0" mnemonicParsing="false" onAction="#onDeleteOperationClick" prefHeight="33.0" prefWidth="173.0" text="Einsatz beenden" />
                            <TextField fx:id="einsatzIdBeenden" layoutX="427.0" layoutY="346.0" prefHeight="26.0" prefWidth="110.0" promptText="Einsatz ID" />
                         </children>

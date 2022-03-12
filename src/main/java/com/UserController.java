@@ -58,19 +58,19 @@ public class UserController {
     private TableColumn<Map, String> aktiveFeuerwehrleute;
 
     @FXML
-    private TableView<Fahrzeug> aktiveFahrzeugTabelle;
+    private TableView<Map> aktiveFahrzeugTabelle;
 
     @FXML
-    private TableColumn<Fahrzeug, Integer> aktiveFahrzeugEinsatzId;
+    private TableColumn<Map, String> aktiveFahrzeugEinsatzId;
 
     @FXML
-    private TableColumn<Fahrzeug, Integer> aktiveFahrzeugId;
+    private TableColumn<Map, String> aktiveFahrzeugId;
 
     @FXML
-    private TableColumn<Fahrzeug, String> aktiveFahrzeugKategorie;
+    private TableColumn<Map, String> aktiveFahrzeugKategorie;
 
     @FXML
-    private TableColumn<?, String> aktiveFahrzeugSonderattribut;
+    private TableColumn<Map, String> aktiveFahrzeugSonderattribut;
 
 
     @FXML
@@ -504,6 +504,138 @@ public class UserController {
 
         return true;
     }
+    /**
+     * Methode generiert basierend auf die Kategorien der Fahrzeuge für den aktiven Einsatz (fzTeam)
+     * eine Hashmap von Sonderattributen. Die Generierung basiert auf sinvollen/realistischen Daten.
+     * @see Fahrzeug
+     *
+     * @author Sophie Weber
+     * @param fzTeam ausgewählte Fahrzeuge für jeweiligen Einsatz
+     * @return generierte Sonderattribute pro Fahrzeug
+     */
+    HashMap<Integer, String> generateSpecialAttributes(HashMap<Integer, Fahrzeug> fzTeam) {
+        HashMap<Integer, String> fahrzeugSonderattribute = new HashMap<>();
+
+        for (int id : fzTeam.keySet()) {
+            // Zusammengesetzter String aus "<Sonderattribut>: <Wert>"
+            String sonderattribut;
+
+            switch (fzTeam.get(id).kategorie) {
+                case "Einsatz-Leitfahrzeug":
+                    // Dienstgrad wird zufällig ausgesucht
+                    int randomIndex = new Random().nextInt(DIENSTGRADE.length);
+                    String dienstgrad = DIENSTGRADE[randomIndex];
+                    sonderattribut = "Einsatzleiter-Dienstgrad:" + dienstgrad;
+                    break;
+
+                case "Tank-Löschfahrzeug":
+                    int zufallsWert = randomNumberInRange(600, 1200);
+                    // Aufgerundet auf die nächste volle hundert (z.B. 49 -> 100)
+                    int tankkapazitaet = ((zufallsWert + 99) / 100) * 100;
+                    sonderattribut = "Tankkapazität: " + tankkapazitaet + " L";
+                    break;
+
+                case "Mannschaftstransporter":
+                    int baujahr = randomNumberInRange(1980, 2022);
+                    sonderattribut = "Baujahr: " + baujahr;
+                    break;
+
+                case "Leiterwagen":
+                    int max_leiterhoehe = randomNumberInRange(1, 15);
+                    sonderattribut = "Maximale Leiterhöhe: " + max_leiterhoehe + " m";
+                    break;
+
+                default:
+                    sonderattribut = "";
+            };
+            // Dem Fahrzeug das Sonderattribut zugewiesen
+            fahrzeugSonderattribute.put(id, sonderattribut);
+        }
+        return fahrzeugSonderattribute;
+    }
+    /**
+     * Methode füllt eine Tabelle (TableView) mit Daten aus einer erzeugten Hashmap
+     * @author Johan Hornung
+     * @param table Tabellen Objekt
+     * @param columns Spalten Objekte
+     * @param columnKeys Spalten Namen für das Festlegen der Spalten-Attribute
+     * @param values die Reihenweise eingesetzt werden
+     */
+    void fillTable(TableView table, TableColumn[] columns, String[] columnKeys, String[] values) {
+        // Daten-Objekt
+        ObservableList<Map<String, String>> operationMap = FXCollections.<Map<String, String>>observableArrayList();
+        // Neue Hashmap mit allen nötigen Attribute (Reihe in der Tabelle)
+        Map<String, String> item = new HashMap<>();
+
+        for (int i = 0; i < columns.length; i++) {
+            // Festlegen der Spalten-Attribute
+            columns[i].setCellValueFactory(new MapValueFactory<>(columnKeys[i]));
+            item.put(columnKeys[i], values[i]);
+        }
+        // Reihe wird zur Tabelle hinzugefügt
+        operationMap.add(item);
+        table.getItems().addAll(operationMap);
+    }
+    /**
+     * Aktualisiert die Tabelle (GUI) der aktiven Einsätze
+     *
+     * @param einsatz Objekt der Einsatz Klasse
+     * @see Einsatz
+     */
+    void updateActiveOperationsTable(Einsatz einsatz) {
+        // Array von Spalten Objekte
+        final TableColumn[] TABLE_COLUMNS = {
+                aktiveEinsatzId,
+                aktiveEinsatzart,
+                aktiveFeuerwehrleute,
+                aktiveFahrzeuge
+        };
+        // Festlegen der Spalten-Attribute
+        final String[] COLUMN_KEYS = {
+                "id",
+                "einsatzart",
+                "anzahlFeuerwehrleute",
+                "anzahlFahrzeuge"
+        };
+        String[] values = {
+                String.valueOf(einsatz.id),
+                einsatz.einsatzart,
+                String.valueOf(einsatz.fmParameter.size()),
+                String.valueOf(einsatz.fzParameter.size())
+        };
+        fillTable(aktiveEinsatzTabelle, TABLE_COLUMNS, COLUMN_KEYS, values);
+    }
+    /**
+     * Aktualisiert die Tabelle (GUI) der Sonderattribute für Fahrzuge im Einsatz
+     *
+     * @author Johan Hornung
+     * @param fzTeam eingestzte Fahrzeuge
+     * @param sonderattribute der eingesetzten Fahrzeuge
+     */
+    void updateSpecialAttributesTable(HashMap<Integer, Fahrzeug> fzTeam, HashMap<Integer, String> sonderattribute) {
+        // TODO: 12.03.22 Methode für Tabelle der Sonderattribute
+        // Array von Spalten Objekte
+        final TableColumn[] TABLE_COLUMNS = {
+                aktiveFahrzeugId,
+                aktiveFahrzeugKategorie,
+                aktiveFahrzeugSonderattribut,
+        };
+        // Festlegen der Spalten-Attribute
+        final String[] COLUMN_KEYS = {
+                "fahrzeugId",
+                "kategorie",
+                "sonderattribut"
+        };
+        // Jede Reihe (Fahrzeug) wird befüllt
+        for (Fahrzeug fz: fzTeam.values()) {
+            String[] values = {
+                    String.valueOf(fz.id),
+                    fz.kategorie,
+                    sonderattribute.get(fz.id)
+            };
+            fillTable(aktiveFahrzeugTabelle, TABLE_COLUMNS, COLUMN_KEYS, values);
+        }
+    }
     /*
     //////////////////////////// JAVAFX EVENT-BASIERTE METHODEN /////////////////////////////////
      */
@@ -547,98 +679,14 @@ public class UserController {
         int[] defaultValues = new int[einsatzTextfelder.length];
         setTextFieldValues(einsatzTextfelder, defaultValues);
     }
-    /**
-     * Methode generiert basierend auf die Kategorien der Fahrzeuge für den aktiven Einsatz (fzTeam)
-     * eine Hashmap von Sonderattributen. Die Generierung basiert auf sinvollen/realistischen Daten.
-     * @see Fahrzeug
-     *
-     * @author Sophie Weber
-     * @param fzTeam ausgewählte Fahrzeuge für jeweiligen Einsatz
-     * @return generierte Sonderattribute pro Fahrzeug
-     */
-    HashMap<Integer, String> generateSpecialAttributes(HashMap<Integer, Fahrzeug> fzTeam) {
-        HashMap<Integer, String> fahrzeugSonderattribute = new HashMap<>();
-
-        for (int id : fzTeam.keySet()) {
-            // Zusammengesetzter String aus "<Sonderattribut>: <Wert>"
-            String sonderattribut;
-
-            switch (fzTeam.get(id).kategorie) {
-                case "Einsatz-Leitfahrzeug":
-                    // Dienstgrad wird zufällig ausgesucht
-                    int randomIndex = new Random().nextInt(DIENSTGRADE.length);
-                    String dienstgrad = DIENSTGRADE[randomIndex];
-                    sonderattribut = "Dienstgrad des Einsatzleiters:" + dienstgrad;
-                    break;
-
-                case "Tank-Löschfahrzeug":
-                    int zufallsWert = randomNumberInRange(600, 1200);
-                    // Aufgerundet auf die nächste volle hundert (z.B. 49 -> 100)
-                    int tankkapazitaet = ((zufallsWert + 99) / 100) * 100;
-                    sonderattribut = "Tankkapazität: " + tankkapazitaet;
-                    break;
-
-                case "Mannschaftstransporter":
-                    int baujahr = randomNumberInRange(1980, 2022);
-                    sonderattribut = "Baujahr: " + baujahr;
-                    break;
-
-                case "Leiterwagen":
-                    int max_leiterhoehe = randomNumberInRange(1, 15);
-                    sonderattribut = "Maximale Leiterhöhe: " + max_leiterhoehe;
-                    break;
-
-                default:
-                    sonderattribut = "";
-            };
-            // Dem Fahrzeug das Sonderattribut zugewiesen
-            fahrzeugSonderattribute.put(id, sonderattribut);
-        }
-        return fahrzeugSonderattribute;
-    }
-    /**
-     * Aktualisiert die Tabelle (GUI) der aktiven Einsätze
-     *
-     * @param einsatz Objekt der Einsatz Klasse
-     * @see Einsatz
-     */
-    void updateActiveOperationsTable(Einsatz einsatz) {
-        // Festlegen der Spalten-Attribute
-        aktiveEinsatzId.setCellValueFactory(new MapValueFactory<>("id"));
-        aktiveEinsatzart.setCellValueFactory(new MapValueFactory<>("einsatzart"));
-        aktiveFeuerwehrleute.setCellValueFactory(new MapValueFactory<>("anzahlFeuerwehrleute"));
-        aktiveFahrzeuge.setCellValueFactory(new MapValueFactory<>("anzahlFahrzeuge"));
-        // Daten-Objekt
-        ObservableList<Map<String, String>> operationMap = FXCollections.<Map<String, String>>observableArrayList();
-        // Neue Hashmap mit allen nötigen Attribute (Reihe in der Tabelle)
-        Map<String, String> item = new HashMap<>();
-        item.put("id", String.valueOf(einsatz.id));
-        item.put("einsatzart", einsatz.einsatzart);
-        item.put("anzahlFeuerwehrleute", String.valueOf(einsatz.fmParameter.size()));
-        item.put("anzahlFahrzeuge", String.valueOf(einsatz.fzParameter.size()));
-        // Reihe wird zur Tabelle hinzugefügt
-        operationMap.add(item);
-        aktiveEinsatzTabelle.getItems().addAll(operationMap);
-    }
-    /**
-     * Aktualisiert die Tabelle (GUI) der Sonderattribute für Fahrzuge im Einsatz
-     *
-     * @author Johan Hornung
-     * @param fzTeam eingesetzte Fahrzeuge
-     * @param sonderattribute der eingesetzten Fahrzeuge
-     */
-    void updateSpecialAttributesTable(HashMap<Integer, Fahrzeug> fzTeam, HashMap<Integer, String> sonderattribute) {
-        // TODO: 12.03.22 Methode für Tabelle der Sonderattribute
-    }
-
     // TODO: 11.03.22 JavDoc für onCreateEinsatzClick()
-    @FXML
     /**
      * @author Johan Hornung
      * @see Fahrzeug
      * @see Feuerwehrmann
      * @see Einsatz
      */
+    @FXML
     void onCreateEinsatzClick(ActionEvent event) {
         // TODO: 10.03.22 Algorithmus für Einsatzerstellung schreiben
         // Einsatzparameter Textfelder auslesen
@@ -744,11 +792,11 @@ public class UserController {
 
             // Einsatz Objekt wird basierend auf die Parameter (fzTeam, fmTeam) erstellt
             Einsatz einsatz = new Einsatz(einsatzId, einsatzart, fmTeam, fzTeam);
-
             // Einsatz Tabelle wird aktualisiert
             updateActiveOperationsTable(einsatz);
             // Sonderattribute der Fahrzeuge im Einsatz werden generiert
             HashMap<Integer, String> sonderattribute = generateSpecialAttributes(fzTeam);
+            updateSpecialAttributesTable(fzTeam, sonderattribute);
 
 
         }
