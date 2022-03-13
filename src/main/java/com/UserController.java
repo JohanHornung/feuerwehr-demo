@@ -229,8 +229,6 @@ public class UserController {
             // Label wird beschrieben
             verfuegbareFahrzeuge[i].setText(text);
         }
-        // TODO: 12.03.22 Menu Button (Einsatzarten) anpassen, switch case
-//        wohnungsbrandButton.setVisible(false);
     }
     /**
      * Methode zählt verfügbare Fahrzeuge pro Kategorie durch
@@ -317,39 +315,45 @@ public class UserController {
     }
 
     /**
+     * Setzt gegebene Werte in ein Array von Text Feldern (GUI) ein
+     *
      * @author Johan Hornung
      * @param textFelder Array von Text Feldern dessen Werte geändert werden
      * @param values werden eingesetzt
      */
     void setTextFieldValues(TextField[] textFelder, int[] values) {
-        // An diesem Punkt muss das Programm beendet werden falls ein Logik-Fehler vorhanden ist
-        assert textFelder.length == values.length : "Anzahl von Text Feldern und Werten stimmt nicht überein";
+
+        if (textFelder.length != values.length) {
+            // An diesem Punkt muss das Programm beendet werden
+            throw new AssertionError("Anzahl von Text Feldern und Werten stimmt nicht überein");
+        }
         // Iteration durch das Array von TextFeldern
         Iterator<TextField> it = Arrays.stream(textFelder).iterator();
-        // Für Array von Werten
+        // Schleifenzähler für values[]
         int i = 0;
         while (it.hasNext()) {
             // einzelnes Text Feld
             TextField textField = it.next();
-            // Sonderfall: wenn alle Werte in values Array 0 sind, dann wird zurückgesetzt
+            // Wenn alle Werte in values[] 0 sind, dann möchte man dass alle Felder "zurückgesetzt" werden
             if (Arrays.stream(values).sum() == 0) {
                 textField.setText("");
             } else {
                 textField.setText(String.valueOf(values[i]));
             }
+            // Nächster Wert
             i++;
         }
     }
 
     /**
+     * Liest Werte in aus Text Feldern aus und in ein Array abgespeichert
      *
      * @param textFelder Array von Text Feldern dessen Werte ausgelesen werden
-     * @return Array der numerischen Einsatzparameter
+     * @return Array der numerischen Einsatzparametern
      */
     int[] getTextFieldValues(TextField[] textFelder) {
-        // TODO: 11.03.22 Leere Angaben und nicht numerische Werte gesondert behandeln
-
         int[] einsatzParameter = new int[textFelder.length];
+
         // jeder Wert aus dem Text Feld wird ausgelesen und in einsatzParameter abgespeichert
         for (int i = 0; i < textFelder.length; i++) {
             try {
@@ -358,31 +362,38 @@ public class UserController {
                     setLabelTextMessage(
                             einsatzErstellungMessage,
                             Color.RED,
-                            "Keine validen Parameter Werte"
+                            "Keine validen Parameter Werte!"
                     );
                 }
                 einsatzParameter[i] = Integer.parseInt(value);
             } catch (NumberFormatException nfe) {
-                assert false : "Kein gültiges Input Format für Einsatz-parmeter";
+                setLabelTextMessage(
+                        einsatzErstellungMessage,
+                        Color.RED,
+                        "Kein gültiges Format für Einsatz-Parameter!"
+                );
             }
         }
         return einsatzParameter;
     }
 
     /**
+     * Die vom Nutzer ausgewählte Einsatzart wird im Menu Button (GUI) angezeigt.
+     * Es werden die minimalen Einsatzparameter für die Einsatzart eingesetzt.
+     *
      * @author Luca Langer
-     * @param menuItem dessen Wert ausgelesen wird, im Menü Button angezeigt wird
+     * @param menuItem dessen Wert ausgelesen wird und im Menü Button angezeigt wird
      */
-    void setButtonParameter(MenuItem menuItem) {
-        // gewählte Einsatzart abspeichern
+    void setMenuButtonValue(MenuItem menuItem) {
+        // gewählte Einsatzart auslesen
         String einsatzart = menuItem.getText();
         // ausgewählte Einsatzart im Menu button anzeigen
         einsatzartMenuButton.setText(einsatzart);
-        // Parameter in Textfelder einsetzen
+        // Minimalen Einsatzparameter für die Einsatzart
         fillMinEinsatzParameter(einsatzart);
     }
     /**
-     *
+     * @author Luca Langer
      * @param min inklusiv
      * @param max inklusiv
      * @return zufälliger Wert zwischen min und max
@@ -391,6 +402,7 @@ public class UserController {
         return new Random().nextInt((max - min) + 1) + min;
     }
     /**
+     * Gibt an, ob mindestens ein Wert in currentParameter an der gleichen Stelle kleiner ist als in minParameter.
      *
      * @param currentParameter aktuellen Parameter
      * @param minParameter minimalen Parameter
@@ -406,13 +418,15 @@ public class UserController {
 
     /**
      * Fügt in gewünschtes Text Feld den gewünschten Text ein in gewünschter Farbe
+     *
+     * @author Moritz Schmidt
      * @param label Text Feld
      * @param color in die der Text eingefügt wird
      * @param message wird eingefügt
      */
     void setLabelTextMessage(Label label, Color color, String message) {
         label.setTextFill(color);
-        label.setStyle("-fx-font-style: italic");
+//        label.setStyle("-fx-font-style: italic");
         label.setText(message);
     }
 
@@ -420,7 +434,7 @@ public class UserController {
      * Eingegebene Einsatzparameter sind gültig wenn:
      *      - Im Menü Button eine Einsatzart ausgewählt wurde (Schritt 1)
      *      - Die minimalen Einsatzparameter angegeben wurden (Schritt 2)
-     *      - Die aktuellen Einsatz Ressourcen ausreichen (Schritt 3)
+     *      - Die verfügbaren Einsatz Ressourcen ausreichen (Schritt 3)
      *
      * @author Johan Hornung
      * @param einsatzParameter Array von numerischen Parametern
@@ -455,11 +469,11 @@ public class UserController {
             return false;
         }
         // Schritt 2
-
+        // @see Einsatz
         int einsatzIndex = Arrays.asList(Einsatz.einsatzarten).indexOf(einsatzart);
-        int[] minParameter = Einsatz.minParameter[einsatzIndex];
+        int[] minEinsatzParameter = Einsatz.minParameter[einsatzIndex];
         // Wenn die angegebenen Parameter nicht der minimalen Parameter entsprechen
-        if (lowerValue(einsatzParameter, minParameter)) {
+        if (lowerValue(einsatzParameter, minEinsatzParameter)) {
             setLabelTextMessage(
                     einsatzErstellungMessage,
                     Color.RED,
@@ -467,7 +481,7 @@ public class UserController {
             );
             return false;
         }
-        // Schritt 3 - Aktuelle Ressourcen mit Einsatzparameter vergleichen
+        // Schritt 3
         // Für Feuerwehrleute
         int anzahlFeuerwehrleute = einsatzParameter[0];
         int anzahlLkwFahrer = einsatzParameter[2] + einsatzParameter[3] + einsatzParameter[4];
@@ -486,7 +500,7 @@ public class UserController {
             return false;
         }
         // Für Fahrzeuge
-        int i = 1; // Anzahl der benötigten Fahrzeug startet ab dem 2. Element in einsatzParameter
+        int i = 1; // Anzahl der benötigten Fahrzeuge startet ab dem 2. Element in einsatzParameter
         for (int vehicleCount : aktuelleFz.values()) {
             if (einsatzParameter[i] > vehicleCount) {
                 setLabelTextMessage(
@@ -498,28 +512,28 @@ public class UserController {
             }
             i++;
         }
-        // Alle Bedigungen für valide Einsatzparameter sind erfüllt
+        // Alle Bedingungen für valide Einsatzparameter sind erfüllt
         // Menü Button wird zurückgesetzt
         einsatzartMenuButton.setText("Einsatzart auswählen");
 
         return true;
     }
     /**
-     * Methode generiert basierend auf die Kategorien der Fahrzeuge für den aktiven Einsatz (fzTeam)
-     * eine Hashmap von Sonderattributen. Die Generierung basiert auf sinvollen/realistischen Daten.
-     * @see Fahrzeug
+     * Methode generiert basierend auf die Kategorien der eingesetzten Fahrzeuge (fzTeam)
+     * eine Hashmap von Sonderattributen. Die Generierung basiert auf sinnvollen/realistischen Daten.
      *
      * @author Sophie Weber
-     * @param fzTeam ausgewählte Fahrzeuge für jeweiligen Einsatz
-     * @return generierte Sonderattribute pro Fahrzeug
+     * @param fzTeam eingesetzte Fahrzeuge
+     * @see Einsatz
+     * @return generierte Sonderattribute für alle Fahrzeuge
      */
     HashMap<Integer, String> generateSpecialAttributes(HashMap<Integer, Fahrzeug> fzTeam) {
         HashMap<Integer, String> fahrzeugSonderattribute = new HashMap<>();
-
+        // Für jedes Fahrzeug wird ein Sonderattribut generiert
         for (int id : fzTeam.keySet()) {
-            // Zusammengesetzter String aus "<Sonderattribut>: <Wert>"
+            // Zusammengesetzter String aus "<Sonderattribut>: <Wert> <Suffix>"
             String sonderattribut;
-
+            // Das Sonderattribut hängt von der Fahrzeugkategorie ab
             switch (fzTeam.get(id).kategorie) {
                 case "Einsatz-Leitfahrzeug":
                     // Dienstgrad wird zufällig ausgesucht
@@ -544,7 +558,7 @@ public class UserController {
                     int max_leiterhoehe = randomNumberInRange(1, 15);
                     sonderattribut = "Maximale Leiterhöhe: " + max_leiterhoehe + " m";
                     break;
-
+                // Sollte nicht passieren
                 default:
                     sonderattribut = "";
             };
@@ -554,22 +568,24 @@ public class UserController {
         return fahrzeugSonderattribute;
     }
     /**
-     * Methode füllt eine Tabelle (TableView) mit Daten aus einer erzeugten Hashmap
+     * Methode füllt eine Tabelle mit Werten aus einer erzeugten Hashmap (Reihenweise).
+     *
      * @author Johan Hornung
-     * @param table Tabellen Objekt
-     * @param columns Spalten Objekte
+     * @param table Tabellen Objekt (TableView)
+     * @param columns Spalten Objekte (TableColumn)
      * @param columnKeys Spalten Namen für das Festlegen der Spalten-Attribute
-     * @param values die Reihenweise eingesetzt werden
+     * @param values werden Reihenweise eingesetzt, gleiche Reihenfolge wie columnKeys
      */
     void fillTable(TableView<Map<String, String>> table, TableColumn[] columns, String[] columnKeys, String[] values) {
         // Daten-Objekt
         ObservableList<Map<String, String>> operationMap = FXCollections.<Map<String, String>>observableArrayList();
-        // Neue Hashmap mit allen nötigen Attribute (Reihe in der Tabelle)
+        // Neue Hashmap mit allen nötigen Attributen (Reihe in der Tabelle)
         Map<String, String> item = new HashMap<>();
-
+        // Für jede Spalte
         for (int i = 0; i < columns.length; i++) {
             // Festlegen der Spalten-Attribute
             columns[i].setCellValueFactory(new MapValueFactory<>(columnKeys[i]));
+            // Wert wird eingesetzt
             item.put(columnKeys[i], values[i]);
         }
         // Reihe wird zur Tabelle hinzugefügt
@@ -578,12 +594,12 @@ public class UserController {
     }
     /**
      * Aktualisiert die Tabelle (GUI) der aktiven Einsätze
-     *
+     * @author Johan Hornung
      * @param einsatz Objekt der Einsatz Klasse
      * @see Einsatz
      */
     void updateActiveOperationsTable(Einsatz einsatz) {
-        // Array von Spalten Objekte
+        // Array von Spalten Objekten
         final TableColumn[] TABLE_COLUMNS = {
                 aktiveEinsatzId,
                 aktiveEinsatzart,
@@ -603,17 +619,17 @@ public class UserController {
                 String.valueOf(einsatz.anzahlFeuerwehrleute),
                 String.valueOf(einsatz.anzahlFahrzeuge)
         };
+        // Werte werden in die Tabelle geschrieben
         fillTable(aktiveEinsatzTabelle, TABLE_COLUMNS, COLUMN_KEYS, values);
     }
     /**
-     * Aktualisiert die Tabelle (GUI) der Sonderattribute für Fahrzuge im Einsatz
+     * Aktualisiert die Tabelle (GUI) der Sonderattribute für Fahrzuge im Einsatz.
      *
      * @author Johan Hornung
-     * @param fzTeam eingestzte Fahrzeuge
+     * @param fzTeam eingesetzte Fahrzeuge
      * @param sonderattribute der eingesetzten Fahrzeuge
      */
     void updateSpecialAttributesTable(HashMap<Integer, Fahrzeug> fzTeam, HashMap<Integer, String> sonderattribute) {
-        // TODO: 12.03.22 Methode für Tabelle der Sonderattribute
         // Array von Spalten Objekte
         final TableColumn[] TABLE_COLUMNS = {
                 aktiveFahrzeugId,
@@ -636,16 +652,19 @@ public class UserController {
                     sonderattribute.get(fz.id),
                     String.valueOf(fz.einsatzId)
             };
+            // Werte werden in die Tabelle geschrieben
             fillTable(aktiveFahrzeugTabelle, TABLE_COLUMNS, COLUMN_KEYS, values);
         }
     }
 
     /**
-     * Aktualisiert die Auswahl an Verfügbaren Einsatzarten im GUI (MenuButton Dropdown)
+     * Aktualisiert die Auswahl an Verfügbaren Einsatzarten im GUI (MenuButton Dropdown).
      *
      * @author Johan Hornung
      * @param team an Feuerwehrmänner
+     * @see Feuerwehrmann
      * @param garage an Fahrzeugen
+     * @see Fahrzeug
      */
     void updateEinsatzAuswahl(Feuerwehrmann[] team, Fahrzeug[] garage) {
         // Standard-Auswahl an Einsätzen (respektive Reihenfolge)
@@ -669,7 +688,7 @@ public class UserController {
             aktuelleRessourcen[i] = vehicles.get(Fahrzeug.fahrzeugKategorien[i-1]);
         }
 
-        // Vergleich mit minimalen Ressourcen für jede Einsatzart
+        // Vergleich mit den für jede Einsatzart minimal erforderlichen Ressourcen
         int anzahlVerfuegbar = Einsatz.einsatzarten.length; // Es sind erstmal alle Einsatzarten verfügbar
         for (int i = 0; i < minParameter.length; i++) {
             if (lowerValue(aktuelleRessourcen, minParameter[i])) {
@@ -682,8 +701,13 @@ public class UserController {
         // Falls die Ressourcen für keine Einsatzart mehr ausreichen (= Keine Einsatzarten sind mehr verfügbar)
         if (anzahlVerfuegbar == 0) einsatzartMenuButton.setText("Kein neuer Einsatz mehr erstellbar!");
     }
-    // TODO: 11.03.22 JavDoc für createEinsatz()
     /**
+     * 1. Überprüft die Gültigkeit der Einsatzparameter (@see validEinsatzParameter())
+     * 2. Erstellt das Team (Fahrzeuge + Feuerwehrleute) für den Einsatz
+     * 3. Aktualisiert Anzeigen für verfügbare Fahrzeuge und Feuerwehrleute
+     * 4. Erstellt ein neues Einsatz Objekt basierend auf Einsatzart und Einsatz-Parameter.
+     * 4. Generiert Sonderattribute für Fahrzeuge und Füllt/Aktualisiert Tabellen
+     *
      * @author Johan Hornung
      * @param einsatzart
      * @param einsatzParameter
@@ -694,51 +718,48 @@ public class UserController {
         LinkedHashMap<String, Integer> firefighters = countFirefighters(team);
         LinkedHashMap<String, Integer> vehicles = countVehicles(garage);
 
-        // Hauptbedingung für Einsatzerstellung
+        // 1. HAUPTBEDINGUNG für Einsatzerstellung
         if (validEinsatzParameter(einsatzParameter, firefighters, vehicles)) {
-            // Naricht ausgeben
             setLabelTextMessage(
                     einsatzErstellungMessage,
                     Color.GREEN,
                     "Einsatz wurde erfolgreich erstellt!"
             );
+            // Textfelder (Einsatzparameter) zurücksetzen
+            setTextFieldValues(einsatzTextfelder, new int[einsatzTextfelder.length]); // [0, 0, 0, ...]
             // zufällig generierte id für Einsatz Objekt
-            int einsatzId = randomNumberInRange(0, 250);
-            // Textfelder zurücksetzen
-            setTextFieldValues(einsatzTextfelder, new int[einsatzTextfelder.length]);
-            // Teamerstellung, basierend auf einsatzParameter[]
+            int einsatzId = randomNumberInRange(0, 100);
+
+            // 2. TEAM (basiert auf die vom Nutzer eingegebenen Einsatzparameter)
             HashMap<Integer, Feuerwehrmann> fmTeam = new HashMap<>();
             HashMap<Integer, Fahrzeug> fzTeam = new HashMap<>();
-
+            // Gesamte Anzahl von eingesetzten Feuerwehrleuten
             int anzahlFm = einsatzParameter[0];
-            // Ermittlung von anzahl an benötigten Fahrern für den Einsatz
+            // Ermittlung von anzahl an benötigten Fahrern für den Einsatz (pro Fahrer Typ)
             int minAnzahlFahrer = 0;
             for (int i = 1; i < einsatzParameter.length; i++) minAnzahlFahrer += einsatzParameter[i];
             // Das 2. Element im einsatzParameter Array ist immer die Anzahl von Einsatz-Leitfahrzeugen
             int neededPkwFahrer = einsatzParameter[1];
-            // gesamte Fahrer Anzahl - anzahl An Pkw Fahrern
-            int neededLkwFahrer = minAnzahlFahrer - neededPkwFahrer;
 
             // Es wird solange nach verfügbaren Pkw-Fahrer gesucht bis die nötige Anzahl erreicht ist
-            // Für Pkw-Fahrer
             for (Feuerwehrmann fm : team) {
                 // Wenn ein Pkw-Fahrer verfügbar ist wird er eingesetzt
                 if (fm.fahrerTyp.equals("Pkw") && fm.verfuegbar) {
-                    // Feuerwehrmann ist jetzt nicht mehr verfügbar
+                    // Feuerwehrmann ist jetzt im Einsatz und nicht mehr verfügbar
                     fm.verfuegbar = false;
                     fmTeam.put(fm.id, fm);
                 }
-                // Suche wird beendet fall die nötige Anzahl an Pkw-Fahrern erreicht wurde
-                if (fmTeam.size() == (minAnzahlFahrer - neededLkwFahrer)) break;
+                // Suche wird beendet falls die nötige Anzahl an Pkw-Fahrern erreicht wurde
+                if (fmTeam.size() == neededPkwFahrer) break;
             }
             // Für Lkw-Fahrer (gleiches Prinzip)
             for (Feuerwehrmann fm : team) {
                 if (fm.fahrerTyp.equals("Lkw") && fm.verfuegbar) {
-                    // Feuerwehrmann ist jetzt nicht mehr verfügbar
                     fm.verfuegbar = false;
                     fmTeam.put(fm.id, fm);
                 }
-                // Suche wird beendet falls die nötige Anzahl an Lkw-Fahrern erreicht wurde
+                // Da es nur 2 Fahrer-Typen gibt ist die Anzahl der
+                // nötigen Lkw-Fahrer = minAnzahlFahrer - neededPkwFahrer
                 if (fmTeam.size() == minAnzahlFahrer) break;
             }
             // Für die restlichen Feuerwehrleute wo der Fahrertyp keine Rolle mehr spielt
@@ -752,12 +773,10 @@ public class UserController {
                     if (fmTeam.size() == anzahlFm) break;
                 }
             }
-            // Programm-Logikfehler falls die nötige Anzahl an Feuerwehrleuten nicht erreicht ist
+            // Programm-Logikfehler (diese Bedingung wurde vor der Einsatzerstellung sichergestellt)
             if (fmTeam.size() != anzahlFm) {
                 throw new AssertionError("Nicht genug Feuerwehrleute im Team!");
             }
-            // Ressourcen Anzeige für Feuerwehrleute aktualisieren
-            displayResources(team, garage);
             // Fahrzeug Hashmap mit Einsatzparameter
             HashMap<String, Integer> fahrzeugParameter = new HashMap<>();
             for (int i = 1; i < einsatzParameter.length; i++) {
@@ -784,19 +803,24 @@ public class UserController {
                     if (anzahl == count) break;
                 }
             }
-            // Proramm-Logik Fehler, es müssen genau so viele Fahrzeug wie Fahrer für die Fahrzeuge vorhanden sein
+            // Proramm-Logik Fehler (diese Bedingung wurde vor der Einsatzerstellung sichergestellt)
             if (fzTeam.size() != minAnzahlFahrer) {
                 throw new AssertionError("Nicht genug Feuerwehrleute im Team!");
             }
+            // 3. ANZEIGEN
             // Ressourcen Anzeige und Auswahl für verfügbare Einsätze aktualisieren
             displayResources(team, garage);
             updateEinsatzAuswahl(team, garage);
+
+            // 4. NEUES EINSATZ OBJEKT
             // Einsatz Objekt wird basierend auf die Parameter (fzTeam, fmTeam) erstellt
             Einsatz einsatz = new Einsatz(einsatzId, einsatzart, fmTeam, fzTeam);
-            // Einsatz Tabelle wird aktualisiert
             aktiveEinsaetze.put(einsatz.id, einsatz);
+
+            // 5. TABELLEN
+            // Einsatz Tabelle wird aktualisiert
             updateActiveOperationsTable(einsatz);
-            // Sonderattribute der Fahrzeuge im Einsatz werden generiert
+            // Sonderattribute der Fahrzeuge im Einsatz werden generiert und in Tabelle eingesetzt
             HashMap<Integer, String> sonderattribute = generateSpecialAttributes(fzTeam);
             updateSpecialAttributesTable(fzTeam, sonderattribute);
         }
@@ -806,19 +830,19 @@ public class UserController {
      */
     @FXML
     void fillIndustrieunfallParameter(ActionEvent event) {
-        setButtonParameter(industrieunfallButton);
+        setMenuButtonValue(industrieunfallButton);
     }
     @FXML
     void fillNaturkatastropheParameter(ActionEvent event) {
-        setButtonParameter(naturkatastropheButton);
+        setMenuButtonValue(naturkatastropheButton);
     }
     @FXML
     void fillVerkehrsunfallParameter(ActionEvent event) {
-        setButtonParameter(verkehrsunfallButton);
+        setMenuButtonValue(verkehrsunfallButton);
     }
     @FXML
     void fillWohnungsbrandParameter(ActionEvent event) {
-        setButtonParameter(wohnungsbrandButton);
+        setMenuButtonValue(wohnungsbrandButton);
     }
     /**
      * Methode setzt Text Felder der Einsatz Parameter zurück sowie den Menu Button für Einsatzartauswahl
@@ -840,7 +864,7 @@ public class UserController {
         if (!einsatzartMenuButton.getText().equals("Kein neuer Einsatz mehr erstellbar!")) {
             einsatzartMenuButton.setText("Einsatzart auswählen");
         }
-        // "Feedback-Naricht" zur Einsatzerstellung wird zurückgesetzt
+        // Rückmeldung (Naricht) zur Einsatzerstellung wird zurückgesetzt
         einsatzErstellungMessage.setText("");
         // Text Felder werden zurückgesetzt
         int[] defaultValues = new int[einsatzTextfelder.length];
