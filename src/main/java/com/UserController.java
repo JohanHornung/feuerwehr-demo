@@ -36,12 +36,6 @@ public class UserController {
     };
 
     @FXML
-    private MenuItem industrieunfallButton;
-
-    @FXML
-    private MenuItem naturkatastropheButton;
-
-    @FXML
     private TableView<Map<String, String>> aktiveEinsatzTabelle;
 
     @FXML
@@ -130,8 +124,15 @@ public class UserController {
     @FXML
     private MenuItem wohnungsbrandButton;
 
+    @FXML
+    private MenuItem industrieunfallButton;
+
+    @FXML
+    private MenuItem naturkatastropheButton;
+
     private Feuerwehrmann[] team = new Feuerwehrmann[FIREFIGHTER_CAP];
     private Fahrzeug[] garage = new Fahrzeug[VEHICLES_CAP];
+    private HashMap<Integer, Einsatz> aktiveEinsaetze = new HashMap<>();
 
     @FXML
     /**
@@ -232,7 +233,7 @@ public class UserController {
 //        wohnungsbrandButton.setVisible(false);
     }
     /**
-     * Methode zählt verfügbare Fahrzeuge pro Kategorie
+     * Methode zählt verfügbare Fahrzeuge pro Kategorie durch
      *
      * @author Luca Langer
      * @param garage Array von Fahrzeugen (Fahrzeug Objekt)
@@ -257,7 +258,7 @@ public class UserController {
         return vehicleCount;
     }
     /**
-     * Methode zählt verfügbare Feuerwehrmänner pro fahrer Typ
+     * Methode zählt verfügbare Feuerwehrmänner pro fahrer Typ durch
      *
      * @author Luca Langer
      * @param team Array von Feuerwehrleuten (Feuerwehrmann Objekten)
@@ -428,15 +429,15 @@ public class UserController {
      *
      * @author Johan Hornung
      * @param einsatzParameter Array von numerischen Parametern
-     * @param firefighters Map von aktueller Anzahl an Feuerwehrleuten (nach fahrer Typ)
-     * @param vehicles Map von aktueller Anzahl an Fahrzeugen (nach Kategorie)
+     * @param aktuelleFm Map von aktueller Anzahl an Feuerwehrleuten (nach fahrer Typ)
+     * @param aktuelleFz Map von aktueller Anzahl an Fahrzeugen (nach Kategorie)
      *
      * @return gültige Einsatzparameter
      */
     boolean validEinsatzParameter(
             int[] einsatzParameter,
-            HashMap<String, Integer> firefighters,
-            HashMap<String, Integer> vehicles
+            HashMap<String, Integer> aktuelleFm,
+            HashMap<String, Integer> aktuelleFz
     ) {
         // Schritt 1
         String einsatzart = einsatzartMenuButton.getText();
@@ -465,8 +466,14 @@ public class UserController {
         // Schritt 3 - Aktuelle Ressourcen mit Einsatzparameter vergleichen
         // Für Feuerwehrleute
         int anzahlFeuerwehrleute = einsatzParameter[0];
-        // Wenn nicht genug Feuerwehrleute verfügbar
-        if (anzahlFeuerwehrleute > firefighters.get("Lkw-Fahrer") + firefighters.get("Pkw-Fahrer")) {
+        int anzahlLkwFahrer = einsatzParameter[2] + einsatzParameter[3] + einsatzParameter[4];
+        int anzahlAktuelleFm = aktuelleFm.get("Pkw-Fahrer") + aktuelleFm.get("Lkw-Fahrer");
+
+        // Es reicht wenn einer der beiden Fahrer Typen nicht ausreichen
+        boolean genugPkwFahrer = einsatzParameter[1] <= aktuelleFm.get("Pkw-Fahrer");
+        boolean genugLkwFahrer = anzahlLkwFahrer <= aktuelleFm.get("Lkw-Fahrer");
+
+        if (!(genugLkwFahrer || genugPkwFahrer) || anzahlAktuelleFm < anzahlFeuerwehrleute) {
             setLabelTextMessage(
                     einsatzErstellungMessage,
                     Color.RED,
@@ -476,7 +483,7 @@ public class UserController {
         }
         // Für Fahrzeuge
         int i = 1; // Anzahl der benötigten Fahrzeug startet ab dem 2. Element in einsatzParameter
-        for (int vehicleCount : vehicles.values()) {
+        for (int vehicleCount : aktuelleFz.values()) {
             if (einsatzParameter[i] > vehicleCount) {
                 setLabelTextMessage(
                         einsatzErstellungMessage,
@@ -589,8 +596,8 @@ public class UserController {
         String[] values = {
                 String.valueOf(einsatz.id),
                 einsatz.einsatzart,
-                String.valueOf(einsatz.fmParameter.size()),
-                String.valueOf(einsatz.fzParameter.size())
+                String.valueOf(einsatz.anzahlFeuerwehrleute),
+                String.valueOf(einsatz.anzahlFahrzeuge)
         };
         fillTable(aktiveEinsatzTabelle, TABLE_COLUMNS, COLUMN_KEYS, values);
     }
@@ -708,20 +715,20 @@ public class UserController {
             int einsatzId = randomNumberInRange(0, 250);
             // Textfelder zurücksetzen
             setTextFieldValues(einsatzTextfelder, new int[einsatzTextfelder.length]);
-            // Teamerstellung
+            // Teamerstellung, basierend auf einsatzParameter[]
             HashMap<Integer, Feuerwehrmann> fmTeam = new HashMap<>();
             HashMap<Integer, Fahrzeug> fzTeam = new HashMap<>();
 
-            // Basierend auf Einsatz parameter das Team-Mitglieder und Fahrzeuge aussuchen
-            // Ermittlung von anzahl an Fahrern für den Einsatz
-            int fahrerAnzahl = 0;
-            for (int i = 1; i < einsatzParameter.length; i++) fahrerAnzahl += einsatzParameter[i];
-            // Nur für Einsatzleitfahrzeuge sind Pkw-Fahrer benötigt
+            int anzahlFm = einsatzParameter[0];
+            // Ermittlung von anzahl an benötigten Fahrern für den Einsatz
+            int minAnzahlFahrer = 0;
+            for (int i = 1; i < einsatzParameter.length; i++) minAnzahlFahrer += einsatzParameter[i];
+            // Das 2. Element im einsatzParameter Array ist immer die Anzahl von Einsatz-Leitfahrzeugen
             int neededPkwFahrer = einsatzParameter[1];
             // gesamte Fahrer Anzahl - anzahl An Pkw Fahrern
-            int neededLkwFahrer = fahrerAnzahl - neededPkwFahrer;
+            int neededLkwFahrer = minAnzahlFahrer - neededPkwFahrer;
 
-            // Es wird solange nach verfügbaren Feuerwehrleuten gesucht bis die nötige Anzahl erreicht ist
+            // Es wird solange nach verfügbaren Pkw-Fahrer gesucht bis die nötige Anzahl erreicht ist
             // Für Pkw-Fahrer
             for (Feuerwehrmann fm: team) {
                 // Wenn ein Pkw-Fahrer verfügbar ist wird er eingesetzt
@@ -731,7 +738,7 @@ public class UserController {
                     fmTeam.put(fm.id, fm);
                 }
                 // Suche wird beendet fall die nötige Anzahl an Pkw-Fahrern erreicht wurde
-                if (fmTeam.size() == (fahrerAnzahl - neededLkwFahrer)) break;
+                if (fmTeam.size() == (minAnzahlFahrer - neededLkwFahrer)) break;
             }
             // Für Lkw-Fahrer (gleiches Prinzip)
             for (Feuerwehrmann fm: team) {
@@ -741,10 +748,21 @@ public class UserController {
                     fmTeam.put(fm.id, fm);
                 }
                 // Suche wird beendet falls die nötige Anzahl an Lkw-Fahrern erreicht wurde
-                if (fmTeam.size() == fahrerAnzahl) break;
+                if (fmTeam.size() == minAnzahlFahrer) break;
+            }
+            // Für die restlichen Feuerwehrleute wo der Fahrertyp keine Rolle mehr spielt
+            // Falls nicht schon die benötigte Anzahl an Feuerwehrleuten erreicht ist
+            if (fmTeam.size() != anzahlFm) {
+                for (Feuerwehrmann fm: team) {
+                    if (fm.verfuegbar) {
+                        fm.verfuegbar = false;
+                        fmTeam.put(fm.id, fm);
+                    }
+                    if (fmTeam.size() == anzahlFm) break;
+                }
             }
             // Programm-Logikfehler falls die nötige Anzahl an Feuerwehrleuten nicht erreicht ist
-            if (fmTeam.size() != fahrerAnzahl) {
+            if (fmTeam.size() != anzahlFm) {
                 throw new AssertionError("Nicht genug Feuerwehrleute im Team!");
             }
             // Ressourcen Anzeige für Feuerwehrleute aktualisieren
@@ -775,8 +793,8 @@ public class UserController {
                     if (anzahl == count) break;
                 }
             }
-            // Proramm-Logik Fehler
-            if (fzTeam.size() != fahrerAnzahl) {
+            // Proramm-Logik Fehler, es müssen genau so viele Fahrzeug wie Fahrer für die Fahrzeuge vorhanden sein
+            if (fzTeam.size() != minAnzahlFahrer) {
                 throw new AssertionError("Nicht genug Feuerwehrleute im Team!");
             }
             // Ressourcen Anzeige aktualisieren
@@ -785,11 +803,11 @@ public class UserController {
             // Einsatz Objekt wird basierend auf die Parameter (fzTeam, fmTeam) erstellt
             Einsatz einsatz = new Einsatz(einsatzId, einsatzart, fmTeam, fzTeam);
             // Einsatz Tabelle wird aktualisiert
+            aktiveEinsaetze.put(einsatz.id, einsatz);
             updateActiveOperationsTable(einsatz);
             // Sonderattribute der Fahrzeuge im Einsatz werden generiert
             HashMap<Integer, String> sonderattribute = generateSpecialAttributes(fzTeam);
             updateSpecialAttributesTable(fzTeam, sonderattribute);
-
 
         }
     }

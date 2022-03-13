@@ -86,8 +86,8 @@
                            <TableView fx:id="aktiveFahrzeugTabelle" layoutX="612.0" layoutY="41.0" prefHeight="288.0" prefWidth="467.0">
                              <columns>
                                <TableColumn fx:id="aktiveFahrzeugId" prefWidth="31.0" text="ID" />
-                               <TableColumn fx:id="aktiveFahrzeugKategorie" prefWidth="135.0" text="Kategorie" />
-                                 <TableColumn fx:id="aktiveFahrzeugSonderattribut" prefWidth="236.0" text="Sonderattribut" />
+                               <TableColumn fx:id="aktiveFahrzeugKategorie" prefWidth="141.0" text="Kategorie" />
+                                 <TableColumn fx:id="aktiveFahrzeugSonderattribut" prefWidth="230.0" text="Sonderattribut" />
                                  <TableColumn fx:id="aktiveFahrzeugEinsatzId" minWidth="0.0" prefWidth="63.0" text="Einsatz ID" />
                              </columns>
                            </TableView>

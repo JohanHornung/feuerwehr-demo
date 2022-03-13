@@ -5,8 +5,8 @@ import java.util.HashMap;
 public class Einsatz {
     public int id;
     public String einsatzart;
-    public HashMap<Integer, Feuerwehrmann> fmParameter;
-    public HashMap<Integer, Fahrzeug> fzParameter;
+    public HashMap<Integer, Feuerwehrmann> fmTeam;
+    public HashMap<Integer, Fahrzeug> fzTeam;
     public int anzahlFeuerwehrleute;
     public int anzahlFahrzeuge;
 
@@ -27,12 +27,14 @@ public class Einsatz {
     public Einsatz(
             int id,
             String einsatzart,
-            HashMap<Integer, Feuerwehrmann> fmParameter,
-            HashMap<Integer, Fahrzeug> fzParameter
+            HashMap<Integer, Feuerwehrmann> fmTeam,
+            HashMap<Integer, Fahrzeug> fzTeam
     ) {
         this.id = id;
         this.einsatzart = einsatzart;
-        this.fmParameter = fmParameter;
-        this.fzParameter = fzParameter;
+        this.fmTeam = fmTeam;
+        this.fzTeam = fzTeam;
+        this.anzahlFeuerwehrleute = fmTeam.size();
+        this.anzahlFahrzeuge = fzTeam.size();
     }
 }
