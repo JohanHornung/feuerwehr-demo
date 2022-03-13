@@ -394,8 +394,9 @@ public class UserController {
      *
      * @param currentParameter aktuellen Parameter
      * @param minParameter minimalen Parameter
+     * @return true sobald ein Wert in den aktuellen Parameter kleiner ist als der Wert der minimalen Parameter
      */
-    boolean lowerValues(int[] currentParameter, int[] minParameter) {
+    boolean lowerValue(int[] currentParameter, int[] minParameter) {
         assert currentParameter.length == minParameter.length : "Unterschiedlich viele Elemente in den Arrays";
         for (int i = 0; i < currentParameter.length; i++) {
             if (currentParameter[i] < minParameter[i]) return true;
@@ -426,7 +427,7 @@ public class UserController {
      * @param aktuelleFm Map von aktueller Anzahl an Feuerwehrleuten (nach fahrer Typ)
      * @param aktuelleFz Map von aktueller Anzahl an Fahrzeugen (nach Kategorie)
      *
-     * @return gültige Einsatzparameter
+     * @return true wenn die vom Nutzer in die Text Felder eingegebene Parameter gültig sind
      */
     boolean validEinsatzParameter(
             int[] einsatzParameter,
@@ -435,6 +436,7 @@ public class UserController {
     ) {
         // Schritt 1
         String einsatzart = einsatzartMenuButton.getText();
+        // Keine Einsatzart ausgewählt
         if (einsatzart.equals("Einsatzart auswählen")) {
             // Entsprechender Hinweis wird ausgegeben
             setLabelTextMessage(
@@ -443,13 +445,21 @@ public class UserController {
                     "Keine Einsatzart ausgewählt!"
             );
             return false;
+        // Falls kein Einsatz mehr erstellbar ist
+        } else if (einsatzart.equals("Kein neuer Einsatz mehr erstellbar!")) {
+            setLabelTextMessage(
+                    einsatzErstellungMessage,
+                    Color.RED,
+                    "Kein neuer Einsatz mehr erstellbar!"
+            );
+            return false;
         }
         // Schritt 2
 
         int einsatzIndex = Arrays.asList(Einsatz.einsatzarten).indexOf(einsatzart);
         int[] minParameter = Einsatz.minParameter[einsatzIndex];
         // Wenn die angegebenen Parameter nicht der minimalen Parameter entsprechen
-        if (lowerValues(einsatzParameter, minParameter)) {
+        if (lowerValue(einsatzParameter, minParameter)) {
             setLabelTextMessage(
                     einsatzErstellungMessage,
                     Color.RED,
@@ -632,12 +642,45 @@ public class UserController {
 
     /**
      * Aktualisiert die Auswahl an Verfügbaren Einsatzarten im GUI (MenuButton Dropdown)
+     *
+     * @author Johan Hornung
      * @param team an Feuerwehrmänner
      * @param garage an Fahrzeugen
      */
     void updateEinsatzAuswahl(Feuerwehrmann[] team, Fahrzeug[] garage) {
+        // Standard-Auswahl an Einsätzen (respektive Reihenfolge)
+        MenuItem[] einsatzartAuswahl = {
+                wohnungsbrandButton,
+                verkehrsunfallButton,
+                naturkatastropheButton,
+                industrieunfallButton
+        };
         // Vergleich der aktuellen Ressourcen mit der minimalen Ressourcenanforderungen pro Einsatzart
+        LinkedHashMap<String, Integer> firefighters = countFirefighters(team);
+        LinkedHashMap<String, Integer> vehicles = countVehicles(garage);
+        int[][] minParameter = Einsatz.minParameter;
 
+        // Ein vergleichbares Array aus den aktuellen Ressourcen wird produziert
+        int[] aktuelleRessourcen = new int[minParameter[1].length];
+        // Gesamte Anzahl der verfügbaren Feuerwehrleute
+        aktuelleRessourcen[0] = firefighters.get("Pkw") + firefighters.get("Lkw");
+        // Gesamte Anzahl der Verfügbaren Fahrzeuge
+        for (int i = 1; i < aktuelleRessourcen.length; i++) {
+            aktuelleRessourcen[i] = vehicles.get(Fahrzeug.fahrzeugKategorien[i-1]);
+        }
+
+        // Vergleich mit minimalen Ressourcen für jede Einsatzart
+        int anzahlVerfuegbar = Einsatz.einsatzarten.length; // Es sind erstmal alle Einsatzarten verfügbar
+        for (int i = 0; i < minParameter.length; i++) {
+            if (lowerValue(aktuelleRessourcen, minParameter[i])) {
+                // Einsatzart-Option nicht mehr verfügbar
+//                System.out.println(Einsatz.einsatzarten[i] + " nicht mehr verfügbar!");
+                einsatzartAuswahl[i].setVisible(false);
+                anzahlVerfuegbar--;
+            }
+        }
+        // Falls die Ressourcen für keine Einsatzart mehr ausreichen (= Keine Einsatzarten sind mehr verfügbar)
+        if (anzahlVerfuegbar == 0) einsatzartMenuButton.setText("Kein neuer Einsatz mehr erstellbar!");
     }
     // TODO: 11.03.22 JavDoc für createEinsatz()
     /**
@@ -793,8 +836,10 @@ public class UserController {
                 anzahlMTTextField,
                 anzahlLWTextField,
         };
-        // Menü Button wird zurückgesetzt
-        einsatzartMenuButton.setText("Einsatzart auswählen");
+        // Menü Button wird zurückgesetzt falls noch neue Einsätze möglich sind
+        if (!einsatzartMenuButton.getText().equals("Kein neuer Einsatz mehr erstellbar!")) {
+            einsatzartMenuButton.setText("Einsatzart auswählen");
+        }
         // "Feedback-Naricht" zur Einsatzerstellung wird zurückgesetzt
         einsatzErstellungMessage.setText("");
         // Text Felder werden zurückgesetzt
