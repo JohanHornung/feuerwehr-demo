@@ -43,7 +43,7 @@
                <Label layoutX="833.0" layoutY="80.0" prefHeight="33.0" prefWidth="130.0" text="Tank-Löschfahrzeuge" />
                <Label layoutX="650.0" layoutY="161.0" prefHeight="33.0" prefWidth="146.0" text="Mannschaftstransporter" />
                <Label layoutX="858.0" layoutY="161.0" prefHeight="33.0" prefWidth="80.0" text="Leiterwagen" />
-               <Label fx:id="einsatzErstellungMessage" layoutX="245.0" layoutY="178.0" prefHeight="18.0" prefWidth="392.0" style="-fx-font-weight: bold;" />
+               <Label fx:id="einsatzErstellungMessage" layoutX="245.0" layoutY="145.0" prefHeight="58.0" prefWidth="380.0" style="-fx-font-weight: bold;" />
             </children>
          </AnchorPane>
          <TabPane layoutY="204.0" prefHeight="515.0" prefWidth="1080.0" tabClosingPolicy="UNAVAILABLE">
@@ -92,8 +92,7 @@
                              </columns>
                            </TableView>
                            <Label id="title" layoutX="612.0" layoutY="6.0" prefHeight="33.0" prefWidth="136.0" style="-fx-font-weight: bold;" text="Fahrzeuge im Einsatz" />
-                           <Button fx:id="einsatzBeendenSubmit" layoutX="427.0" layoutY="388.0" mnemonicParsing="false" onAction="#onDeleteOperationClick" prefHeight="33.0" prefWidth="173.0" text="Einsatz beenden" />
-                           <TextField fx:id="einsatzIdBeenden" layoutX="427.0" layoutY="346.0" prefHeight="26.0" prefWidth="110.0" promptText="Einsatz ID" />
+                           <Button fx:id="einsatzBeendenSubmit" layoutX="369.0" layoutY="388.0" mnemonicParsing="false" onAction="#onDeleteOperationClick" prefHeight="33.0" prefWidth="220.0" text="Ausgewählten Einsatz beenden" />
                         </children>
                      </AnchorPane>
                </content>

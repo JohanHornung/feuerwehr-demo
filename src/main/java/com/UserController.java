@@ -690,15 +690,21 @@ public class UserController {
         // Vergleich mit den für jede Einsatzart minimal erforderlichen Ressourcen
         int anzahlVerfuegbar = Einsatz.einsatzarten.length; // Es sind erstmal alle Einsatzarten verfügbar
         for (int i = 0; i < minParameter.length; i++) {
+            MenuItem einsatzart = einsatzartAuswahl[i];
             if (lowerValue(aktuelleRessourcen, minParameter[i])) {
                 // Einsatzart-Option nicht mehr verfügbar
 //                System.out.println(Einsatz.einsatzarten[i] + " nicht mehr verfügbar!");
-                einsatzartAuswahl[i].setVisible(false);
+                einsatzart.setVisible(false);
                 anzahlVerfuegbar--;
+            } else {
+                // Einsatzart-Option wieder verfügbar
+                einsatzart.setVisible(true);
+                einsatzartMenuButton.setText("Einsatzart auswählen");
             }
         }
         // Falls die Ressourcen für keine Einsatzart mehr ausreichen (= Keine Einsatzarten sind mehr verfügbar)
         if (anzahlVerfuegbar == 0) einsatzartMenuButton.setText("Kein neuer Einsatz mehr erstellbar!");
+
     }
     /**
      * 1. Überprüft die Gültigkeit der Einsatzparameter (@see validEinsatzParameter())
@@ -824,8 +830,50 @@ public class UserController {
             updateSpecialAttributesTable(fzTeam, sonderattribute);
         }
     }
+
+    /**
+     * Einsatz Item wird aus allen Einträgen gelöscht, Ressourcen sind wieder verfügbar
+     *
+     * @author Johan Hornung, Luca Langer
+     * @param einsatzMap Map Objekt vom Einsatz (nicht Einsatz Objekt!) welches in die Tabelle geschrieben wurde
+     */
+    public void deleteEinsatz(Map<String, String> einsatzMap) {
+        int einsatzId = Integer.parseInt(einsatzMap.get("id"));
+        // Einsatz wird aus der Tabelle der aktiven Einsätze gelöscht
+        aktiveEinsatzTabelle.getItems().removeAll(einsatzMap);
+        // Tabelle der aktiven Fahrzeuge
+        ObservableList<Map<String, String>> items = aktiveFahrzeugTabelle.getItems();
+        // Suche Reihenweise in Tabelle
+        // Wenn das Fahrzeug dem in dem zu löschenden Einsatz eingesetzt wurde wird es gelöscht
+        items.removeIf(fahrzeug -> Integer.parseInt(fahrzeug.get("einsatzId")) == einsatzId);
+
+        // Ressourcen (Fahrzeuge und Feuerwehrleute) sind wieder verfügbar
+        // Einsatz Objekt mit dazugehörigen Parametern, @see createEinsatz
+        Einsatz einsatz = aktiveEinsaetze.get(einsatzId);
+
+        // Fahrzeuge
+        for (int fahrzeugId: einsatz.fzTeam.keySet()) {
+            // NOTICE: Index vom Fahrzeug in der garage[] ist auch die id von diesem Fahrzeug, @see fillResources()
+            // Fahrzeug ist wieder verfügbar
+            garage[fahrzeugId].verfuegbar = true;
+        }
+        // Feuerwehrmänner
+        for (int fmId: einsatz.fmTeam.keySet()) {
+            // NOTICE: Gleiches Prinzip wie bei Fahrzeugen
+            // Feuerwehrmann ist wieder verfügbar
+            team[fmId].verfuegbar = true;
+        }
+
+        // Ressourcenanzeige wird aktualisiert
+        displayResources(team, garage);
+        // Einsatzauswahl wird aktualisiert
+        updateEinsatzAuswahl(team, garage);
+        // Einsatz wird aus HashMap der aktiven Einsätze gelöscht
+        aktiveEinsaetze.remove(einsatzId);
+
+    }
     /*
-    //////////////////////////// JAVAFX EVENT-BASIERTE METHODEN /////////////////////////////////
+    //////////////////////////// JAVAFX EVENT METHODEN /////////////////////////////////
      */
     @FXML
     void fillIndustrieunfallParameter(ActionEvent event) {
@@ -889,8 +937,31 @@ public class UserController {
 
     @FXML
     void onDeleteOperationClick(ActionEvent event) {
-        // TODO: 10.03.22 Algorithmus für Einsatzbeendung schreiben
-
+        // Daten-Objekt (Einsatz Map) welches in die Tabelle geschrieben wurde wird ausgelesen, @see fillTable()
+        Map<String, String> einsatzMap = aktiveEinsatzTabelle.getSelectionModel().getSelectedItem();
+        // Es gibt keine laufenden Einsätze
+        if (aktiveEinsaetze.isEmpty()) {
+            setLabelTextMessage(
+                    einsatzErstellungMessage,
+                    Color.RED,
+                    "Es gibt keine aktiven Einsätze!"
+            );
+        // Nutzer hat kein Einsatz in der Tabelle ausgewählt
+        } else if (einsatzMap == null) {
+            setLabelTextMessage(
+                    einsatzErstellungMessage,
+                    Color.RED,
+                    "Es wurde kein Einsatz ausgewählt!"
+            );
+        } else {
+            setLabelTextMessage(
+                    einsatzErstellungMessage,
+                    Color.GREEN,
+                    "Einsatz Nummer " + einsatzMap.get("id") + " erfolgreich gelöscht. " +
+                            "Ressourcen werden wieder freigegeben."
+            );
+            deleteEinsatz(einsatzMap); // vorhandener Einsatz wird gelöscht
+        }
     }
     @FXML
     void closeButtonAction(){

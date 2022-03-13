@@ -1,7 +1,5 @@
 package com;
 
-import java.util.Scanner;
-
 public class Feuerwehrmann {
     int id;
     boolean verfuegbar; 
@@ -9,9 +7,11 @@ public class Feuerwehrmann {
 
     /**
      *
-     * @param id
-     * @param verfuegbar
-     * @param fahrerTyp
+     * @param id macht Feuerwehrmann Objekt eindeutig identifizierbar
+     * @param verfuegbar gibt an ob ein Feuerwehrmann eingesetzt werden kann
+     * @param fahrerTyp manche Fahrzeuge können nur von gewissen Fahrer Typen
+     *                  gefahren werden
+     * @see Fahrzeug
      */
     public Feuerwehrmann(int id, boolean verfuegbar, String fahrerTyp) {
         this.id = id;
