@@ -1,4 +1,4 @@
-package com.feuerwehrdemo;
+package com;
 
 import java.util.Scanner;
 

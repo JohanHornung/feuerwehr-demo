@@ -7,6 +7,6 @@ module com.feuerwehrdemo {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
 
-    opens com.feuerwehrdemo to javafx.fxml;
-    exports com.feuerwehrdemo;
+    opens com to javafx.fxml;
+    exports com;
 }

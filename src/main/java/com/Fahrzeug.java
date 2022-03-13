@@ -1,4 +1,4 @@
-package com.feuerwehrdemo;
+package com;
 
 public class Fahrzeug {
     public enum Kategorie {
@@ -7,12 +7,13 @@ public class Fahrzeug {
         MANNSCHAFTSTRANSPORTER,
         LEITERWAGEN
     };
-
+//
     public int id;
     public String kategorie;
     public boolean verfuegbar;
     public String klasse;
     public int anzahlFeuerwehrleute;
+    public int einsatzId;
     // Array von Fahrzeugkategorien als Strings
     public static String[] fahrzeugKategorien = {
             "Einsatz-Leitfahrzeug",
