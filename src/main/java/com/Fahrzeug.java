@@ -26,7 +26,7 @@ public class Fahrzeug {
 
     /**
      *
-     * @param id
+     * @param id macht Fahrzeug Objekt eindeutig identifizierbar
      * @param kategorie
      * @param verfuegbar
      */

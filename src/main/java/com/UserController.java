@@ -14,18 +14,28 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.MapValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
 import javafx.stage.Stage;
 
 import java.util.*;
 
 public class UserController {
-    // Feste Anzahl von Ressourcen
-    public final int FIREFIGHTER_CAP = 80;
-    public final int VEHICLES_CAP = 18;
-    // Array aus möglichen Dienstgraden für Einsatz-Leitfahrzeuge
-    // (https://de.wikipedia.org/wiki/Dienstgrade_der_Feuerwehr_in_Hessen#Dienstgrade)
-    public final String[] DIENSTGRADE = {
+    /**
+     * Feste Anzahl von am Anfang generierten Feuerwehrmännern
+     */
+    private final int FIREFIGHTER_CAP = 80;
+    /**
+     * Feste Anzahl von am Anfang generierten Fahrzeugen
+     */
+    private final int VEHICLES_CAP = 18;
+    /**
+     * Array aus möglichen Dienstgraden für Einsatz-Leitfahrzeuge
+     * (https://de.wikipedia.org/wiki/Dienstgrade_der_Feuerwehr_in_Hessen#Dienstgrade)
+     */
+    private final String[] DIENSTGRADE = {
             "Feuerwehrmann",
             "Oberfeuerwehrmann",
             "Löschmeister",
@@ -34,7 +44,25 @@ public class UserController {
             "Hauptlöschmeister"
 
     };
+    /**
+     * Array von 80 Feuerwehrleuten
+     * @see Feuerwehrmann
+     */
+    private Feuerwehrmann[] team = new Feuerwehrmann[FIREFIGHTER_CAP];
+    /**
+     * Array von 18 Fahrzeugen
+     * @see Fahrzeug
+     */
+    private Fahrzeug[] garage = new Fahrzeug[VEHICLES_CAP];
+    /**
+     * Eintrag für laufende Einsätze (Einsatz ID: Einsatz Objekt)
+     * @see Einsatz
+     */
+    private HashMap<Integer, Einsatz> aktiveEinsaetze = new HashMap<>();
 
+    /*
+                        GUI Elemente (javaFX)
+     */
     @FXML
     private TableView<Map<String, String>> aktiveEinsatzTabelle;
 
@@ -65,6 +93,14 @@ public class UserController {
     @FXML
     private TableColumn<Map, String> aktiveFahrzeugSonderattribut;
 
+    @FXML
+    private AnchorPane anchorBestandFahrzeuge;
+
+    @FXML
+    private AnchorPane anchorBestandLkw;
+
+    @FXML
+    private AnchorPane anchorBestandPkw;
 
     @FXML
     private TextField anzahlELFTextField;
@@ -80,15 +116,6 @@ public class UserController {
 
     @FXML
     private TextField anzahlTLTextField;
-
-    @FXML
-    private Button einsatzBeendenSubmit;
-
-    @FXML
-    private Button einsatzErstellenSubmit;
-
-    @FXML
-    private Button einsatzParameterResetButton;
 
     @FXML
     private Button closeButton;
@@ -130,37 +157,32 @@ public class UserController {
     @FXML
     private MenuItem naturkatastropheButton;
 
-    private Feuerwehrmann[] team = new Feuerwehrmann[FIREFIGHTER_CAP];
-    private Fahrzeug[] garage = new Fahrzeug[VEHICLES_CAP];
-    private HashMap<Integer, Einsatz> aktiveEinsaetze = new HashMap<>();
 
     @FXML
     /**
      * Wird bei Initialisierung von App.main() ausgeführt
      */
     void initialize() {
-        // Feuerwehrleute & Fahrzeuge werden initialisiert, Erstellung und Befüllung eines Arrays
-        // mit Feuerwehrmännern und Fahrzeugen)
+        // Feuerwehrleute & Fahrzeuge werden initialisiert
         fillResources(team, garage);
         // Ressourcen werden aktualisiert und angezeigt
         displayResources(team, garage);
     }
-
     /**
-     * Methode welche die initialen Einsatzressourcen (Fahrzeuge + Feuerwehrleute) konfiguriert
+     * Konfiguriert die initialen Einsatzressourcen (Fahrzeuge + Feuerwehrleute)
      *
      * @author Johan Hornung, Luca Langer
-     * @param team Array von Feuerwehrleuten (Feuerwehrmann Objekt) wird befüllt
+     * @param team Array von Feuerwehrleuten
      * @see Feuerwehrmann
-     * @param garage Array von Fahrzeugen (Fahrzeug Objekt) wird befüllt
+     * @param garage Array von Fahrzeugen
      * @see Fahrzeug
      */
     public void fillResources(Feuerwehrmann[] team, Fahrzeug[] garage) {
-        // Feuerwehrleute
+        // Erstellung der Feuerwehrmann-Objekte
         // 70 Pkw-Fahrer
         String fahrerTyp = "Pkw";
         for (int i = 0; i < FIREFIGHTER_CAP; i++) {
-            // Feuerwehrmann ID ist der index im sich befindenden Array
+            // Die ID vom Feuerwehrmann ist der index im team Array
             team[i] = new Feuerwehrmann(i, true, fahrerTyp);
             // i = (FIREFIGHTER_CAP - 11) = 69 bei i = 0 -> 70 Pkw-Fahrer
             if (i >= FIREFIGHTER_CAP - 11) {
@@ -168,24 +190,25 @@ public class UserController {
                 fahrerTyp = "Lkw";
             };
         }
-        // Erstellung der Fahrzeuge in die Garage
-        // key:Fahrzeugkategorie, value: anzahl der vefügbaren Fahrzeuge für die Kategorie
-        HashMap<String, Integer> anzahlVerfuegbar = new HashMap<>();
+        // Erstellung der Fahrzeug-Objekte
+
+        // Hashmap mit Anzahl der verfügbaren Fahrzeuge (value) pro Kategorie (key)
+        LinkedHashMap<String, Integer> fahrzeugAnzahl = new LinkedHashMap<>();
         for (int i = 0; i < Fahrzeug.fahrzeugKategorien.length; i++) {
-            anzahlVerfuegbar.put(Fahrzeug.fahrzeugKategorien[i], Fahrzeug.fahrzeugAnzahl[i]);
+            fahrzeugAnzahl.put(Fahrzeug.fahrzeugKategorien[i], Fahrzeug.fahrzeugAnzahl[i]);
         }
         int start = 0;
         int currentAmount = 0;
         // Für jede Kategorie wird eine bestimmte Anzahl an Fahrzeugen generiert
         for (String category: Fahrzeug.fahrzeugKategorien) {
-            // Temporäre Anzahl der zu erstellenden Fahrzeuge
-            currentAmount += anzahlVerfuegbar.get(category);
-            // Fahrzeug ID ist der index im sich befindenden Array
+            // Temporäre Anzahl der zu erstellenden Fahrzeuge (pro Kategorie)
+            currentAmount += fahrzeugAnzahl.get(category);
+            // Gewünschte Anzahl an Fahrzeuge wird pro Kategorie erstellt
             for (int i = start; i < currentAmount; i++) {
-                // Gewünschte Anzahl an Fahrzeuge wird pro Kategorie erstellt
+                // Fahrzeug ID ist der index im garagen Array
                 garage[i] = new Fahrzeug(i, category, true);
             }
-            // Neuer "Einstiegspunkt" im Array garage für nächste Kategorie
+            // Neuer "Index-Einstiegspunkt" in der garage[] für nächste Kategorie
             start += (currentAmount - start);
         }
     }
@@ -195,9 +218,9 @@ public class UserController {
      * und schreibt diese in die Text Felder der GUI.
      *
      * @author Johan Hornung
-     * @param team von Feuerwehrleuten, Objekte der Feuerwehrmann Klasse
+     * @param team von Feuerwehrleuten
      * @see Feuerwehrmann
-     * @param garage von Fahrzeugen, Objekte der Fahrzeug Klasse
+     * @param garage von Fahrzeugen
      * @see Fahrzeug
      */
     public void displayResources(Feuerwehrmann[] team, Fahrzeug[] garage) {
@@ -233,22 +256,23 @@ public class UserController {
      * Methode zählt verfügbare Fahrzeuge pro Kategorie durch
      *
      * @author Luca Langer
-     * @param garage Array von Fahrzeugen (Fahrzeug Objekt)
+     * @param garage Array von Fahrzeugen
      * @see Fahrzeug
      * @return Hashmap mit Anzahl der verfügbaren Fahrzeuge (value) pro Kategorie (key)
      */
     // Durchzählen von verfügbaren Fahrzeugen (pro Kategorie)
     public LinkedHashMap<String, Integer> countVehicles(Fahrzeug[] garage) {
+        // Hashmap mit Anzahl der verfügbaren Fahrzeuge (value) pro Kategorie (key)
         LinkedHashMap<String, Integer> vehicleCount = new LinkedHashMap<>();
-        // initialisierung
+        // Start bei 0
         for (int i = 0; i < Fahrzeug.fahrzeugKategorien.length; i++) {
             vehicleCount.put(Fahrzeug.fahrzeugKategorien[i], 0);
         }
-        // Iteration durch jedes Fahrzeug in der Garage
+        // Die Verfügbarkeit wird bei jedem Fahrzeug überprüft
         for (Fahrzeug fahrzeug: garage) {
-            // Wenn das Fahrzeug nicht verfügbar ist wird es ignoriert
+            // Wenn das Fahrzeug nicht verfügbar ist wird es nicht dazugezählt
             if (fahrzeug.verfuegbar) {
-                // Die jeweilige Anzahl Fahrzeugkategorie wird um 1 erhöht
+                // Anzahl der Fahrzeugkategorie wird um 1 erhöht
                 vehicleCount.replace(fahrzeug.kategorie, vehicleCount.get(fahrzeug.kategorie) + 1);
             }
         }
@@ -258,30 +282,31 @@ public class UserController {
      * Methode zählt verfügbare Feuerwehrmänner pro fahrer Typ durch
      *
      * @author Luca Langer
-     * @param team Array von Feuerwehrleuten (Feuerwehrmann Objekten)
+     * @param team Array von Feuerwehrleuten
      * @see Feuerwehrmann
      * @return Hashmap mit Anzahl der verfügbaren Feuerwehrmänner (value) pro fahrer Typ (key)
      */
     public LinkedHashMap<String, Integer> countFirefighters(Feuerwehrmann[] team) {
+        // Hashmap mit Anzahl der verfügbaren Feuerwehrleute (value) pro Fahrer-Typ (key)
         LinkedHashMap<String, Integer> firefighters = new LinkedHashMap<>();
         // Start bei 0
         firefighters.put("Lkw", 0);
         firefighters.put("Pkw", 0);
-
-        for (int i = 0; i < team.length; i++) {
-            if (team[i].verfuegbar) {
+        // Gleiches Prinzip wie bei countVehicles()
+        for (Feuerwehrmann fm: team) {
+            if (fm.verfuegbar) {
                 // Erhöhung der Anzahl des jeweiligen Fahrer Typs um 1
-                firefighters.replace(team[i].fahrerTyp, firefighters.get(team[i].fahrerTyp) + 1);
+                firefighters.replace(fm.fahrerTyp, firefighters.get(fm.fahrerTyp) + 1);
             }
         }
         return firefighters;
     };
     /**
-     * Methode zum automatischen Ausfüllen der mininmalen Einsatzparameter in die
+     * Methode zum automatischen Ausfüllen der mininmal nötigen Einsatzparameter in die
      * jeweiligen Textfelder
      *
      * @author Johan Hornung
-     * @param einsatzart String gewählte Einsatzart
+     * @param einsatzart vom Nutzer ausgewählte Einsatzart
      * @see Einsatz
      */
     public void fillMinEinsatzParameter(String einsatzart) {
@@ -345,15 +370,16 @@ public class UserController {
     }
 
     /**
-     * Liest Werte in aus Text Feldern aus und in ein Array abgespeichert
+     * Liest Werte aus Text Feldern aus und speichert diese in ein Array
      *
      * @param textFelder Array von Text Feldern dessen Werte ausgelesen werden
-     * @return Array der numerischen Einsatzparametern
+     * @return Array der numerischen Werte (Einsatzparameter)
      */
     public int[] getTextFieldValues(TextField[] textFelder) {
+        // Output Array
         int[] einsatzParameter = new int[textFelder.length];
 
-        // jeder Wert aus dem Text Feld wird ausgelesen und in einsatzParameter abgespeichert
+        // jeder Wert aus dem Text Feld wird ausgelesen und abgespeichert
         for (int i = 0; i < textFelder.length; i++) {
             try {
                 String value = textFelder[i].getText();
@@ -364,7 +390,10 @@ public class UserController {
                             "Keine validen Parameter Werte!"
                     );
                 }
-                einsatzParameter[i] = Integer.parseInt(value);
+                // Werte der Text Felder sind Strings
+                int number = Integer.parseInt(value);
+                einsatzParameter[i] = number;
+
             } catch (NumberFormatException nfe) {
                 setLabelTextMessage(
                         einsatzErstellungMessage,
@@ -375,10 +404,9 @@ public class UserController {
         }
         return einsatzParameter;
     }
-
     /**
-     * Die vom Nutzer ausgewählte Einsatzart wird im Menu Button (GUI) angezeigt.
-     * Es werden die minimalen Einsatzparameter für die Einsatzart eingesetzt.
+     * Zeigt die vom Nutzer ausgewählte Einsatzart im Menu Button (GUI). Füllt Einsatzparameter
+     * in die Text Felder.
      *
      * @author Luca Langer
      * @param menuItem dessen Wert ausgelesen wird und im Menü Button angezeigt wird
@@ -388,10 +416,12 @@ public class UserController {
         String einsatzart = menuItem.getText();
         // ausgewählte Einsatzart im Menu button anzeigen
         einsatzartMenuButton.setText(einsatzart);
-        // Minimalen Einsatzparameter für die Einsatzart
+        // Es werden die minimalen Einsatzparameter für die Einsatzart eingesetzt.
         fillMinEinsatzParameter(einsatzart);
     }
     /**
+     * Generiert eine zufällige Ganzzahl zwischen min und max.
+     *
      * @author Luca Langer
      * @param min inklusiv
      * @param max inklusiv
@@ -401,7 +431,7 @@ public class UserController {
         return new Random().nextInt((max - min) + 1) + min;
     }
     /**
-     * Gibt an, ob mindestens ein Wert in currentParameter an der gleichen Stelle kleiner ist als in minParameter.
+     * Gibt an, ob mindestens ein Wert in currentParameter (an der gleichen Stelle) kleiner ist als in minParameter.
      *
      * @param currentParameter aktuellen Parameter
      * @param minParameter minimalen Parameter
@@ -416,7 +446,7 @@ public class UserController {
     }
 
     /**
-     * Fügt in gewünschtes Text Feld den gewünschten Text ein in gewünschter Farbe
+     * Fügt in gewünschtes Text Feld den gewünschten Text in gewünschter Farbe ein.
      *
      * @author Moritz Schmidt
      * @param label Text Feld
@@ -425,15 +455,18 @@ public class UserController {
      */
     public void setLabelTextMessage(Label label, Color color, String message) {
         label.setTextFill(color);
-//        label.setStyle("-fx-font-style: italic");
+        // Fonts
+        FontPosture fontPosture = FontPosture.ITALIC;
+        Font messageFont = Font.font(String.valueOf(fontPosture));
+        label.setFont(messageFont);
         label.setText(message);
     }
 
     /**
-     * Eingegebene Einsatzparameter sind gültig wenn:
-     *      - Im Menü Button eine Einsatzart ausgewählt wurde (Schritt 1)
-     *      - Die minimalen Einsatzparameter angegeben wurden (Schritt 2)
-     *      - Die verfügbaren Einsatz Ressourcen ausreichen (Schritt 3)
+     * Eingegebene Einsatzparameter sind gültig wenn
+     * Im Menü Button eine Einsatzart ausgewählt wurde (Schritt 1).
+     * Die minimalen Einsatzparameter angegeben wurden (Schritt 2).
+     * Die verfügbaren Einsatz Ressourcen ausreichen (Schritt 3).
      *
      * @author Johan Hornung
      * @param einsatzParameter Array von numerischen Parametern
@@ -707,11 +740,11 @@ public class UserController {
 
     }
     /**
-     * 1. Überprüft die Gültigkeit der Einsatzparameter (@see validEinsatzParameter())
-     * 2. Erstellt das Team (Fahrzeuge + Feuerwehrleute) für den Einsatz
-     * 3. Aktualisiert Anzeigen für verfügbare Fahrzeuge und Feuerwehrleute
-     * 4. Erstellt ein neues Einsatz Objekt basierend auf Einsatzart und Einsatz-Parameter.
-     * 5. Generiert Sonderattribute für Fahrzeuge und Füllt/Aktualisiert Tabellen
+     * Überprüft die Gültigkeit der Einsatzparameter (@see validEinsatzParameter()).
+     * Erstellt das Team (Fahrzeuge + Feuerwehrleute) für den Einsatz.
+     * Aktualisiert Anzeigen für verfügbare Fahrzeuge und Feuerwehrleute.
+     * Erstellt ein neues Einsatz Objekt basierend auf Einsatzart und Einsatz-Parameter.
+     * Generiert Sonderattribute für Fahrzeuge und Füllt/Aktualisiert Tabellen.
      *
      * @author Johan Hornung
      * @param einsatzart
@@ -957,8 +990,8 @@ public class UserController {
             setLabelTextMessage(
                     einsatzErstellungMessage,
                     Color.GREEN,
-                    "Einsatz Nummer " + einsatzMap.get("id") + " erfolgreich gelöscht. " +
-                            "Ressourcen werden wieder freigegeben."
+                    "Einsatz Nummer " + einsatzMap.get("id") + " gelöscht. " +
+                            "Ressourcen werden freigegeben."
             );
             deleteEinsatz(einsatzMap); // vorhandener Einsatz wird gelöscht
         }
