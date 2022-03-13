@@ -205,8 +205,8 @@ public class UserController {
         // Durchzählen von verfügbaren Feuerwehrleuten (pro Fahrer Typ)
         LinkedHashMap<String, Integer> firefightersCount = countFirefighters(team);
         // Auslesen der Werte pro fahrer Typ
-        String anzahlLkwFahrer = firefightersCount.get("Lkw-Fahrer").toString();
-        String anzahlPkwFahrer = firefightersCount.get("Pkw-Fahrer").toString();
+        String anzahlLkwFahrer = firefightersCount.get("Lkw").toString();
+        String anzahlPkwFahrer = firefightersCount.get("Pkw").toString();
         // Text Felder ausfüllen
         verfuegbareLkwFahrer.setText(anzahlLkwFahrer);
         verfuegbarePkwFahrer.setText(anzahlPkwFahrer);
@@ -267,21 +267,16 @@ public class UserController {
      */
     public static LinkedHashMap<String, Integer> countFirefighters(Feuerwehrmann[] team) {
         LinkedHashMap<String, Integer> firefighters = new LinkedHashMap<>();
-        int LkwCount = 0;
-        int PkwCount = 0;
+        // Start bei 0
+        firefighters.put("Lkw", 0);
+        firefighters.put("Pkw", 0);
 
         for (int i = 0; i < team.length; i++) {
             if (team[i].verfuegbar) {
-                if (team[i].fahrerTyp == "Lkw") {
-                    LkwCount += 1;
-                } else {
-                    PkwCount += 1;
-                }
+                // Erhöhung der Anzahl des jeweiligen Fahrer Typs um 1
+                firefighters.replace(team[i].fahrerTyp, firefighters.get(team[i].fahrerTyp) + 1);
             }
         }
-        firefighters.put("Lkw-Fahrer", LkwCount);
-        firefighters.put("Pkw-Fahrer", PkwCount);
-
         return firefighters;
     };
     /**
@@ -292,7 +287,7 @@ public class UserController {
      * @param einsatzart String gewählte Einsatzart
      * @see Einsatz
      */
-    void fillEinsatzParameter(String einsatzart) {
+    void fillMinEinsatzParameter(String einsatzart) {
         // Array aus Textfelder für Einsatzparameter
         TextField[] einsatzTextfelder = {
                 anzahlFLTextField,
@@ -384,9 +379,8 @@ public class UserController {
         // ausgewählte Einsatzart im Menu button anzeigen
         einsatzartMenuButton.setText(einsatzart);
         // Parameter in Textfelder einsetzen
-        fillEinsatzParameter(einsatzart);
+        fillMinEinsatzParameter(einsatzart);
     }
-
     /**
      *
      * @param min inklusiv
@@ -467,11 +461,11 @@ public class UserController {
         // Für Feuerwehrleute
         int anzahlFeuerwehrleute = einsatzParameter[0];
         int anzahlLkwFahrer = einsatzParameter[2] + einsatzParameter[3] + einsatzParameter[4];
-        int anzahlAktuelleFm = aktuelleFm.get("Pkw-Fahrer") + aktuelleFm.get("Lkw-Fahrer");
+        int anzahlAktuelleFm = aktuelleFm.get("Pkw") + aktuelleFm.get("Lkw");
 
         // Es reicht wenn einer der beiden Fahrer Typen nicht ausreichen
-        boolean genugPkwFahrer = einsatzParameter[1] <= aktuelleFm.get("Pkw-Fahrer");
-        boolean genugLkwFahrer = anzahlLkwFahrer <= aktuelleFm.get("Lkw-Fahrer");
+        boolean genugPkwFahrer = einsatzParameter[1] <= aktuelleFm.get("Pkw");
+        boolean genugLkwFahrer = anzahlLkwFahrer <= aktuelleFm.get("Lkw");
 
         if (!(genugLkwFahrer || genugPkwFahrer) || anzahlAktuelleFm < anzahlFeuerwehrleute) {
             setLabelTextMessage(
@@ -642,6 +636,7 @@ public class UserController {
      * @param garage an Fahrzeugen
      */
     void updateEinsatzAuswahl(Feuerwehrmann[] team, Fahrzeug[] garage) {
+        // Vergleich der aktuellen Ressourcen mit der minimalen Ressourcenanforderungen pro Einsatzart
 
     }
     // TODO: 11.03.22 JavDoc für createEinsatz()
