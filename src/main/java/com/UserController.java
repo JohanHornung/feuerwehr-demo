@@ -136,12 +136,11 @@ public class UserController {
 
     @FXML
     /**
-     * Methode wird bei der initialisierung der Anwendung (App.main()) ausgeführt und erledigt folgende Schritte:
-     *      - Erstellt und befüllt Array von Feuerwehrmännern und Fahrzeugen
-     *      - Zählt Ressourcen durch und schreibt jeweilige Werte in die grafischen Text Felder
+     * Wird bei Initialisierung von App.main() ausgeführt
      */
-    public void initialize() {
-        // Feuerwehrleute & Fahrzeuge werden initialisiert
+    void initialize() {
+        // Feuerwehrleute & Fahrzeuge werden initialisiert, Erstellung und Befüllung eines Arrays
+        // mit Feuerwehrmännern und Fahrzeugen)
         fillResources(team, garage);
         // Ressourcen werden aktualisiert und angezeigt
         displayResources(team, garage);
@@ -201,7 +200,7 @@ public class UserController {
      * @param garage von Fahrzeugen, Objekte der Fahrzeug Klasse
      * @see Fahrzeug
      */
-    void displayResources(Feuerwehrmann[] team, Fahrzeug[] garage) {
+    public void displayResources(Feuerwehrmann[] team, Fahrzeug[] garage) {
         // Durchzählen von verfügbaren Feuerwehrleuten (pro Fahrer Typ)
         LinkedHashMap<String, Integer> firefightersCount = countFirefighters(team);
         // Auslesen der Werte pro fahrer Typ
@@ -239,7 +238,7 @@ public class UserController {
      * @return Hashmap mit Anzahl der verfügbaren Fahrzeuge (value) pro Kategorie (key)
      */
     // Durchzählen von verfügbaren Fahrzeugen (pro Kategorie)
-    public static LinkedHashMap<String, Integer> countVehicles(Fahrzeug[] garage) {
+    public LinkedHashMap<String, Integer> countVehicles(Fahrzeug[] garage) {
         LinkedHashMap<String, Integer> vehicleCount = new LinkedHashMap<>();
         // initialisierung
         for (int i = 0; i < Fahrzeug.fahrzeugKategorien.length; i++) {
@@ -263,7 +262,7 @@ public class UserController {
      * @see Feuerwehrmann
      * @return Hashmap mit Anzahl der verfügbaren Feuerwehrmänner (value) pro fahrer Typ (key)
      */
-    public static LinkedHashMap<String, Integer> countFirefighters(Feuerwehrmann[] team) {
+    public LinkedHashMap<String, Integer> countFirefighters(Feuerwehrmann[] team) {
         LinkedHashMap<String, Integer> firefighters = new LinkedHashMap<>();
         // Start bei 0
         firefighters.put("Lkw", 0);
@@ -285,7 +284,7 @@ public class UserController {
      * @param einsatzart String gewählte Einsatzart
      * @see Einsatz
      */
-    void fillMinEinsatzParameter(String einsatzart) {
+    public void fillMinEinsatzParameter(String einsatzart) {
         // Array aus Textfelder für Einsatzparameter
         TextField[] einsatzTextfelder = {
                 anzahlFLTextField,
@@ -321,7 +320,7 @@ public class UserController {
      * @param textFelder Array von Text Feldern dessen Werte geändert werden
      * @param values werden eingesetzt
      */
-    void setTextFieldValues(TextField[] textFelder, int[] values) {
+    public void setTextFieldValues(TextField[] textFelder, int[] values) {
 
         if (textFelder.length != values.length) {
             // An diesem Punkt muss das Programm beendet werden
@@ -351,7 +350,7 @@ public class UserController {
      * @param textFelder Array von Text Feldern dessen Werte ausgelesen werden
      * @return Array der numerischen Einsatzparametern
      */
-    int[] getTextFieldValues(TextField[] textFelder) {
+    public int[] getTextFieldValues(TextField[] textFelder) {
         int[] einsatzParameter = new int[textFelder.length];
 
         // jeder Wert aus dem Text Feld wird ausgelesen und in einsatzParameter abgespeichert
@@ -384,7 +383,7 @@ public class UserController {
      * @author Luca Langer
      * @param menuItem dessen Wert ausgelesen wird und im Menü Button angezeigt wird
      */
-    void setMenuButtonValue(MenuItem menuItem) {
+    public void setMenuButtonValue(MenuItem menuItem) {
         // gewählte Einsatzart auslesen
         String einsatzart = menuItem.getText();
         // ausgewählte Einsatzart im Menu button anzeigen
@@ -398,7 +397,7 @@ public class UserController {
      * @param max inklusiv
      * @return zufälliger Wert zwischen min und max
      */
-    int randomNumberInRange(int min , int max) {
+    public int randomNumberInRange(int min , int max) {
         return new Random().nextInt((max - min) + 1) + min;
     }
     /**
@@ -408,7 +407,7 @@ public class UserController {
      * @param minParameter minimalen Parameter
      * @return true sobald ein Wert in den aktuellen Parameter kleiner ist als der Wert der minimalen Parameter
      */
-    boolean lowerValue(int[] currentParameter, int[] minParameter) {
+    public boolean lowerValue(int[] currentParameter, int[] minParameter) {
         assert currentParameter.length == minParameter.length : "Unterschiedlich viele Elemente in den Arrays";
         for (int i = 0; i < currentParameter.length; i++) {
             if (currentParameter[i] < minParameter[i]) return true;
@@ -424,7 +423,7 @@ public class UserController {
      * @param color in die der Text eingefügt wird
      * @param message wird eingefügt
      */
-    void setLabelTextMessage(Label label, Color color, String message) {
+    public void setLabelTextMessage(Label label, Color color, String message) {
         label.setTextFill(color);
 //        label.setStyle("-fx-font-style: italic");
         label.setText(message);
@@ -443,7 +442,7 @@ public class UserController {
      *
      * @return true wenn die vom Nutzer in die Text Felder eingegebene Parameter gültig sind
      */
-    boolean validEinsatzParameter(
+    public boolean validEinsatzParameter(
             int[] einsatzParameter,
             HashMap<String, Integer> aktuelleFm,
             HashMap<String, Integer> aktuelleFz
@@ -527,7 +526,7 @@ public class UserController {
      * @see Einsatz
      * @return generierte Sonderattribute für alle Fahrzeuge
      */
-    HashMap<Integer, String> generateSpecialAttributes(HashMap<Integer, Fahrzeug> fzTeam) {
+    public HashMap<Integer, String> generateSpecialAttributes(HashMap<Integer, Fahrzeug> fzTeam) {
         HashMap<Integer, String> fahrzeugSonderattribute = new HashMap<>();
         // Für jedes Fahrzeug wird ein Sonderattribut generiert
         for (int id : fzTeam.keySet()) {
@@ -576,7 +575,7 @@ public class UserController {
      * @param columnKeys Spalten Namen für das Festlegen der Spalten-Attribute
      * @param values werden Reihenweise eingesetzt, gleiche Reihenfolge wie columnKeys
      */
-    void fillTable(TableView<Map<String, String>> table, TableColumn[] columns, String[] columnKeys, String[] values) {
+    public void fillTable(TableView<Map<String, String>> table, TableColumn[] columns, String[] columnKeys, String[] values) {
         // Daten-Objekt
         ObservableList<Map<String, String>> operationMap = FXCollections.<Map<String, String>>observableArrayList();
         // Neue Hashmap mit allen nötigen Attributen (Reihe in der Tabelle)
@@ -598,7 +597,7 @@ public class UserController {
      * @param einsatz Objekt der Einsatz Klasse
      * @see Einsatz
      */
-    void updateActiveOperationsTable(Einsatz einsatz) {
+    public void updateActiveOperationsTable(Einsatz einsatz) {
         // Array von Spalten Objekten
         final TableColumn[] TABLE_COLUMNS = {
                 aktiveEinsatzId,
@@ -629,7 +628,7 @@ public class UserController {
      * @param fzTeam eingesetzte Fahrzeuge
      * @param sonderattribute der eingesetzten Fahrzeuge
      */
-    void updateSpecialAttributesTable(HashMap<Integer, Fahrzeug> fzTeam, HashMap<Integer, String> sonderattribute) {
+    public void updateSpecialAttributesTable(HashMap<Integer, Fahrzeug> fzTeam, HashMap<Integer, String> sonderattribute) {
         // Array von Spalten Objekte
         final TableColumn[] TABLE_COLUMNS = {
                 aktiveFahrzeugId,
@@ -666,7 +665,7 @@ public class UserController {
      * @param garage an Fahrzeugen
      * @see Fahrzeug
      */
-    void updateEinsatzAuswahl(Feuerwehrmann[] team, Fahrzeug[] garage) {
+    public void updateEinsatzAuswahl(Feuerwehrmann[] team, Fahrzeug[] garage) {
         // Standard-Auswahl an Einsätzen (respektive Reihenfolge)
         MenuItem[] einsatzartAuswahl = {
                 wohnungsbrandButton,
@@ -706,14 +705,14 @@ public class UserController {
      * 2. Erstellt das Team (Fahrzeuge + Feuerwehrleute) für den Einsatz
      * 3. Aktualisiert Anzeigen für verfügbare Fahrzeuge und Feuerwehrleute
      * 4. Erstellt ein neues Einsatz Objekt basierend auf Einsatzart und Einsatz-Parameter.
-     * 4. Generiert Sonderattribute für Fahrzeuge und Füllt/Aktualisiert Tabellen
+     * 5. Generiert Sonderattribute für Fahrzeuge und Füllt/Aktualisiert Tabellen
      *
      * @author Johan Hornung
      * @param einsatzart
      * @param einsatzParameter
      * @see Einsatz
      */
-    void createEinsatz(String einsatzart, int[] einsatzParameter, TextField[] einsatzTextfelder) {
+    public void createEinsatz(String einsatzart, int[] einsatzParameter, TextField[] einsatzTextfelder) {
         // Aktuelle Ressourcen abfragen
         LinkedHashMap<String, Integer> firefighters = countFirefighters(team);
         LinkedHashMap<String, Integer> vehicles = countVehicles(garage);
@@ -894,7 +893,7 @@ public class UserController {
 
     }
     @FXML
-    private void closeButtonAction(){
+    void closeButtonAction(){
         // get a handle to the stage
         Stage stage = (Stage) closeButton.getScene().getWindow();
         // do what you have to do

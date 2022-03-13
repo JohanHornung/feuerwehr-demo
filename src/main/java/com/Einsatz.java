@@ -2,6 +2,7 @@ package com;
 
 import java.util.HashMap;
 
+
 public class Einsatz {
     public int id;
     public String einsatzart;
@@ -23,7 +24,13 @@ public class Einsatz {
             {40, 3, 2, 2, 2}
     };
 
-
+    /**
+     *
+     * @param id
+     * @param einsatzart
+     * @param fmTeam
+     * @param fzTeam
+     */
     public Einsatz(
             int id,
             String einsatzart,

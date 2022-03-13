@@ -52,7 +52,7 @@
                <content>
                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                         <children>
-                           <Button fx:id="einsatzErstellenSubmit" layoutX="141.0" layoutY="388.0" mnemonicParsing="false" onAction="#onCreateEinsatzClick" prefHeight="33.0" prefWidth="124.0" text="Einsatz erstellen" />
+                           <Button fx:id="einsatzErstellenSubmit" layoutX="130.0" layoutY="388.0" mnemonicParsing="false" onAction="#onCreateEinsatzClick" prefHeight="33.0" prefWidth="124.0" text="Einsatz erstellen" />
                            <Label id="title" layoutX="266.0" prefHeight="47.0" prefWidth="109.0" style="-fx-font-weight: bold;" text="Aktive Einsätze" />
                            <TableView fx:id="aktiveEinsatzTabelle" layoutX="265.0" layoutY="42.0" prefHeight="289.0" prefWidth="324.0">
                              <columns>
@@ -76,7 +76,7 @@
                                  <MenuItem fx:id="industrieunfallButton" mnemonicParsing="false" onAction="#fillIndustrieunfallParameter" text="Industrieunfall" />
                              </items>
                            </MenuButton>
-                           <Button fx:id="einsatzParameterResetButton" layoutX="22.0" layoutY="388.0" mnemonicParsing="false" onAction="#onEinsatzParameterResetClick" prefHeight="33.0" prefWidth="109.0" text="Zurücksetzen" />
+                           <Button fx:id="einsatzParameterResetButton" layoutX="11.0" layoutY="388.0" mnemonicParsing="false" onAction="#onEinsatzParameterResetClick" prefHeight="33.0" prefWidth="109.0" text="Zurücksetzen" />
                            <Label layoutX="17.0" layoutY="108.0" prefHeight="33.0" prefWidth="108.0" text="Feuerwehrleute" />
                            <Label layoutX="119.0" layoutY="108.0" prefHeight="33.0" prefWidth="146.0" text="Einsatz-Leitfahrzeuge" />
                            <Label layoutX="115.0" layoutY="191.0" prefHeight="33.0" prefWidth="146.0" text="Tank-Löschfahrzeuge" />
