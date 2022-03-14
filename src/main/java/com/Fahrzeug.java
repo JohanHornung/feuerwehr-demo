@@ -17,7 +17,8 @@ public class Fahrzeug {
             "Mannschaftstransporter",
             "Leiterwagen"
     };
-    // Die Anzahl der Fahrzeuge pro Kategorie in der Reihenfolge von fahrzeugKategorien
+    // Die Anzahl der Fahrzeuge pro Kategorie in der Reihenfolge von
+    // fahrzeugKategorien
     public static int[] fahrzeugAnzahl = {4, 5, 4, 5};
 
     /**

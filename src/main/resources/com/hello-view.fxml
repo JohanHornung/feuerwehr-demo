@@ -26,24 +26,24 @@
                      <Image url="@logo.png" />
                   </image>
                </ImageView>
-               <Label id="title" fx:id="anzahlFahrzeuge" layoutX="742.0" layoutY="12.0" prefHeight="33.0" prefWidth="156.0" style="-fx-font-weight: bold;" text="Verfügbare Fahrzeuge" />
-               <Label id="title" fx:id="anzahlFeuerwehrleute" layoutX="340.0" layoutY="12.0" prefHeight="33.0" prefWidth="180.0" style="-fx-font-weight: bold;" text="Verfügbare Feuerwehrleute" />
-               <Label fx:id="verfuegbareLkwFahrer" alignment="CENTER" contentDisplay="CENTER" layoutX="347.0" layoutY="80.0" prefHeight="33.0" prefWidth="53.0" style="-fx-font-size: 28;" text="X" />
-               <Label fx:id="verfuegbarePkwFahrer" alignment="CENTER" layoutX="428.0" layoutY="79.0" prefHeight="33.0" prefWidth="60.0" style="-fx-font-size: 28;" text="X" />
-               <Label fx:id="verfuegbareEinsatzLeitfahrzeuge" alignment="CENTER" layoutX="695.0" layoutY="45.0" prefHeight="34.0" prefWidth="47.0" style="-fx-font-size: 28;" text="X" />
-               <Label fx:id="verfuegbareTLFahrzeuge" alignment="CENTER" layoutX="852.0" layoutY="45.0" prefHeight="34.0" prefWidth="92.0" style="-fx-font-size: 28;" text="X" />
-               <Label fx:id="verfuegbareManschaftstransporter" alignment="CENTER" layoutX="678.0" layoutY="127.0" prefHeight="34.0" prefWidth="80.0" style="-fx-font-size: 28;" text="X">
+               <Label id="title" fx:id="anzahlFahrzeuge" layoutX="792.0" layoutY="12.0" prefHeight="33.0" prefWidth="156.0" style="-fx-font-weight: bold;" text="Verfügbare Fahrzeuge" />
+               <Label id="title" fx:id="anzahlFeuerwehrleute" layoutX="390.0" layoutY="12.0" prefHeight="33.0" prefWidth="180.0" style="-fx-font-weight: bold;" text="Verfügbare Feuerwehrleute" />
+               <Label fx:id="verfuegbareLkwFahrer" alignment="CENTER" contentDisplay="CENTER" layoutX="397.0" layoutY="80.0" prefHeight="33.0" prefWidth="53.0" style="-fx-font-size: 28;" text="X" />
+               <Label fx:id="verfuegbarePkwFahrer" alignment="CENTER" layoutX="478.0" layoutY="79.0" prefHeight="33.0" prefWidth="60.0" style="-fx-font-size: 28;" text="X" />
+               <Label fx:id="verfuegbareEinsatzLeitfahrzeuge" alignment="CENTER" layoutX="745.0" layoutY="45.0" prefHeight="34.0" prefWidth="47.0" style="-fx-font-size: 28;" text="X" />
+               <Label fx:id="verfuegbareTLFahrzeuge" alignment="CENTER" layoutX="902.0" layoutY="45.0" prefHeight="34.0" prefWidth="92.0" style="-fx-font-size: 28;" text="X" />
+               <Label fx:id="verfuegbareManschaftstransporter" alignment="CENTER" layoutX="728.0" layoutY="127.0" prefHeight="34.0" prefWidth="80.0" style="-fx-font-size: 28;" text="X">
                   <font>
                      <Font name="System Font" size="28.0" />
                   </font></Label>
-               <Label fx:id="verfuegbareLeiterwagen" alignment="CENTER" layoutX="858.0" layoutY="127.0" prefHeight="34.0" prefWidth="80.0" style="-fx-font-size: 28;" text="X" />
-               <Label layoutX="340.0" layoutY="111.0" prefHeight="33.0" prefWidth="80.0" text="Lkw-Fahrer" />
-               <Label layoutX="430.0" layoutY="111.0" prefHeight="33.0" prefWidth="80.0" text="Pkw-Fahrer" />
-               <Label layoutX="664.0" layoutY="79.0" prefHeight="33.0" prefWidth="130.0" text="Einsatzleitfahrzeuge" />
-               <Label layoutX="833.0" layoutY="80.0" prefHeight="33.0" prefWidth="130.0" text="Tank-Löschfahrzeuge" />
-               <Label layoutX="650.0" layoutY="161.0" prefHeight="33.0" prefWidth="146.0" text="Mannschaftstransporter" />
-               <Label layoutX="858.0" layoutY="161.0" prefHeight="33.0" prefWidth="80.0" text="Leiterwagen" />
-               <Label fx:id="einsatzErstellungMessage" layoutX="230.0" layoutY="161.0" prefHeight="33.0" prefWidth="412.0" style="-fx-font-weight: bold;" />
+               <Label fx:id="verfuegbareLeiterwagen" alignment="CENTER" layoutX="908.0" layoutY="127.0" prefHeight="34.0" prefWidth="80.0" style="-fx-font-size: 28;" text="X" />
+               <Label layoutX="390.0" layoutY="111.0" prefHeight="33.0" prefWidth="80.0" text="Lkw-Fahrer" />
+               <Label layoutX="480.0" layoutY="111.0" prefHeight="33.0" prefWidth="80.0" text="Pkw-Fahrer" />
+               <Label layoutX="714.0" layoutY="79.0" prefHeight="33.0" prefWidth="130.0" text="Einsatzleitfahrzeuge" />
+               <Label layoutX="883.0" layoutY="80.0" prefHeight="33.0" prefWidth="130.0" text="Tank-Löschfahrzeuge" />
+               <Label layoutX="700.0" layoutY="161.0" prefHeight="33.0" prefWidth="146.0" text="Mannschaftstransporter" />
+               <Label layoutX="908.0" layoutY="161.0" prefHeight="33.0" prefWidth="80.0" text="Leiterwagen" />
+               <Label fx:id="einsatzErstellungMessage" layoutX="230.0" layoutY="161.0" prefHeight="33.0" prefWidth="463.0" style="-fx-font-weight: bold;" />
             </children>
          </AnchorPane>
          <TabPane layoutY="204.0" prefHeight="515.0" prefWidth="1080.0" tabClosingPolicy="UNAVAILABLE">
@@ -105,36 +105,34 @@
                            <Label id="title" layoutX="621.0" layoutY="11.0" prefHeight="33.0" prefWidth="220.0" style="-fx-font-weight: bold;" text="Bestand der Feuerwehrwehrmänner" />
                            <Separator layoutX="604.0" orientation="VERTICAL" prefHeight="457.0" prefWidth="10.0" />
                            <Separator layoutX="2.0" layoutY="39.0" prefHeight="9.0" prefWidth="1074.0" />
-                           <TableView fx:id="tableBestandFz" layoutX="170.0" layoutY="48.0" prefHeight="408.0" prefWidth="418.0">
+                           <TableView fx:id="tableBestandFz" layoutX="170.0" layoutY="48.0" prefHeight="408.0" prefWidth="430.0">
                              <columns>
                                <TableColumn fx:id="bestandFzID" prefWidth="45.0" text="ID" />
                                <TableColumn fx:id="bestandFzKategorie" prefWidth="142.0" text="Kategorie" />
                                  <TableColumn fx:id="bestandFzKlasse" minWidth="0.0" prefWidth="67.0" text="Klasse" />
                                  <TableColumn fx:id="bestandFzStatus" prefWidth="89.0" text="Status" />
-                                 <TableColumn fx:id="bestandFzVerfuegbar" prefWidth="82.0" text="Verfügbar" />
+                                 <TableColumn fx:id="bestandFzVerfuegbar" prefWidth="86.0" text="Verfügbar" />
                              </columns>
                            </TableView>
                            <TableView fx:id="tableBestandFm" layoutX="767.0" layoutY="48.0" prefHeight="408.0" prefWidth="287.0">
                              <columns>
                                <TableColumn fx:id="bestandFmID" prefWidth="38.0" text="ID" />
-                               <TableColumn fx:id="bestandFmKategorie" prefWidth="95.0" text="Kategorie" />
+                               <TableColumn fx:id="bestandFmFahrerTyp" prefWidth="95.0" text="Fahrer Typ" />
                                  <TableColumn fx:id="bestandFmVerfuegbar" prefWidth="77.0" text="Verfügbar" />
                                  <TableColumn fx:id="bestandFmStatus" prefWidth="64.0" text="Status" />
                              </columns>
                            </TableView>
                            <MenuButton fx:id="fahrzeugStatusMenuButton" alignment="CENTER" layoutX="13.0" layoutY="61.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="130.0" text="Status ändern">
                              <items>
-                               <MenuItem fx:id="fahrzeugVerfuegbarItem" mnemonicParsing="false" text="Verfügbar" />
-                               <MenuItem fx:id="fahrzeugWartungItem" mnemonicParsing="false" text="In Wartung" />
-                                 <MenuItem fx:id="fahrzeugEinsatzItem" mnemonicParsing="false" text="Im Einsatz" />
+                               <MenuItem fx:id="fahrzeugVerfuegbarItem" mnemonicParsing="false" onAction="#fzChangeToVerfuegbar" text="Verfügbar" />
+                               <MenuItem fx:id="fahrzeugWartungItem" mnemonicParsing="false" onAction="#fzChangeToWartung" text="In Wartung" />
                              </items>
                            </MenuButton>
                            <MenuButton fx:id="feuerwehrmannStatusMenuButton" alignment="CENTER" layoutX="621.0" layoutY="61.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="130.0" text="Status ändern">
                               <items>
-                                 <MenuItem fx:id="feuerwehrmannVerfuegbarItem" mnemonicParsing="false" text="Verfügbar" />
-                                 <MenuItem fx:id="feuerwehrmannUrlaubItem" mnemonicParsing="false" text="Im Urlaub" />
-                                 <MenuItem fx:id="feuerwehrmannKrankItem" mnemonicParsing="false" text="Krank" />
-                                 <MenuItem fx:id="feuerwehrmannEinsatzItem" mnemonicParsing="false" text="Im Einsatz" />
+                                 <MenuItem fx:id="feuerwehrmannVerfuegbarItem" mnemonicParsing="false" onAction="#fmChangeToVerfuegbar" text="Verfügbar" />
+                                 <MenuItem fx:id="feuerwehrmannUrlaubItem" mnemonicParsing="false" onAction="#fmChangeToUrlaub" text="Im Urlaub" />
+                                 <MenuItem fx:id="feuerwehrmannKrankItem" mnemonicParsing="false" onAction="#fmChangeToKrank" text="Krank" />
                               </items>
                            </MenuButton>
                         </children></AnchorPane>

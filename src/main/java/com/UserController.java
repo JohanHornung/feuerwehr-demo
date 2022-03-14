@@ -12,7 +12,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.control.cell.MapValueFactory;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -93,43 +92,40 @@ public class UserController {
     private TableColumn<Map, String> aktiveFahrzeugSonderattribut;
 
     @FXML
-    private TableView<Feuerwehrmann> tableBestandFm;
+    private TableView<Map<String, String>> tableBestandFm;
 
     @FXML
-    private TableColumn<Feuerwehrmann, Integer> bestandFmID;
+    private TableColumn<Map, String> bestandFmID;
 
     @FXML
-    private TableColumn<Feuerwehrmann, String> bestandFmKategorie;
+    private TableColumn<Map, String> bestandFmFahrerTyp;
 
     @FXML
-    private TableColumn<Feuerwehrmann, String> bestandFmStatus;
+    private TableColumn<Map, String> bestandFmStatus;
 
     @FXML
-    private TableColumn<Feuerwehrmann, Boolean> bestandFmVerfuegbar;
+    private TableColumn<Map, String> bestandFmVerfuegbar;
 
     @FXML
-    private TableView<Fahrzeug> tableBestandFz;
+    private TableView<Map<String, String>> tableBestandFz;
 
     @FXML
-    private TableColumn<Fahrzeug, Integer> bestandFzID;
+    private TableColumn<Map, String> bestandFzID;
 
     @FXML
-    private TableColumn<Fahrzeug, String> bestandFzKategorie;
+    private TableColumn<Map, String> bestandFzKategorie;
 
     @FXML
-    private TableColumn<Fahrzeug, String> bestandFzKlasse;
+    private TableColumn<Map, String> bestandFzKlasse;
 
     @FXML
-    private TableColumn<Fahrzeug, String> bestandFzStatus;
+    private TableColumn<Map, String> bestandFzStatus;
 
     @FXML
-    private TableColumn<Fahrzeug, Boolean> bestandFzVerfuegbar;
+    private TableColumn<Map, String> bestandFzVerfuegbar;
 
     @FXML
     private MenuButton fahrzeugStatusMenuButton;
-
-    @FXML
-    private MenuItem fahrzeugEinsatzItem;
 
     @FXML
     private MenuItem fahrzeugVerfuegbarItem;
@@ -139,9 +135,6 @@ public class UserController {
 
     @FXML
     private MenuButton feuerwehrmannStatusMenuButton;
-
-    @FXML
-    private MenuItem feuerwehrmannEinsatzItem;
 
     @FXML
     private MenuItem feuerwehrmannKrankItem;
@@ -221,7 +214,8 @@ public class UserController {
 
     }
     /**
-     * Konfiguriert die initialen Einsatzressourcen (Fahrzeuge + Feuerwehrleute)
+     * Konfiguriert die initialen Einsatzressourcen (Fahrzeuge + Feuerwehrleute) und
+     * schreibt diese in die Bestandstabellen
      *
      * @author Johan Hornung, Luca Langer
      * @param team Array von Feuerwehrleuten
@@ -267,14 +261,60 @@ public class UserController {
             // Neuer "Index-Einstiegspunkt" in der garage[] für nächste Kategorie
             start += (currentAmount - start);
         }
-        // Liste aus Fahrzeugen wird in Bestandstabelle geladen
-        ObservableList<Fahrzeug> fahrzeuge = FXCollections.<Fahrzeug>observableArrayList();
+        // Fahrzeugbestand wird in Fahrzeugtabelle geladen
+        // (gleiches Prinzip wie bei aktiven Einsätzen @see updateActiveOperationsTable)
 
-
-        // Reihe wird zur Tabelle hinzugefügt
-//        fahrzeuge.add(item);
-//        table.getItems().addAll(fahrzeuge);
-
+        // Spalten in Fahrzeug-Tabelle
+        TableColumn[] fahrzeugSpalten = {
+            bestandFzID,
+            bestandFzKategorie,
+            bestandFzKlasse,
+            bestandFzStatus,
+            bestandFzVerfuegbar,
+        };
+        // Fahrzeug Attribute
+        String[] fahrzeugAttribute = {
+                "id",
+                "kategorie",
+                "klasse",
+                "status",
+                "verfuegbar"
+        };
+        // Tabelle wird reihenweise beschrieben
+        for (Fahrzeug fahrzeug: garage) {
+            // Reihe bestehend aus den Fahrzeug-Attributen
+            String[] values = {
+                    String.valueOf(fahrzeug.id),
+                    fahrzeug.kategorie,
+                    fahrzeug.klasse,
+                    fahrzeug.status,
+                    String.valueOf(fahrzeug.verfuegbar),
+            };
+            fillTable(tableBestandFz, fahrzeugSpalten, fahrzeugAttribute, values);
+        }
+        // Feuerwehrmannbestand wird in Tabelle geladen (gleiches Prinzip)
+        TableColumn[] fmSpalten = {
+            bestandFmID,
+            bestandFmFahrerTyp,
+            bestandFmStatus,
+            bestandFmVerfuegbar,
+        };
+        // Fahrzeug Attribute
+        String[] fmAttribute = {
+                "id",
+                "fahrerTyp",
+                "status",
+                "verfuegbar"
+        };
+        for (Feuerwehrmann fm: team) {
+            String[] values = {
+                    String.valueOf(fm.id),
+                    fm.fahrerTyp,
+                    fm.status,
+                    String.valueOf(fm.verfuegbar),
+            };
+            fillTable(tableBestandFm, fmSpalten, fmAttribute, values);
+        }
     }
 
     /**
@@ -993,6 +1033,11 @@ public class UserController {
     /*
     //////////////////////////// JAVAFX EVENT METHODEN /////////////////////////////////
      */
+
+    /**
+     * Automatisches Ausfüllen der Einsatzparameter nach Einsatzart
+     *
+     */
     @FXML
     void fillIndustrieunfallParameter(ActionEvent event) {
         setMenuButtonValue(industrieunfallButton);
@@ -1008,6 +1053,35 @@ public class UserController {
     @FXML
     void fillWohnungsbrandParameter(ActionEvent event) {
         setMenuButtonValue(wohnungsbrandButton);
+    }
+
+    /**
+     * Manuelle Statusänderung des Nutzers im GUI nach
+     * Fahrzeug/Feuerwehrmann und Auswahl
+     */
+    @FXML
+    void fmChangeToKrank(ActionEvent event) {
+
+    }
+
+    @FXML
+    void fmChangeToUrlaub(ActionEvent event) {
+
+    }
+
+    @FXML
+    void fmChangeToVerfuegbar(ActionEvent event) {
+
+    }
+
+    @FXML
+    void fzChangeToVerfuegbar(ActionEvent event) {
+
+    }
+
+    @FXML
+    void fzChangeToWartung(ActionEvent event) {
+
     }
     /**
      * Methode setzt Text Felder der Einsatz Parameter zurück sowie den Menu Button für Einsatzartauswahl
@@ -1079,6 +1153,7 @@ public class UserController {
                     "Einsatz Nummer " + einsatzMap.get("id") + " gelöscht. " +
                             "Ressourcen werden freigegeben."
             );
+            // TODO: 14.03.22 de-select the other item
             deleteEinsatz(einsatzMap);
         }
     }
