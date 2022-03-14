@@ -22,9 +22,4 @@ public class Feuerwehrmann {
         this.verfuegbar = verfuegbar;
         this.fahrerTyp = fahrerTyp;
     }
-    @Override
-    public String toString() {
-        // TODO: 10.03.22 Mögliche Ausgabe Text für Feuerwehrmänner
-        return null;
-    }
 }

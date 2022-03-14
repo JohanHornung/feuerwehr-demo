@@ -1,20 +1,15 @@
 package com;
 
 public class Fahrzeug {
-    public enum Kategorie {
-        EINSATZLEITFAHRZEUG,
-        TANKLOESCHFAHRZEUG,
-        MANNSCHAFTSTRANSPORTER,
-        LEITERWAGEN
-    };
 
     public int id;
+    public int anzahlFeuerwehrleute;
+    public int einsatzId;
     public String kategorie;
     public String klasse;
     public String status;
     public boolean verfuegbar;
-    public int anzahlFeuerwehrleute;
-    public int einsatzId;
+
     // Array von Fahrzeugkategorien als Strings
     public static String[] fahrzeugKategorien = {
             "Einsatz-Leitfahrzeug",
@@ -22,14 +17,14 @@ public class Fahrzeug {
             "Mannschaftstransporter",
             "Leiterwagen"
     };
-    // In respektiver Reihenfolge der Kategorien
+    // Die Anzahl der Fahrzeuge pro Kategorie in der Reihenfolge von fahrzeugKategorien
     public static int[] fahrzeugAnzahl = {4, 5, 4, 5};
 
     /**
      *
      * @param id macht Fahrzeug Objekt eindeutig identifizierbar
      * @param kategorie hat Einfluss auf die Fahrer-Klasse des Fahrzeugs
-     * @param status kann vom Nutzer manuell geändert werden (z.B. "In Wartung").
+     * @param status kann vom Nutzer manuell geändert werden.
      *               Mögliche Werte: "frei", "in Wartung", "im Einsatz"
      * @param verfuegbar gibt an ob das Fahrzeug eingesetzt werden kann
      */
@@ -56,10 +51,4 @@ public class Fahrzeug {
         };
 
     }
-    @Override
-    public String toString() {
-        // TODO: 10.03.22 Mögliche Ausgabe Text für Fahrzeuge
-        return null;
-    }
-
 }

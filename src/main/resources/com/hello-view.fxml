@@ -14,9 +14,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
 
 <VBox alignment="CENTER" prefHeight="720.0" prefWidth="1080.0" spacing="20.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.UserController">
    <AnchorPane prefHeight="711.0" prefWidth="1071.0">
@@ -103,31 +101,42 @@
                  <content>
                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="218.0" prefWidth="958.0">
                         <children>
-                           <Label id="title" layoutX="12.0" layoutY="14.0" prefHeight="33.0" prefWidth="156.0" style="-fx-font-weight: bold;" text="Bestand der Fahrzeuge" />
-                           <Label id="title" layoutX="343.0" layoutY="14.0" prefHeight="33.0" prefWidth="180.0" style="-fx-font-weight: bold;" text="Bestand der Lkw-Fahrer" />
-                           <Separator layoutX="333.0" orientation="VERTICAL" prefHeight="457.0" prefWidth="10.0" />
-                           <AnchorPane fx:id="anchorBestandFahrzeuge" layoutX="14.0" layoutY="58.0" prefHeight="371.0" prefWidth="317.0">
-                              <children>
-                                 <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="58.0" layoutX="14.0" layoutY="14.0" stroke="BLACK" strokeType="INSIDE" width="60.0" />
-                                 <Text layoutX="14.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Attribute" wrappingWidth="67.98307228088379" />
-                              </children>
-                           </AnchorPane>
-                           <Separator layoutX="816.0" orientation="VERTICAL" prefHeight="455.0" prefWidth="9.0" />
-                           <Separator layoutX="338.0" layoutY="49.0" prefHeight="8.0" prefWidth="741.0" />
-                           <Separator layoutY="50.0" prefHeight="7.0" prefWidth="335.0" />
-                           <AnchorPane fx:id="anchorBestandPkw" layoutX="342.0" layoutY="58.0" prefHeight="396.0" prefWidth="471.0">
-                              <children>
-                                 <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="58.0" layoutX="14.0" layoutY="14.0" stroke="BLACK" strokeType="INSIDE" width="60.0" />
-                                 <Text layoutX="14.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Attribute" wrappingWidth="67.98307228088379" />
-                              </children>
-                           </AnchorPane>
-                           <AnchorPane fx:id="anchorBestandLkw" layoutX="825.0" layoutY="57.0" prefHeight="394.0" prefWidth="250.0">
-                              <children>
-                                 <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="58.0" layoutX="14.0" layoutY="14.0" stroke="BLACK" strokeType="INSIDE" width="60.0" />
-                                 <Text layoutX="14.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Attribute" wrappingWidth="67.98307228088379" />
-                              </children>
-                           </AnchorPane>
-                           <Label id="title" layoutX="825.0" layoutY="14.0" prefHeight="33.0" prefWidth="180.0" style="-fx-font-weight: bold;" text="Bestand der Pkw-Fahrer" />
+                           <Label id="title" layoutX="14.0" layoutY="11.0" prefHeight="33.0" prefWidth="156.0" style="-fx-font-weight: bold;" text="Bestand der Fahrzeuge" />
+                           <Label id="title" layoutX="621.0" layoutY="11.0" prefHeight="33.0" prefWidth="220.0" style="-fx-font-weight: bold;" text="Bestand der Feuerwehrwehrmänner" />
+                           <Separator layoutX="604.0" orientation="VERTICAL" prefHeight="457.0" prefWidth="10.0" />
+                           <Separator layoutX="2.0" layoutY="39.0" prefHeight="9.0" prefWidth="1074.0" />
+                           <TableView fx:id="tableBestandFz" layoutX="170.0" layoutY="48.0" prefHeight="408.0" prefWidth="418.0">
+                             <columns>
+                               <TableColumn fx:id="bestandFzID" prefWidth="45.0" text="ID" />
+                               <TableColumn fx:id="bestandFzKategorie" prefWidth="142.0" text="Kategorie" />
+                                 <TableColumn fx:id="bestandFzKlasse" minWidth="0.0" prefWidth="67.0" text="Klasse" />
+                                 <TableColumn fx:id="bestandFzStatus" prefWidth="89.0" text="Status" />
+                                 <TableColumn fx:id="bestandFzVerfuegbar" prefWidth="82.0" text="Verfügbar" />
+                             </columns>
+                           </TableView>
+                           <TableView fx:id="tableBestandFm" layoutX="767.0" layoutY="48.0" prefHeight="408.0" prefWidth="287.0">
+                             <columns>
+                               <TableColumn fx:id="bestandFmID" prefWidth="38.0" text="ID" />
+                               <TableColumn fx:id="bestandFmKategorie" prefWidth="95.0" text="Kategorie" />
+                                 <TableColumn fx:id="bestandFmVerfuegbar" prefWidth="77.0" text="Verfügbar" />
+                                 <TableColumn fx:id="bestandFmStatus" prefWidth="64.0" text="Status" />
+                             </columns>
+                           </TableView>
+                           <MenuButton fx:id="fahrzeugStatusMenuButton" alignment="CENTER" layoutX="13.0" layoutY="61.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="130.0" text="Status ändern">
+                             <items>
+                               <MenuItem fx:id="fahrzeugVerfuegbarItem" mnemonicParsing="false" text="Verfügbar" />
+                               <MenuItem fx:id="fahrzeugWartungItem" mnemonicParsing="false" text="In Wartung" />
+                                 <MenuItem fx:id="fahrzeugEinsatzItem" mnemonicParsing="false" text="Im Einsatz" />
+                             </items>
+                           </MenuButton>
+                           <MenuButton fx:id="feuerwehrmannStatusMenuButton" alignment="CENTER" layoutX="621.0" layoutY="61.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="130.0" text="Status ändern">
+                              <items>
+                                 <MenuItem fx:id="feuerwehrmannVerfuegbarItem" mnemonicParsing="false" text="Verfügbar" />
+                                 <MenuItem fx:id="feuerwehrmannUrlaubItem" mnemonicParsing="false" text="Im Urlaub" />
+                                 <MenuItem fx:id="feuerwehrmannKrankItem" mnemonicParsing="false" text="Krank" />
+                                 <MenuItem fx:id="feuerwehrmannEinsatzItem" mnemonicParsing="false" text="Im Einsatz" />
+                              </items>
+                           </MenuButton>
                         </children></AnchorPane>
                  </content>
                </Tab>

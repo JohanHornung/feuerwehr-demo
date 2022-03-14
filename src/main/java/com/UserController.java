@@ -12,9 +12,8 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.control.cell.MapValueFactory;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
@@ -94,13 +93,64 @@ public class UserController {
     private TableColumn<Map, String> aktiveFahrzeugSonderattribut;
 
     @FXML
-    private AnchorPane anchorBestandFahrzeuge;
+    private TableView<Feuerwehrmann> tableBestandFm;
 
     @FXML
-    private AnchorPane anchorBestandLkw;
+    private TableColumn<Feuerwehrmann, Integer> bestandFmID;
 
     @FXML
-    private AnchorPane anchorBestandPkw;
+    private TableColumn<Feuerwehrmann, String> bestandFmKategorie;
+
+    @FXML
+    private TableColumn<Feuerwehrmann, String> bestandFmStatus;
+
+    @FXML
+    private TableColumn<Feuerwehrmann, Boolean> bestandFmVerfuegbar;
+
+    @FXML
+    private TableView<Fahrzeug> tableBestandFz;
+
+    @FXML
+    private TableColumn<Fahrzeug, Integer> bestandFzID;
+
+    @FXML
+    private TableColumn<Fahrzeug, String> bestandFzKategorie;
+
+    @FXML
+    private TableColumn<Fahrzeug, String> bestandFzKlasse;
+
+    @FXML
+    private TableColumn<Fahrzeug, String> bestandFzStatus;
+
+    @FXML
+    private TableColumn<Fahrzeug, Boolean> bestandFzVerfuegbar;
+
+    @FXML
+    private MenuButton fahrzeugStatusMenuButton;
+
+    @FXML
+    private MenuItem fahrzeugEinsatzItem;
+
+    @FXML
+    private MenuItem fahrzeugVerfuegbarItem;
+
+    @FXML
+    private MenuItem fahrzeugWartungItem;
+
+    @FXML
+    private MenuButton feuerwehrmannStatusMenuButton;
+
+    @FXML
+    private MenuItem feuerwehrmannEinsatzItem;
+
+    @FXML
+    private MenuItem feuerwehrmannKrankItem;
+
+    @FXML
+    private MenuItem feuerwehrmannUrlaubItem;
+
+    @FXML
+    private MenuItem feuerwehrmannVerfuegbarItem;
 
     @FXML
     private TextField anzahlELFTextField;
@@ -163,10 +213,12 @@ public class UserController {
      * Wird bei Initialisierung von App.main() ausgeführt
      */
     void initialize() {
-        // Feuerwehrleute & Fahrzeuge werden initialisiert
+        // Feuerwehrleute & Fahrzeuge werden initialisiert und werden in
+        // Bestandstabellen geladen
         fillResources(team, garage);
         // Ressourcen werden aktualisiert und angezeigt
         displayResources(team, garage);
+
     }
     /**
      * Konfiguriert die initialen Einsatzressourcen (Fahrzeuge + Feuerwehrleute)
@@ -181,6 +233,7 @@ public class UserController {
         // Standard Attribute für Fahrzeuge und Feuerwehrmänner
         String defaultStatus = "frei";
         boolean defaultVerfuegbarkeit = true;
+
         // Erstellung der Feuerwehrmann-Objekte
         // 70 Pkw-Fahrer
         String fahrerTyp = "Pkw";
@@ -214,6 +267,14 @@ public class UserController {
             // Neuer "Index-Einstiegspunkt" in der garage[] für nächste Kategorie
             start += (currentAmount - start);
         }
+        // Liste aus Fahrzeugen wird in Bestandstabelle geladen
+        ObservableList<Fahrzeug> fahrzeuge = FXCollections.<Fahrzeug>observableArrayList();
+
+
+        // Reihe wird zur Tabelle hinzugefügt
+//        fahrzeuge.add(item);
+//        table.getItems().addAll(fahrzeuge);
+
     }
 
     /**
@@ -603,6 +664,21 @@ public class UserController {
         return fahrzeugSonderattribute;
     }
     /**
+     *
+     * @param newStatus vom Nutzer festgelegt
+     */
+    void updateStatus(MenuItem newStatus) {
+        // TODO: 14.03.22 Manuelle Status Änderung
+        // Status wird geändert
+
+        // Verfügbarkeit wird angepasst
+
+        // Ressourcen werden aktualisiert
+        displayResources(team, garage);
+        // Auswahl von möglichen Einsätzen wird aktualisiert
+        updateEinsatzAuswahl(team, garage);
+    }
+    /**
      * Methode füllt eine Tabelle mit Werten aus einer erzeugten Hashmap (Reihenweise).
      *
      * @author Johan Hornung
@@ -873,10 +949,10 @@ public class UserController {
     }
 
     /**
-     * Einsatz Item wird aus allen Einträgen gelöscht, Ressourcen sind wieder verfügbar
+     * Einsatz Objekt/Item wird aus allen Einträgen gelöscht, Ressourcen werden wieder freigegeben
      *
      * @author Johan Hornung, Luca Langer
-     * @param einsatzMap Map Objekt vom Einsatz (nicht Einsatz Objekt!) welches in die Tabelle geschrieben wurde
+     * @param einsatzMap Map Objekt vom Einsatz (nicht Einsatz Objekt) welches in die Tabelle geschrieben wurde
      */
     public void deleteEinsatz(Map<String, String> einsatzMap) {
         int einsatzId = Integer.parseInt(einsatzMap.get("id"));
@@ -888,18 +964,17 @@ public class UserController {
         // Wenn das Fahrzeug dem in dem zu löschenden Einsatz eingesetzt wurde wird es gelöscht
         items.removeIf(fahrzeug -> Integer.parseInt(fahrzeug.get("einsatzId")) == einsatzId);
 
-        // Ressourcen (Fahrzeuge und Feuerwehrleute) sind wieder verfügbar
-        // Einsatz Objekt mit dazugehörigen Parametern, @see createEinsatz
+        // Einsatz Objekt mit dazugehörigen Attributen und Parametern, @see createEinsatz
         Einsatz einsatz = aktiveEinsaetze.get(einsatzId);
 
-        // Fahrzeuge
+        // Fahrzeuge werden freigegeben
         for (int fahrzeugId: einsatz.fzTeam.keySet()) {
             // NOTICE: Index vom Fahrzeug in der garage[] ist auch die id von diesem Fahrzeug, @see fillResources()
             // Fahrzeug ist wieder verfügbar
             garage[fahrzeugId].verfuegbar = true;
             garage[fahrzeugId].status = "frei";
         }
-        // Feuerwehrmänner
+        // Feuerwehrmänner werden freigegeben
         for (int fmId: einsatz.fmTeam.keySet()) {
             // NOTICE: Gleiches Prinzip wie bei Fahrzeugen
             // Feuerwehrmann ist wieder verfügbar
@@ -911,7 +986,7 @@ public class UserController {
         displayResources(team, garage);
         // Einsatzauswahl wird aktualisiert
         updateEinsatzAuswahl(team, garage);
-        // Einsatz wird aus HashMap der aktiven Einsätze gelöscht
+        // Einsatz wird aus Eintrag der aktiven Einsätze gelöscht
         aktiveEinsaetze.remove(einsatzId);
 
     }
@@ -996,6 +1071,7 @@ public class UserController {
                     Color.RED,
                     "Es wurde kein Einsatz ausgewählt!"
             );
+        // ausgewählter Einsatz wird gelöscht
         } else {
             setLabelTextMessage(
                     einsatzErstellungMessage,
@@ -1003,7 +1079,7 @@ public class UserController {
                     "Einsatz Nummer " + einsatzMap.get("id") + " gelöscht. " +
                             "Ressourcen werden freigegeben."
             );
-            deleteEinsatz(einsatzMap); // vorhandener Einsatz wird gelöscht
+            deleteEinsatz(einsatzMap);
         }
     }
     @FXML
