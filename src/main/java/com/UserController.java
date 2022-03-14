@@ -178,12 +178,15 @@ public class UserController {
      * @see Fahrzeug
      */
     public void fillResources(Feuerwehrmann[] team, Fahrzeug[] garage) {
+        // Standard Attribute für Fahrzeuge und Feuerwehrmänner
+        String defaultStatus = "frei";
+        boolean defaultVerfuegbarkeit = true;
         // Erstellung der Feuerwehrmann-Objekte
         // 70 Pkw-Fahrer
         String fahrerTyp = "Pkw";
         for (int i = 0; i < FIREFIGHTER_CAP; i++) {
             // Die ID vom Feuerwehrmann ist der index im team Array
-            team[i] = new Feuerwehrmann(i, true, fahrerTyp);
+            team[i] = new Feuerwehrmann(i, "frei", defaultVerfuegbarkeit, fahrerTyp);
             // i = (FIREFIGHTER_CAP - 11) = 69 bei i = 0 -> 70 Pkw-Fahrer
             if (i >= FIREFIGHTER_CAP - 11) {
                 // 10 Lkw-Fahrer
@@ -206,7 +209,7 @@ public class UserController {
             // Gewünschte Anzahl an Fahrzeuge wird pro Kategorie erstellt
             for (int i = start; i < currentAmount; i++) {
                 // Fahrzeug ID ist der index im garagen Array
-                garage[i] = new Fahrzeug(i, category, true);
+                garage[i] = new Fahrzeug(i, category, defaultStatus, defaultVerfuegbarkeit);
             }
             // Neuer "Index-Einstiegspunkt" in der garage[] für nächste Kategorie
             start += (currentAmount - start);
@@ -785,6 +788,8 @@ public class UserController {
                 if (fm.fahrerTyp.equals("Pkw") && fm.verfuegbar) {
                     // Feuerwehrmann ist jetzt im Einsatz und nicht mehr verfügbar
                     fm.verfuegbar = false;
+                    // Neuer Status
+                    fm.status = "im Einsatz";
                     fmTeam.put(fm.id, fm);
                 }
                 // Suche wird beendet falls die nötige Anzahl an Pkw-Fahrern erreicht wurde
@@ -794,6 +799,7 @@ public class UserController {
             for (Feuerwehrmann fm : team) {
                 if (fm.fahrerTyp.equals("Lkw") && fm.verfuegbar) {
                     fm.verfuegbar = false;
+                    fm.status = "im Einsatz";
                     fmTeam.put(fm.id, fm);
                 }
                 // Da es nur 2 Fahrer-Typen gibt ist die Anzahl der
@@ -806,6 +812,7 @@ public class UserController {
                 for (Feuerwehrmann fm : team) {
                     if (fm.verfuegbar) {
                         fm.verfuegbar = false;
+                        fm.status = "im Einsatz";
                         fmTeam.put(fm.id, fm);
                     }
                     if (fmTeam.size() == anzahlFm) break;
@@ -833,6 +840,7 @@ public class UserController {
                     // Treffer (gleiches Prinzip wie bei der Suche nach Feuerwehrleuten)
                     if (category.equals(fz.kategorie) && fz.verfuegbar) {
                         fz.verfuegbar = false;
+                        fz.status = "im Einsatz";
                         fz.einsatzId = einsatzId;
                         fzTeam.put(fz.id, fz);
                         count++;
@@ -889,12 +897,14 @@ public class UserController {
             // NOTICE: Index vom Fahrzeug in der garage[] ist auch die id von diesem Fahrzeug, @see fillResources()
             // Fahrzeug ist wieder verfügbar
             garage[fahrzeugId].verfuegbar = true;
+            garage[fahrzeugId].status = "frei";
         }
         // Feuerwehrmänner
         for (int fmId: einsatz.fmTeam.keySet()) {
             // NOTICE: Gleiches Prinzip wie bei Fahrzeugen
             // Feuerwehrmann ist wieder verfügbar
             team[fmId].verfuegbar = true;
+            team[fmId].status = "frei";
         }
 
         // Ressourcenanzeige wird aktualisiert
