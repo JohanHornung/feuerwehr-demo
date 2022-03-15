@@ -23,13 +23,14 @@ public class Einsatz {
             {55, 3, 3, 3, 2},
             {40, 3, 2, 2, 2}
     };
-
     /**
      *
-     * @param id
-     * @param einsatzart
-     * @param fmTeam
-     * @param fzTeam
+     * @param id macht Einsatz Objekt eindeutig identifizierbar
+     * @param einsatzart gibt die nötigen minimalen Einsatzparameter an
+     * @param fmTeam Hashmap aus Feuerwehrmännern welche dem Einsatz zugeordnet wurden
+     * @see Feuerwehrmann
+     * @param fzTeam Hashmap aus Fahrzeugen welche dem Einsatz zugeordnet wurden
+     * @see Fahrzeug
      */
     public Einsatz(
             int id,
