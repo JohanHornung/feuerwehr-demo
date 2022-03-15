@@ -164,7 +164,7 @@ public class UserController {
     private Button closeButton;
 
     @FXML
-    private Label einsatzErstellungMessage;
+    private Label infoMessage;
 
     @FXML
     private MenuButton einsatzartMenuButton;
@@ -261,60 +261,7 @@ public class UserController {
             // Neuer "Index-Einstiegspunkt" in der garage[] für nächste Kategorie
             start += (currentAmount - start);
         }
-        // Fahrzeugbestand wird in Fahrzeugtabelle geladen
-        // (gleiches Prinzip wie bei aktiven Einsätzen @see updateActiveOperationsTable)
-
-        // Spalten in Fahrzeug-Tabelle
-        TableColumn[] fahrzeugSpalten = {
-            bestandFzID,
-            bestandFzKategorie,
-            bestandFzKlasse,
-            bestandFzStatus,
-            bestandFzVerfuegbar,
-        };
-        // Fahrzeug Attribute
-        String[] fahrzeugAttribute = {
-                "id",
-                "kategorie",
-                "klasse",
-                "status",
-                "verfuegbar"
-        };
-        // Tabelle wird reihenweise beschrieben
-        for (Fahrzeug fahrzeug: garage) {
-            // Reihe bestehend aus den Fahrzeug-Attributen
-            String[] values = {
-                    String.valueOf(fahrzeug.id),
-                    fahrzeug.kategorie,
-                    fahrzeug.klasse,
-                    fahrzeug.status,
-                    String.valueOf(fahrzeug.verfuegbar),
-            };
-            fillTable(tableBestandFz, fahrzeugSpalten, fahrzeugAttribute, values);
-        }
-        // Feuerwehrmannbestand wird in Tabelle geladen (gleiches Prinzip)
-        TableColumn[] fmSpalten = {
-            bestandFmID,
-            bestandFmFahrerTyp,
-            bestandFmStatus,
-            bestandFmVerfuegbar,
-        };
-        // Fahrzeug Attribute
-        String[] fmAttribute = {
-                "id",
-                "fahrerTyp",
-                "status",
-                "verfuegbar"
-        };
-        for (Feuerwehrmann fm: team) {
-            String[] values = {
-                    String.valueOf(fm.id),
-                    fm.fahrerTyp,
-                    fm.status,
-                    String.valueOf(fm.verfuegbar),
-            };
-            fillTable(tableBestandFm, fmSpalten, fmAttribute, values);
-        }
+        updateBestandTabellen(team, garage);
     }
 
     /**
@@ -489,7 +436,7 @@ public class UserController {
                 String value = textFelder[i].getText();
                 if (value.equals("")) {
                     setLabelTextMessage(
-                            einsatzErstellungMessage,
+                            infoMessage,
                             Color.RED,
                             "Keine validen Parameter Werte!"
                     );
@@ -500,7 +447,7 @@ public class UserController {
 
             } catch (NumberFormatException nfe) {
                 setLabelTextMessage(
-                        einsatzErstellungMessage,
+                        infoMessage,
                         Color.RED,
                         "Kein gültiges Format für Einsatz-Parameter!"
                 );
@@ -590,7 +537,7 @@ public class UserController {
         if (einsatzart.equals("Einsatzart auswählen")) {
             // Entsprechender Hinweis wird ausgegeben
             setLabelTextMessage(
-                    einsatzErstellungMessage,
+                    infoMessage,
                     Color.RED,
                     "Keine Einsatzart ausgewählt!"
             );
@@ -598,7 +545,7 @@ public class UserController {
         // Falls kein Einsatz mehr erstellbar ist
         } else if (einsatzart.equals("Kein neuer Einsatz mehr erstellbar!")) {
             setLabelTextMessage(
-                    einsatzErstellungMessage,
+                    infoMessage,
                     Color.RED,
                     "Kein neuer Einsatz mehr erstellbar!"
             );
@@ -611,7 +558,7 @@ public class UserController {
         // Wenn die angegebenen Parameter nicht der minimalen Parameter entsprechen
         if (lowerValue(einsatzParameter, minEinsatzParameter)) {
             setLabelTextMessage(
-                    einsatzErstellungMessage,
+                    infoMessage,
                     Color.RED,
                     "Minimale Einsatzressourcen für " + einsatzart + " nicht erfüllt!"
             );
@@ -629,7 +576,7 @@ public class UserController {
 
         if (!(genugLkwFahrer || genugPkwFahrer) || anzahlAktuelleFm < anzahlFeuerwehrleute) {
             setLabelTextMessage(
-                    einsatzErstellungMessage,
+                    infoMessage,
                     Color.RED,
                     "Zu wenig Ressourcen für " + einsatzart + " Einsatz!"
             );
@@ -640,7 +587,7 @@ public class UserController {
         for (int vehicleCount : aktuelleFz.values()) {
             if (einsatzParameter[i] > vehicleCount) {
                 setLabelTextMessage(
-                        einsatzErstellungMessage,
+                        infoMessage,
                         Color.RED,
                         "Zu wenig Ressourcen für " + einsatzart + " Einsatz!"
                 );
@@ -703,20 +650,127 @@ public class UserController {
         }
         return fahrzeugSonderattribute;
     }
+
+    /**
+     * Aktualisiert die Bestandstabellen
+     *
+     * @author Johan Hornung
+     * @param team Array aus Feuerwehrleuten
+     * @param garage Array aus Fahrzeugen
+     */
+    void updateBestandTabellen(Feuerwehrmann[] team, Fahrzeug[] garage) {
+        // Beide Tabellen werden zurückgesetzt und wieder beschrieben
+        tableBestandFm.getItems().clear();
+        tableBestandFz.getItems().clear();
+        // Fahrzeugbestand wird in Fahrzeugtabelle geladen
+        // (gleiches Prinzip wie bei aktiven Einsätzen @see updateActiveOperationsTable)
+
+        // Spalten in Fahrzeug-Tabelle
+        TableColumn[] fahrzeugSpalten = {
+                bestandFzID,
+                bestandFzKategorie,
+                bestandFzKlasse,
+                bestandFzStatus,
+                bestandFzVerfuegbar,
+        };
+        // Fahrzeug Attribute
+        String[] fahrzeugAttribute = {
+                "id",
+                "kategorie",
+                "klasse",
+                "status",
+                "verfuegbar"
+        };
+        // Tabelle wird reihenweise beschrieben
+        for (Fahrzeug fahrzeug: garage) {
+            // Reihe bestehend aus den Fahrzeug-Attributen
+            String[] values = {
+                    String.valueOf(fahrzeug.id),
+                    fahrzeug.kategorie,
+                    fahrzeug.klasse,
+                    fahrzeug.status,
+                    String.valueOf(fahrzeug.verfuegbar),
+            };
+            fillTable(tableBestandFz, fahrzeugSpalten, fahrzeugAttribute, values);
+        }
+        // Feuerwehrmannbestand wird in Tabelle geladen (gleiches Prinzip)
+        TableColumn[] fmSpalten = {
+                bestandFmID,
+                bestandFmFahrerTyp,
+                bestandFmStatus,
+                bestandFmVerfuegbar,
+        };
+        // Fahrzeug Attribute
+        String[] fmAttribute = {
+                "id",
+                "fahrerTyp",
+                "status",
+                "verfuegbar"
+        };
+        for (Feuerwehrmann fm: team) {
+            String[] values = {
+                    String.valueOf(fm.id),
+                    fm.fahrerTyp,
+                    fm.status,
+                    String.valueOf(fm.verfuegbar),
+            };
+            fillTable(tableBestandFm, fmSpalten, fmAttribute, values);
+        }
+    }
     /**
      *
-     * @param newStatus vom Nutzer festgelegt
+     * @param selectedStatus neuer Status der vom Nutzer ausgewählt wurde
+     * @param item ausgewählte Reihe aus der Tabelle (Map Object)
      */
-    void updateStatus(MenuItem newStatus) {
+    void updateStatus(MenuItem selectedStatus, Map<String, String> item) {
         // TODO: 14.03.22 Manuelle Status Änderung
-        // Status wird geändert
+        int id = Integer.parseInt(item.get("id"));
+        String subject;
+        // Wenn das Objekt ein Klassen Attribut besitzt dann handelt es sich um ein Fahrzeug
+        if (item.containsKey("klasse")) subject = "Fahrzeug";
+        else subject = "Feuerwehrmann";
 
-        // Verfügbarkeit wird angepasst
+        // Neuer Staus wird ausgelesen
+        String newStatus = selectedStatus.getText();
 
+        String currentStatus = item.get("status");
+        System.out.println(currentStatus);
+        System.out.println(subject);
+        System.out.println(newStatus);
+        if (currentStatus.equals(newStatus) || currentStatus.equals("im Einsatz")) {
+            // Der aktuelle Status ist schon ausgewählt/geltend
+            setLabelTextMessage(
+                    infoMessage,
+                    Color.RED,
+                    subject + " ist bereits " + currentStatus
+            );
+        } else {
+            // Status wird geändert
+            if (subject.equals("Feuerwehrmann")) {
+                team[id].status = newStatus;
+                // Falls nötig wird die Verfügbarkeit angepasst
+                if (!newStatus.equals("frei")) {
+                    team[id].verfuegbar = false;
+                } else if (!team[id].status.equals("im Einsatz")){
+                    team[id].verfuegbar = true;
+                }
+            } else {
+                garage[id].status = newStatus;
+                // Falls nötig wird die Verfügbarkeit wird angepasst
+                if (!newStatus.equals("frei")) {
+                    garage[id].verfuegbar = false;
+                }
+                else if (!garage[id].status.equals("im Einsatz")) {
+                    garage[id].verfuegbar = true;
+                }
+            }
+        }
         // Ressourcen werden aktualisiert
         displayResources(team, garage);
         // Auswahl von möglichen Einsätzen wird aktualisiert
         updateEinsatzAuswahl(team, garage);
+        // Bestandstabellen werden aktualisiert
+        updateBestandTabellen(team, garage);
     }
     /**
      * Methode füllt eine Tabelle mit Werten aus einer erzeugten Hashmap (Reihenweise).
@@ -878,7 +932,7 @@ public class UserController {
         // 1. HAUPTBEDINGUNG für Einsatzerstellung
         if (validEinsatzParameter(einsatzParameter, firefighters, vehicles)) {
             setLabelTextMessage(
-                    einsatzErstellungMessage,
+                    infoMessage,
                     Color.GREEN,
                     "Einsatz wurde erfolgreich erstellt!"
             );
@@ -973,6 +1027,8 @@ public class UserController {
             // Ressourcen Anzeige und Auswahl für verfügbare Einsätze aktualisieren
             displayResources(team, garage);
             updateEinsatzAuswahl(team, garage);
+            // Bestandstabelle wird aktualisiert
+            updateBestandTabellen(team, garage);
 
             // 4. NEUES EINSATZ OBJEKT
             // Einsatz Objekt wird basierend auf die Parameter (fzTeam, fmTeam) erstellt
@@ -1026,6 +1082,8 @@ public class UserController {
         displayResources(team, garage);
         // Einsatzauswahl wird aktualisiert
         updateEinsatzAuswahl(team, garage);
+        // Bestandstabelle wird aktualisiert
+        updateBestandTabellen(team, garage);
         // Einsatz wird aus Eintrag der aktiven Einsätze gelöscht
         aktiveEinsaetze.remove(einsatzId);
 
@@ -1057,31 +1115,111 @@ public class UserController {
 
     /**
      * Manuelle Statusänderung des Nutzers im GUI nach
-     * Fahrzeug/Feuerwehrmann und Auswahl
+     * Fahrzeug/Feuerwehrmann und ausgewähltem Status
      */
     @FXML
     void fmChangeToKrank(ActionEvent event) {
+        Map<String, String> item = tableBestandFm.getSelectionModel().getSelectedItem();
+        // Zurücksetzen der relevanten GUI Elemente
+        tableBestandFm.getSelectionModel().clearSelection();
+        tableBestandFz.getSelectionModel().clearSelection();
+        infoMessage.setText("");
 
+        // Nutzer hat das falsche oder gar kein Element aus der Feuerwehrmann-Tabelle ausgewählt
+        if (item == null) {
+            setLabelTextMessage(
+                    infoMessage,
+                    Color.RED,
+                    "Es muss ein Feuerwehrmann ausgewählt sein!"
+            );
+        } else {
+            // Gültige Auswahl
+            updateStatus(feuerwehrmannKrankItem, item);
+        }
     }
-
     @FXML
     void fmChangeToUrlaub(ActionEvent event) {
+        Map<String, String> item = tableBestandFm.getSelectionModel().getSelectedItem();
+        // Zurücksetzen der relevanten GUI Elemente
+        tableBestandFm.getSelectionModel().clearSelection();
+        tableBestandFz.getSelectionModel().clearSelection();
+        infoMessage.setText("");
 
+        // Nutzer hat das falsche oder gar kein Element aus der Feuerwehrmann-Tabelle ausgewählt
+        if (item == null) {
+            setLabelTextMessage(
+                    infoMessage,
+                    Color.RED,
+                    "Es muss ein Feuerwehrmann ausgewählt sein!"
+            );
+        } else {
+            // Gültige Auswahl
+            updateStatus(feuerwehrmannUrlaubItem, item);
+        }
     }
-
     @FXML
-    void fmChangeToVerfuegbar(ActionEvent event) {
+    void fmChangeToFree(ActionEvent event) {
+        // Auswahl wird ausgelesen
+        Map<String, String> item = tableBestandFm.getSelectionModel().getSelectedItem();
+        // Zurücksetzen der relevanten GUI Elemente
+        tableBestandFm.getSelectionModel().clearSelection();
+        tableBestandFz.getSelectionModel().clearSelection();
+        infoMessage.setText("");
+
+        // Nutzer hat das falsche oder gar kein Element aus der Feuerwehrmann-Tabelle ausgewählt
+        if (item == null) {
+            setLabelTextMessage(
+                    infoMessage,
+                    Color.RED,
+                    "Es muss ein Feuerwehrmann ausgewählt sein!"
+            );
+        } else {
+            // Gültige Auswahl
+            updateStatus(feuerwehrmannVerfuegbarItem, item);
+        }
 
     }
-
     @FXML
-    void fzChangeToVerfuegbar(ActionEvent event) {
+    void fzChangeToFree(ActionEvent event) {
+        // Auswahl wird ausgelesen
+        Map<String, String> item = tableBestandFz.getSelectionModel().getSelectedItem();
+        // Zurücksetzen der relevanten GUI Elemente
+        tableBestandFz.getSelectionModel().clearSelection();
+        tableBestandFm.getSelectionModel().clearSelection();
+        infoMessage.setText("");
 
+        // Nutzer hat das falsche oder gar kein Element aus der Feuerwehrmann-Tabelle ausgewählt
+        if (item == null) {
+            setLabelTextMessage(
+                    infoMessage,
+                    Color.RED,
+                    "Es muss ein Fahrzeug ausgewählt sein!"
+            );
+        } else {
+            // Gültige Auswahl
+            updateStatus(fahrzeugVerfuegbarItem, item);
+        }
     }
-
     @FXML
     void fzChangeToWartung(ActionEvent event) {
+        // Auswahl wird ausgelesen
+        Map<String, String> item = tableBestandFz.getSelectionModel().getSelectedItem();
+        // Zurücksetzen der relevanten GUI Elemente
+        tableBestandFz.getSelectionModel().clearSelection();
+        tableBestandFm.getSelectionModel().clearSelection();
+        infoMessage.setText("");
 
+        // Nutzer hat das falsche oder gar kein Element aus der Feuerwehrmann-Tabelle ausgewählt
+        if (item == null) {
+            setLabelTextMessage(
+                    infoMessage,
+                    Color.RED,
+                    "Es muss ein Fahrzeug ausgewählt sein!"
+            );
+        } else {
+            // Gültige Auswahl
+            updateStatus(fahrzeugWartungItem, item);
+        }
     }
     /**
      * Methode setzt Text Felder der Einsatz Parameter zurück sowie den Menu Button für Einsatzartauswahl
@@ -1104,7 +1242,7 @@ public class UserController {
             einsatzartMenuButton.setText("Einsatzart auswählen");
         }
         // Rückmeldung (Naricht) zur Einsatzerstellung wird zurückgesetzt
-        einsatzErstellungMessage.setText("");
+        infoMessage.setText("");
         // Text Felder werden zurückgesetzt
         int[] defaultValues = new int[einsatzTextfelder.length];
         setTextFieldValues(einsatzTextfelder, defaultValues);
@@ -1134,26 +1272,26 @@ public class UserController {
         // Es gibt keine laufenden Einsätze
         if (aktiveEinsaetze.isEmpty()) {
             setLabelTextMessage(
-                    einsatzErstellungMessage,
+                    infoMessage,
                     Color.RED,
                     "Es gibt keine aktiven Einsätze!"
             );
         // Nutzer hat kein Einsatz in der Tabelle ausgewählt
         } else if (einsatzMap == null) {
             setLabelTextMessage(
-                    einsatzErstellungMessage,
+                    infoMessage,
                     Color.RED,
                     "Es wurde kein Einsatz ausgewählt!"
             );
         // ausgewählter Einsatz wird gelöscht
         } else {
             setLabelTextMessage(
-                    einsatzErstellungMessage,
+                    infoMessage,
                     Color.GREEN,
                     "Einsatz Nummer " + einsatzMap.get("id") + " gelöscht. " +
                             "Ressourcen werden freigegeben."
             );
-            // TODO: 14.03.22 de-select the other item
+            aktiveEinsatzTabelle.getSelectionModel().clearSelection();
             deleteEinsatz(einsatzMap);
         }
     }
