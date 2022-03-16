@@ -22,13 +22,23 @@ import java.util.*;
 
 public class UserController {
     /**
-     * Feste Anzahl von am Anfang generierten Feuerwehrmännern
+     * Feste Anzahl von generierten Fahrzeugen
+     */
+    private final int VEHICLES_CAP = 18;
+    /**
+     * Feste Anzahl von generierten Feuerwehrleuten
      */
     private final int FIREFIGHTER_CAP = 80;
     /**
-     * Feste Anzahl von am Anfang generierten Fahrzeugen
+     * Array von 80 Feuerwehrleuten
+     * @see Feuerwehrmann
      */
-    private final int VEHICLES_CAP = 18;
+    private final Feuerwehrmann[] team = new Feuerwehrmann[FIREFIGHTER_CAP];
+    /**
+     * Array von 18 Fahrzeugen
+     * @see Fahrzeug
+     */
+    private final Fahrzeug[] garage = new Fahrzeug[VEHICLES_CAP];
     /**
      * Array aus möglichen Dienstgraden für Einsatz-Leitfahrzeuge
      * (https://de.wikipedia.org/wiki/Dienstgrade_der_Feuerwehr_in_Hessen#Dienstgrade)
@@ -40,23 +50,12 @@ public class UserController {
             "Brandmeister",
             "Oberbrandmeister",
             "Hauptlöschmeister"
-
     };
-    /**
-     * Array von 80 Feuerwehrleuten
-     * @see Feuerwehrmann
-     */
-    private Feuerwehrmann[] team = new Feuerwehrmann[FIREFIGHTER_CAP];
-    /**
-     * Array von 18 Fahrzeugen
-     * @see Fahrzeug
-     */
-    private Fahrzeug[] garage = new Fahrzeug[VEHICLES_CAP];
     /**
      * Eintrag für laufende Einsätze (Einsatz ID: Einsatz Objekt)
      * @see Einsatz
      */
-    private HashMap<Integer, Einsatz> aktiveEinsaetze = new HashMap<>();
+    private final HashMap<Integer, Einsatz> aktiveEinsaetze = new HashMap<>();
 
     /*
                         GUI Elemente (javaFX)
