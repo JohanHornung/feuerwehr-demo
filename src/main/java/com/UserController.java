@@ -719,8 +719,7 @@ public class UserController {
         // Neuer Staus wird ausgelesen
         String neuerStatus = ausgewaehlteOption.getText();
         String aktuellerStatus = item.get("status");
-        System.out.println(aktuellerStatus);
-        System.out.println(neuerStatus);
+
         // Der aktuelle Status ist schon ausgewählt/geltend oder Im Einsatz
         if (aktuellerStatus.equals(neuerStatus) || aktuellerStatus.equals("im Einsatz")) {
             setzeLabelTextNaricht(
