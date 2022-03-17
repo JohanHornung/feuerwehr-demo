@@ -1,5 +1,8 @@
 package com;
 
+/**
+ * Beschäftigt sich mit allen relevanten Details zu den Fahrzeugen
+ */
 public class Fahrzeug {
 
     public int id;

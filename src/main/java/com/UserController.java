@@ -5,40 +5,35 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.MapValueFactory;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
 import javafx.stage.Stage;
 
 import java.util.*;
 
+/**
+ * Beschäftigt sich mit der Nutzerinteraktion in der GUI sowie mit der Programmlogik
+ */
 public class UserController {
     /**
      * Feste Anzahl von generierten Fahrzeugen
      */
-    private final int VEHICLES_CAP = 18;
+    private final int FAHRZEUG_CAP = 18;
     /**
      * Feste Anzahl von generierten Feuerwehrleuten
      */
-    private final int FIREFIGHTER_CAP = 80;
+    private final int FEUERWEHRMANN_CAP = 80;
     /**
      * Array von 80 Feuerwehrleuten
      * @see Feuerwehrmann
      */
-    private final Feuerwehrmann[] team = new Feuerwehrmann[FIREFIGHTER_CAP];
+    private final Feuerwehrmann[] team = new Feuerwehrmann[FEUERWEHRMANN_CAP];
     /**
      * Array von 18 Fahrzeugen
      * @see Fahrzeug
      */
-    private final Fahrzeug[] garage = new Fahrzeug[VEHICLES_CAP];
+    private final Fahrzeug[] garage = new Fahrzeug[FAHRZEUG_CAP];
     /**
      * Array aus möglichen Dienstgraden für Einsatz-Leitfahrzeuge
      * (https://de.wikipedia.org/wiki/Dienstgrade_der_Feuerwehr_in_Hessen#Dienstgrade)
@@ -221,11 +216,11 @@ public class UserController {
         // Erstellung der Feuerwehrmann-Objekte
         // 70 Pkw-Fahrer
         String fahrerTyp = "Pkw";
-        for (int i = 0; i < FIREFIGHTER_CAP; i++) {
+        for (int i = 0; i < FEUERWEHRMANN_CAP; i++) {
             // Die ID vom Feuerwehrmann ist der index im team Array
             team[i] = new Feuerwehrmann(i, "frei", true, fahrerTyp);
-            // i = (FIREFIGHTER_CAP - 11) = 69 bei i = 0 -> 70 Pkw-Fahrer
-            if (i >= FIREFIGHTER_CAP - 11) {
+            // i = (FEUERWEHRMANN_CAP - 11) = 69 bei i = 0 -> 70 Pkw-Fahrer
+            if (i >= FEUERWEHRMANN_CAP - 11) {
                 // 10 Lkw-Fahrer
                 fahrerTyp = "Lkw";
             };
@@ -314,7 +309,8 @@ public class UserController {
             // Wenn das Fahrzeug nicht verfügbar ist wird es nicht dazugezählt
             if (fahrzeug.verfuegbar) {
                 // Anzahl der Fahrzeugkategorie wird um 1 erhöht
-                fahrzeugAnzahl.replace(fahrzeug.kategorie, fahrzeugAnzahl.get(fahrzeug.kategorie) + 1);
+                int alterWert = fahrzeugAnzahl.get(fahrzeug.kategorie);
+                fahrzeugAnzahl.replace(fahrzeug.kategorie,  alterWert + 1);
             }
         }
         return fahrzeugAnzahl;

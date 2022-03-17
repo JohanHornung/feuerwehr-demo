@@ -7,6 +7,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * Einstiegspunkt für Die Anwendung
+ */
 public class App extends Application {
     public final int WIDTH = 1080;
     public final int HEIGHT = 720;

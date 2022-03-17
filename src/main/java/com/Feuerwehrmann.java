@@ -1,5 +1,8 @@
 package com;
 
+/**
+ * Beschäftigt sich mit allen relevanten Details zu den Feuerwehrleuten
+ */
 public class Feuerwehrmann {
     int id;
     boolean verfuegbar;

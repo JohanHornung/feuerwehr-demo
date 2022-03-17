@@ -118,8 +118,8 @@
                              <columns>
                                <TableColumn fx:id="bestandFmID" prefWidth="38.0" text="ID" />
                                <TableColumn fx:id="bestandFmFahrerTyp" prefWidth="95.0" text="Fahrer Typ" />
-                                 <TableColumn fx:id="bestandFmVerfuegbar" prefWidth="82.0" text="Verfügbar" />
                                  <TableColumn fx:id="bestandFmStatus" prefWidth="83.0" text="Status" />
+                                 <TableColumn fx:id="bestandFmVerfuegbar" prefWidth="82.0" text="Verfügbar" />
                              </columns>
                            </TableView>
                            <MenuButton fx:id="fahrzeugStatusMenuButton" alignment="CENTER" layoutX="13.0" layoutY="61.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="130.0" text="Status ändern">

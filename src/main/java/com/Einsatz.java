@@ -2,7 +2,9 @@ package com;
 
 import java.util.HashMap;
 
-
+/**
+ * Beschäftigt sich mit allen relevanten Details zu Einsätzen
+ */
 public class Einsatz {
     public int id;
     public String einsatzart;
@@ -27,9 +29,9 @@ public class Einsatz {
      *
      * @param id macht Einsatz Objekt eindeutig identifizierbar
      * @param einsatzart gibt die nötigen minimalen Einsatzparameter an
-     * @param fmTeam Hashmap aus Feuerwehrmännern welche dem Einsatz zugeordnet wurden
+     * @param fmTeam Hashmap (id, Objekt) aus Feuerwehrmännern welche dem Einsatz zugeordnet wurden
      * @see Feuerwehrmann
-     * @param fzTeam Hashmap aus Fahrzeugen welche dem Einsatz zugeordnet wurden
+     * @param fzTeam Hashmap (id, Objekt) aus Fahrzeugen welche dem Einsatz zugeordnet wurden
      * @see Fahrzeug
      */
     public Einsatz(
