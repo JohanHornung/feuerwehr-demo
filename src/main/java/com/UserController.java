@@ -718,11 +718,19 @@ public class UserController {
 
         // Der aktuelle Status ist schon ausgewählt/geltend oder Im Einsatz
         if (aktuellerStatus.equals(neuerStatus) || aktuellerStatus.equals("im Einsatz")) {
-            setzeLabelTextNaricht(
-                    infoNaricht,
-                    Color.RED,
-                    subject + " ist bereits " + aktuellerStatus
-            );
+            if (aktuellerStatus.equals("im Einsatz")) {
+                setzeLabelTextNaricht(
+                        infoNaricht,
+                        Color.RED,
+                        subject + " ist " + aktuellerStatus
+                );
+            } else {
+                setzeLabelTextNaricht(
+                        infoNaricht,
+                        Color.RED,
+                        subject + " ist bereits " + aktuellerStatus
+                );
+            }
         } else {
             // Status wird geändert
             if (subject.equals("Feuerwehrmann")) {
