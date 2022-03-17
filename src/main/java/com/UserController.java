@@ -1078,7 +1078,6 @@ public class UserController {
         aktualisiereBestandsTabellen(team, garage);
         // Einsatz wird aus Eintrag der aktiven Einsätze gelöscht
         aktiveEinsaetze.remove(einsatzId);
-
     }
     /*
     //////////////////////////// JAVAFX EVENT METHODEN /////////////////////////////////
@@ -1261,6 +1260,8 @@ public class UserController {
     void onDeleteClick(ActionEvent event) {
         // Daten-Objekt (Einsatz Map) welches in die Tabelle geschrieben wurde wird ausgelesen, @see ladeTabelle()
         Map<String, String> einsatzMap = aktiveEinsatzTabelle.getSelectionModel().getSelectedItem();
+        // Sonst wird der nächste Einsatz in der Tabelle automatisch ausgewählt
+        aktiveEinsatzTabelle.getSelectionModel().clearSelection();
         // Es gibt keine laufenden Einsätze
         if (aktiveEinsaetze.isEmpty()) {
             setzeLabelTextNaricht(
