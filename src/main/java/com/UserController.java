@@ -932,8 +932,11 @@ public class UserController {
             // Textfelder in der GUI zurücksetzen
             setzeTextFeldWerte(einsatzTextfelder, new int[einsatzTextfelder.length]); // [0, 0, 0, ...]
             // zufällig generierte id für Einsatz Objekt
-            int einsatzId = randomNumberInRange(0, 100);
-
+            // falls diese id schon existiert wird eine neue generiert
+            int einsatzId = randomNumberInRange(0, 250);
+            if (aktiveEinsaetze.containsKey(einsatzId)) {
+                einsatzId = randomNumberInRange(0, 250);
+            }
             // 2. TEAM (basiert auf die vom Nutzer eingegebenen Einsatzparameter)
             HashMap<Integer, Feuerwehrmann> fmTeam = new HashMap<>();
             HashMap<Integer, Fahrzeug> fzTeam = new HashMap<>();
