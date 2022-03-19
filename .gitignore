@@ -17,8 +17,8 @@ hs_err_pid*
 *.iml
 
 ## Directory-based project format:
-.idea/
-pom.xml
+/.idea/
+/pom.xml
 module-info.java
 # if you remove the above rule, at least ignore the following:
 
