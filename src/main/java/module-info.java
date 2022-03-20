@@ -9,4 +9,6 @@ module com.feuerwehrdemo {
 
     opens com to javafx.fxml;
     exports com;
+    exports gui;
+    opens gui to javafx.fxml;
 }

@@ -8,8 +8,8 @@ import java.util.HashMap;
 public class Einsatz {
     public int id;
     public String einsatzart;
-    public HashMap<Integer, Feuerwehrmann> fmTeam;
-    public HashMap<Integer, Fahrzeug> fzTeam;
+    public HashMap<Integer, Firefighter> fmTeam;
+    public HashMap<Integer, Vehicle> fzTeam;
     public int anzahlFeuerwehrleute;
     public int anzahlFahrzeuge;
 
@@ -30,15 +30,15 @@ public class Einsatz {
      * @param id macht Einsatz Objekt eindeutig identifizierbar
      * @param einsatzart gibt die nötigen minimalen Einsatzparameter an
      * @param fmTeam Hashmap (id, Objekt) aus Feuerwehrmännern welche dem Einsatz zugeordnet wurden
-     * @see Feuerwehrmann
+     * @see Firefighter
      * @param fzTeam Hashmap (id, Objekt) aus Fahrzeugen welche dem Einsatz zugeordnet wurden
-     * @see Fahrzeug
+     * @see Vehicle
      */
     public Einsatz(
             int id,
             String einsatzart,
-            HashMap<Integer, Feuerwehrmann> fmTeam,
-            HashMap<Integer, Fahrzeug> fzTeam
+            HashMap<Integer, Firefighter> fmTeam,
+            HashMap<Integer, Vehicle> fzTeam
     ) {
         this.id = id;
         this.einsatzart = einsatzart;
