@@ -17,15 +17,6 @@ import java.util.*;
  */
 public class UserController {
     /**
-     * Feste Anzahl von generierten Feuerwehrleuten
-     */
-    private final int FIREFIGHTER_CAP = 80;
-    /**
-     * Array von 80 Feuerwehrleuten
-     * @see Firefighter
-     */
-    private final Firefighter[] team = new Firefighter[FIREFIGHTER_CAP];
-    /**
      * Array aus möglichen Dienstgraden für Einsatz-Leitfahrzeuge
      * (https://de.wikipedia.org/wiki/Dienstgrade_der_Feuerwehr_in_Hessen#Dienstgrade)
      */
@@ -187,36 +178,20 @@ public class UserController {
     void initialize() {
         // Feuerwehrleute & Fahrzeuge werden initialisiert und werden in
         // Bestandstabellen geladen
-        ladeRessourcen(team, Vehicle.garage);
+        Firefighter.initTeam();
+        Vehicle.initGarage();
+//        aktualisiereBestandsTabellen(team, garage);
+
         // Ressourcen werden aktualisiert und angezeigt
-        zeigeRessourcen(team);
+        displayCurrentResources();
 
     }
     /**
      * Konfiguriert die initialen Einsatzressourcen (Fahrzeuge + Feuerwehrleute) und
      * schreibt diese in die Bestandstabellen
      *
-     * @author Johan Hornung, Luca Langer
-     * @param team Array von Feuerwehrleuten
-     * @see Firefighter
-     * @param garage Array von Fahrzeugen
-     * @see Vehicle
      */
-    public void ladeRessourcen(Firefighter[] team, Vehicle[] garage) {
-
-        // Erstellung der Firefighter-Objekte
-        // 70 Pkw-Fahrer
-        String fahrerTyp = "Pkw";
-        for (int i = 0; i < FIREFIGHTER_CAP; i++) {
-            // Die ID vom Firefighter ist der index im team Array
-            team[i] = new Firefighter(i, "frei", true, fahrerTyp);
-            // i = (FIREFIGHTER_CAP - 11) = 69 bei i = 0 -> 70 Pkw-Fahrer
-            if (i >= FIREFIGHTER_CAP - 11) {
-                // 10 Lkw-Fahrer
-                fahrerTyp = "Lkw";
-            };
-        }
-        Vehicle.fillGarage();
+    public void ladeRessourcen() {
 
     }
 
@@ -224,73 +199,47 @@ public class UserController {
      * Methode zählt aktuellen Bestand der Fahrzeuge und Feuerwehrleute
      * und schreibt diese in die Text Felder der GUI.
      *
-     * @author Johan Hornung
-     * @param team von Feuerwehrleuten
      * @see Firefighter
+     * @see Vehicle
      */
-    public void zeigeRessourcen(Firefighter[] team) {
+    public void displayCurrentResources() {
         // Durchzählen von verfügbaren Feuerwehrleuten (pro Fahrer Typ)
-        LinkedHashMap<String, Integer> firefightersCount = zaehleFeuerwehrleute(team);
+        LinkedHashMap<String, Integer> firefightersCount = Firefighter.countFirefighters();
         // Auslesen der Werte pro fahrer Typ
-        String anzahlLkwFahrer = firefightersCount.get("Lkw").toString();
-        String anzahlPkwFahrer = firefightersCount.get("Pkw").toString();
+        String countLkwDrivers = firefightersCount.get("Lkw").toString();
+        String countPkwDrivers = firefightersCount.get("Pkw").toString();
         // Text Felder ausfüllen
-        verfuegbareLkwFahrer.setText(anzahlLkwFahrer);
-        verfuegbarePkwFahrer.setText(anzahlPkwFahrer);
+        verfuegbareLkwFahrer.setText(countLkwDrivers);
+        verfuegbarePkwFahrer.setText(countPkwDrivers);
 
         // Array aus Labels für Fahrzeugkategorien
-        Label[] verfuegbareFahrzeuge = {
+        Label[] vehicleCategories = {
                 verfuegbareEinsatzLeitfahrzeuge,
                 verfuegbareTLFahrzeuge,
                 verfuegbareManschaftstransporter,
                 verfuegbareLeiterwagen,
         };
         // Durchzählen von verfügbaren Fahrzeugen (pro Kategorie)
-        LinkedHashMap<String, Integer> anzahlFahrzeuge = Vehicle.countVehicles();
+        LinkedHashMap<String, Integer> vehicleCount = Vehicle.countVehicles();
+        Set<String> categories = vehicleCount.keySet();
         // An diesem Punkt muss das Programm beendet werden falls ein Logik-Fehler vorhanden ist
-        assert anzahlFahrzeuge.values().size() == Vehicle.getVEHICLE_CAP() : "Anzahl der Fahrzeugkategorien fehlerhaft";
-
-        Set<String> categories = anzahlFahrzeuge.keySet();
+        if (vehicleCount.values().size() != Vehicle.getVEHICLE_CATEGORIES_CAP()) {
+            throw new AssertionError("Anzahl der Fahrzeugkategorien fehlerhaft");
+        }
+        // Durch jede Fahrzeugkategorie
         int i = 0;
-
         for (String category: categories) {
-            // Output Text ("Anzahl von <Fahrzeugkategorie>: <Wert>")
-            String text = anzahlFahrzeuge.get(anzahlFahrzeuge.get(category)).toString();
-            // Label wird beschrieben
-            verfuegbareFahrzeuge[i].setText(text);
+            // Anzahl pro Kategorie
+            String amount = vehicleCount.get(category).toString();
+            // Anzahl wird in entsprechendes Text Feld eingesetzt
+            vehicleCategories[i].setText(amount);
             i++;
         }
     }
-
-    /**
-     * Methode zählt verfügbare Feuerwehrmänner pro fahrer Typ durch
-     *
-     * @author Luca Langer
-     * @param team Array von Feuerwehrleuten
-     * @see Firefighter
-     * @return Hashmap mit Anzahl der verfügbaren Feuerwehrmänner (value) pro fahrer Typ (key)
-     */
-    public LinkedHashMap<String, Integer> zaehleFeuerwehrleute(Firefighter[] team) {
-        // Hashmap mit Anzahl der verfügbaren Feuerwehrleute (value) pro Fahrer-Typ (key)
-        LinkedHashMap<String, Integer> anzahlFl = new LinkedHashMap<>();
-        // Start bei 0
-        anzahlFl.put("Lkw", 0);
-        anzahlFl.put("Pkw", 0);
-        // Gleiches Prinzip wie bei zaehleFahrzeuge()
-        for (Firefighter fm: team) {
-            boolean isAvailable = fm.getAvailability();
-            if (isAvailable) {
-                // Erhöhung der Anzahl des jeweiligen Fahrer Typs um 1
-                anzahlFl.replace(fm.getDriverType(), anzahlFl.get(fm.getDriverType()) + 1);
-            }
-        }
-        return anzahlFl;
-    };
     /**
      * Methode zum automatischen Ausfüllen der mininmal nötigen Einsatzparameter in die
      * jeweiligen Textfelder
      *
-     * @author Johan Hornung
      * @param einsatzart vom Nutzer ausgewählte Einsatzart
      * @see Einsatz
      */
@@ -306,16 +255,16 @@ public class UserController {
         // Passende EinsatzParameter
         int[] einsatzParameter = new int[4];
         // Falls keine passenden Einsatzparameter gefunden wurden
-        boolean gefunden = false;
+        boolean found = false;
         // Suche nach richtigen Einsatzparameter für jeweilige Einsatzart
         for (int i = 0; i < Einsatz.einsatzarten.length; i++) {
             if (einsatzart.equals(Einsatz.einsatzarten[i])) {
-                gefunden = true;
+                found = true;
                 einsatzParameter = Einsatz.minParameter[i];
             }
         }
         // Beendung des Programms
-        if (!gefunden) throw new AssertionError(
+        if (!found) throw new AssertionError(
                 "Keine passenden Einsazparameter gefunden, " +
                 "Einsatzart" + einsatzart + " Unbekannt");
 
@@ -326,7 +275,6 @@ public class UserController {
     /**
      * Setzt gegebene Werte in ein Array von Text Feldern (GUI) ein
      *
-     * @author Johan Hornung
      * @param textFelder Array von Text Feldern dessen Werte geändert werden
      * @param werte werden eingesetzt
      */
@@ -393,7 +341,6 @@ public class UserController {
      * Zeigt die vom Nutzer ausgewählte Einsatzart im Menu Button (GUI).
      * Füllt Einsatzparameter in die Text Felder.
      *
-     * @author Luca Langer
      * @param menuItem dessen Wert ausgelesen wird und im Menü Button angezeigt wird
      */
     public void setzeMenuButtonWert(MenuItem menuItem) {
@@ -407,7 +354,6 @@ public class UserController {
     /**
      * Generiert eine zufällige Ganzzahl zwischen min und max.
      *
-     * @author Luca Langer
      * @param min inklusiv
      * @param max inklusiv
      * @return zufälliger Wert zwischen min und max
@@ -433,7 +379,6 @@ public class UserController {
     /**
      * Fügt in gewünschtes Text Feld den gewünschten Text in gewünschter Farbe ein.
      *
-     * @author Moritz Schmidt
      * @param label Text Feld
      * @param farbe in die der Text eingefügt wird
      * @param naricht wird eingefügt
@@ -449,7 +394,6 @@ public class UserController {
      * Die minimalen Einsatzparameter angegeben wurden (Schritt 2).
      * Die verfügbaren Einsatz Ressourcen ausreichen (Schritt 3).
      *
-     * @author Johan Hornung
      * @param einsatzParameter Array von numerischen Parametern
      * @param aktuelleFm Map von aktueller Anzahl an Feuerwehrleuten (nach fahrer Typ)
      * @param aktuelleFz Map von aktueller Anzahl an Fahrzeugen (nach Kategorie)
@@ -535,7 +479,6 @@ public class UserController {
      * Methode generiert basierend auf die Kategorien der eingesetzten Fahrzeuge (fzTeam)
      * eine Hashmap von Sonderattributen. Die Generierung basiert auf sinnvollen/realistischen Daten.
      *
-     * @author Sophie Weber
      * @param fzTeam eingesetzte Fahrzeuge
      * @see Einsatz
      * @return generierte Sonderattribute für alle Fahrzeuge
@@ -548,33 +491,30 @@ public class UserController {
             String sonderattribut;
             // Das Sonderattribut hängt von der Fahrzeugkategorie ab
             switch (fzTeam.get(id).getCategory()) {
-                case "Einsatz-Leitfahrzeug":
+                case "Einsatz-Leitfahrzeug" -> {
                     // Dienstgrad wird zufällig ausgesucht
                     int zufallsIndex = new Random().nextInt(DIENSTGRADE.length);
                     String dienstgrad = DIENSTGRADE[zufallsIndex];
                     sonderattribut = "Einsatzleiter-Dienstgrad:" + dienstgrad;
-                    break;
-
-                case "Tank-Löschfahrzeug":
+                }
+                case "Tank-Löschfahrzeug" -> {
                     int zufallsWert = randomNumberInRange(600, 1200);
                     // Aufgerundet auf die nächste volle hundert (z.B. 49 -> 100)
                     int tankkapazitaet = ((zufallsWert + 99) / 100) * 100;
                     sonderattribut = "Tankkapazität: " + tankkapazitaet + " L";
-                    break;
-
-                case "Mannschaftstransporter":
+                }
+                case "Mannschaftstransporter" -> {
                     int baujahr = randomNumberInRange(1980, 2022);
                     sonderattribut = "Baujahr: " + baujahr;
-                    break;
-
-                case "Leiterwagen":
+                }
+                case "Leiterwagen" -> {
                     int max_leiterhoehe = randomNumberInRange(1, 15);
                     sonderattribut = "Maximale Leiterhöhe: " + max_leiterhoehe + " m";
-                    break;
+                }
                 // Sollte nicht passieren
-                default:
-                    sonderattribut = "";
-            };
+                default -> sonderattribut = "";
+            }
+            ;
             // Dem Vehicle das Sonderattribut zugewiesen
             fahrzeugSonderattribute.put(id, sonderattribut);
         }
@@ -584,7 +524,6 @@ public class UserController {
     /**
      * Aktualisiert die Bestandstabellen
      *
-     * @author Johan Hornung
      * @param team Array aus Feuerwehrleuten
      * @param garage Array aus Fahrzeugen
      */
@@ -682,12 +621,12 @@ public class UserController {
         } else {
             // Status wird geändert
             if (subject.equals("Firefighter")) {
-                team[id].setStatus(newStatus);
+                Firefighter.team[id].setStatus(newStatus);
                 // Falls nötig wird die Verfügbarkeit angepasst
                 if (!newStatus.equals("frei")) {
-                    team[id].setAvailability(false);
-                } else if (!team[id].getStatus().equals("im Einsatz")){
-                    team[id].setAvailability(true);
+                    Firefighter.team[id].setAvailability(false);
+                } else if (!Firefighter.team[id].getStatus().equals("im Einsatz")){
+                    Firefighter.team[id].setAvailability(true);
                 }
             } else {
                 Vehicle.garage[id].setStatus(newStatus);
@@ -702,16 +641,15 @@ public class UserController {
             }
         }
         // Ressourcen werden aktualisiert
-        zeigeRessourcen(team);
+        displayCurrentResources();
         // Auswahl von möglichen Einsätzen wird aktualisiert
-        aktualisiereEinsatzAuswahl(team, Vehicle.garage);
+        aktualisiereEinsatzAuswahl();
         // Bestandstabellen werden aktualisiert
-        aktualisiereBestandsTabellen(team, Vehicle.garage);
+        aktualisiereBestandsTabellen(Firefighter.team, Vehicle.garage);
     }
     /**
      * Methode füllt eine Tabelle mit Werten aus einer erzeugten Hashmap (Reihenweise).
      *
-     * @author Johan Hornung
      * @param tabelle Tabellen Objekt (TableView)
      * @param spalten Spalten Objekte (TableColumn)
      * @param spaltenNamen Spalten Namen für das Festlegen der Spalten-Attribute
@@ -740,7 +678,6 @@ public class UserController {
     }
     /**
      * Aktualisiert die Tabelle (GUI) der aktiven Einsätze
-     * @author Johan Hornung
      * @param einsatz Objekt der Einsatz Klasse
      * @see Einsatz
      */
@@ -771,7 +708,6 @@ public class UserController {
     /**
      * Aktualisiert die Tabelle (GUI) der Sonderattribute für Fahrzuge im Einsatz.
      *
-     * @author Johan Hornung
      * @param fzTeam eingesetzte Fahrzeuge
      * @param sonderattribute der eingesetzten Fahrzeuge
      */
@@ -806,13 +742,10 @@ public class UserController {
     /**
      * Aktualisiert die Auswahl an Verfügbaren Einsatzarten im GUI (MenuButton Dropdown).
      *
-     * @author Johan Hornung
-     * @param team an Feuerwehrmänner
      * @see Firefighter
-     * @param garage an Fahrzeugen
      * @see Vehicle
      */
-    public void aktualisiereEinsatzAuswahl(Firefighter[] team, Vehicle[] garage) {
+    public void aktualisiereEinsatzAuswahl() {
         // Standard-Auswahl an Einsätzen (respektive Reihenfolge)
         MenuItem[] einsatzartAuswahl = {
                 wohnungsbrandButton,
@@ -821,26 +754,26 @@ public class UserController {
                 industrieunfallButton
         };
         // Vergleich der aktuellen Ressourcen mit der minimalen Ressourcenanforderungen pro Einsatzart
-        LinkedHashMap<String, Integer> anzahlFl = zaehleFeuerwehrleute(team);
+        LinkedHashMap<String, Integer> firefigherCount = Firefighter.countFirefighters();
         LinkedHashMap<String, Integer> anzahlFz = Vehicle.countVehicles();
         int[][] minParameter = Einsatz.minParameter;
 
         // Ein vergleichbares Array aus den aktuellen Ressourcen wird produziert
-        int[] aktuelleRessourcen = new int[minParameter[1].length];
+        int[] currResources = new int[minParameter[1].length];
         // Gesamte Anzahl der verfügbaren Feuerwehrleute
-        aktuelleRessourcen[0] = anzahlFl.get("Pkw") + anzahlFl.get("Lkw");
+        currResources[0] = firefigherCount.get("Pkw") + firefigherCount.get("Lkw");
         // Gesamte Anzahl der Verfügbaren Fahrzeuge
         String[] vehicleCategories = Vehicle.getVehicleCategories();
 
-        for (int i = 1; i < aktuelleRessourcen.length; i++) {
-            aktuelleRessourcen[i] = anzahlFz.get(vehicleCategories[i-1]);
+        for (int i = 1; i < currResources.length; i++) {
+            currResources[i] = anzahlFz.get(vehicleCategories[i-1]);
         }
 
         // Vergleich mit den für jede Einsatzart minimal erforderlichen Ressourcen
         int anzahlVerfuegbar = Einsatz.einsatzarten.length; // Es sind erstmal alle Einsatzarten verfügbar
         for (int i = 0; i < minParameter.length; i++) {
             MenuItem einsatzart = einsatzartAuswahl[i];
-            if (arrayKleiner(aktuelleRessourcen, minParameter[i])) {
+            if (arrayKleiner(currResources, minParameter[i])) {
                 // Einsatzart-Option nicht mehr verfügbar
 //                System.out.println(Einsatz.einsatzarten[i] + " nicht mehr verfügbar!");
                 einsatzart.setVisible(false);
@@ -862,7 +795,6 @@ public class UserController {
      * Erstellt ein neues Einsatz Objekt basierend auf Einsatzart und Einsatz-Parameter.
      * Generiert Sonderattribute für Fahrzeuge und Füllt/Aktualisiert Tabellen.
      *
-     * @author Johan Hornung
      * @param einsatzart Attribut für Einsatzobjekt
      * @param einsatzParameter für Team-Erstellung
      * @param einsatzTextfelder in der GUI werden zurückgesetzt
@@ -870,7 +802,7 @@ public class UserController {
      */
     public void erstelleEinsatz(String einsatzart, int[] einsatzParameter, TextField[] einsatzTextfelder) {
         // Aktuelle Ressourcen abfragen
-        LinkedHashMap<String, Integer> feuerwehrleute = zaehleFeuerwehrleute(team);
+        LinkedHashMap<String, Integer> feuerwehrleute = Firefighter.countFirefighters();
         LinkedHashMap<String, Integer> fahrzeuge = Vehicle.countVehicles();
 
         // 1. HAUPTBEDINGUNG für Einsatzerstellung
@@ -900,9 +832,10 @@ public class UserController {
             int gebrauchtePkwFahrer = einsatzParameter[1];
 
             // Es wird solange nach verfügbaren Pkw-Fahrer gesucht bis die nötige Anzahl erreicht ist
-            for (Firefighter fm : team) {
+            for (Firefighter fm : Firefighter.team) {
                 // Wenn ein Pkw-Fahrer verfügbar ist wird er eingesetzt
-                if (fm.getDriverType().equals("Pkw") && fm.getAvailability()) {
+                boolean isAvailable = fm.getAvailability();
+                if (fm.getDriverType().equals("Pkw") && isAvailable) {
                     // Firefighter ist jetzt im Einsatz und nicht mehr verfügbar
                     fm.setAvailability(false);
                     // Neuer Status
@@ -913,8 +846,9 @@ public class UserController {
                 if (fmTeam.size() == gebrauchtePkwFahrer) break;
             }
             // Gleiches Prinzip für Lkw Fahrer
-            for (Firefighter fm : team) {
-                if (fm.getDriverType().equals("Lkw") && fm.getAvailability()) {
+            for (Firefighter fm : Firefighter.team) {
+                boolean isAvailable = fm.getAvailability();
+                if (fm.getDriverType().equals("Lkw") && isAvailable) {
                     fm.setAvailability(false);
                     fm.setStatus("im Einsatz");
                     fmTeam.put(fm.getId(), fm);
@@ -925,8 +859,9 @@ public class UserController {
             }
             // Falls nicht schon die benötigte Anzahl an Feuerwehrleuten erreicht ist
             if (fmTeam.size() != anzahlFm) {
-                for (Firefighter fm : team) {
-                    if (fm.getAvailability()) {
+                for (Firefighter fm : Firefighter.team) {
+                    boolean isAvailable = fm.getAvailability();
+                    if (isAvailable) {
                         fm.setAvailability(false);
                         fm.setStatus("im Einsatz");
                         fmTeam.put(fm.getId(), fm);
@@ -956,7 +891,8 @@ public class UserController {
                     // nicht weiter gemacht
                     if (anzahlProKategorie == 0) continue;
                     // Treffer (gleiches Prinzip wie bei der Suche nach Feuerwehrleuten)
-                    if (kategorie.equals(fz.getCategory()) && fz.getAvailability()) {
+                    boolean isAvailable = fz.getAvailability();
+                    if (kategorie.equals(fz.getCategory()) && isAvailable) {
                         fz.setAvailability(false);
                         fz.setStatus("im Einsatz");
                         fz.setOperationId(operationID);
@@ -973,10 +909,10 @@ public class UserController {
             }
             // 3. ANZEIGEN
             // Ressourcen Anzeige und Auswahl für verfügbare Einsätze aktualisieren
-            zeigeRessourcen(team);
-            aktualisiereEinsatzAuswahl(team, Vehicle.garage);
+            displayCurrentResources();
+            aktualisiereEinsatzAuswahl();
             // Bestandstabelle wird aktualisiert
-            aktualisiereBestandsTabellen(team, Vehicle.garage);
+            aktualisiereBestandsTabellen(Firefighter.team, Vehicle.garage);
 
             // 4. NEUES EINSATZ OBJEKT
             // Einsatz Objekt wird basierend auf die Parameter (fzTeam, fmTeam) erstellt
@@ -995,7 +931,6 @@ public class UserController {
     /**
      * Einsatz Objekt/Item wird aus allen Einträgen gelöscht, Ressourcen werden wieder freigegeben
      *
-     * @author Johan Hornung, Luca Langer
      * @param einsatzMap Map Objekt vom Einsatz (nicht Einsatz Objekt) welches in die Tabelle geschrieben wurde
      */
     public void loescheEinsatz(Map<String, String> einsatzMap) {
@@ -1022,16 +957,16 @@ public class UserController {
         for (int fmId: einsatz.fmTeam.keySet()) {
             // NOTICE: Gleiches Prinzip wie bei Fahrzeugen
             // Firefighter ist wieder verfügbar
-            team[fmId].setAvailability(true);
-            team[fmId].setStatus("frei");
+            Firefighter.team[fmId].setAvailability(true);
+            Firefighter.team[fmId].setStatus("frei");
         }
 
         // Ressourcenanzeige wird aktualisiert
-        zeigeRessourcen(team);
+        displayCurrentResources();
         // Einsatzauswahl wird aktualisiert
-        aktualisiereEinsatzAuswahl(team, Vehicle.garage);
+        aktualisiereEinsatzAuswahl();
         // Bestandstabelle wird aktualisiert
-        aktualisiereBestandsTabellen(team, Vehicle.garage);
+        aktualisiereBestandsTabellen(Firefighter.team, Vehicle.garage);
         // Einsatz wird aus Eintrag der aktiven Einsätze gelöscht
         aktiveEinsaetze.remove(einsatzId);
     }
@@ -1171,7 +1106,6 @@ public class UserController {
     /**
      * Methode setzt Text Felder der Einsatz Parameter zurück sowie den Menu Button für Einsatzartauswahl
      *
-     * @author Moritz Schmidt
      * @param event On Action event (Buttons)
      */
     @FXML

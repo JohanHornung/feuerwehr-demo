@@ -27,7 +27,7 @@ public class Vehicle {
     private boolean availability;
 
     // Hashmap mit Anzahl der verfügbaren Fahrzeuge (value) pro Kategorie (key)
-    private static LinkedHashMap<String, Integer> vehicleAmount;
+    private static LinkedHashMap<String, Integer> vehicleAmount = new LinkedHashMap<>();
 
     private static final String[] vehicleCategories = {
             "Einsatz-Leitfahrzeug",
@@ -49,13 +49,11 @@ public class Vehicle {
         this.status = status;
         this.availability = availability;
         /**
-         * Die Fahrzeugklasse gibt an ob ein bestimmter Fahrer Typ eine bestimmte Fahrzeugcategory fahren kann
+         * Die Fahrzeugklasse gibt an ob ein bestimmter Fahrer Typ eine bestimmte
+         * Fahrzeugkategorie fahren kann
          * @see Firefighter
          */
-        this.claass = switch (this.category) {
-            case "Einsatz-Leitfahrzeug" -> "Pkw";
-            default -> "Lkw";
-        };
+        this.claass = (this.category.equals("Einsatz-Leitfahrzeug")) ? "Pkw": "Lkw";
         /**
          * Die Anzahl der Feuerwehrmänner Kapazität
          */
@@ -122,25 +120,28 @@ public class Vehicle {
         this.availability = availability;
     }
 
-    public static void setVehicleAmount() {
-        vehicleAmount.put("Mannschaftstransporter", 4);
-        vehicleAmount.put("Einsatz-Leitfahrzeug", 4);
-        vehicleAmount.put("Leiterwagen", 5);
-        vehicleAmount.put("Tank-Löschfahrzeug", 5);
-    }
     public static LinkedHashMap<String, Integer> getVehicleAmount() {
-        setVehicleAmount();
-        return vehicleAmount;
+        return Vehicle.vehicleAmount;
     }
 
     public static int getVEHICLE_CAP() {
         return VEHICLE_CAP;
     }
+
+    public static int getVEHICLE_CATEGORIES_CAP() {
+        return VEHICLE_CATEGORIES_CAP;
+    }
+
     public static String[] getVehicleCategories() {
         return vehicleCategories;
     }
+
     // Generierung der Vehicle-Objekte
-    public static void fillGarage() {
+    public static void initGarage() {
+        Vehicle.vehicleAmount.put("Mannschaftstransporter", 4);
+        Vehicle.vehicleAmount.put("Einsatz-Leitfahrzeug", 4);
+        Vehicle.vehicleAmount.put("Leiterwagen", 5);
+        Vehicle.vehicleAmount.put("Tank-Löschfahrzeug", 5);
 
         int start = 0;
         int currAmount = 0;
@@ -156,12 +157,10 @@ public class Vehicle {
             // Neuer "Index-Einstiegspunkt" in der garage[] für nächste Kategorie
             start += (currAmount - start);
         }
-//        aktualisiereBestandsTabellen(team, garage);
     }
     /**
      * Methode zählt verfügbare Fahrzeuge pro Kategorie durch
      *
-     * @author Luca Langer
      * @return Hashmap mit Anzahl der verfügbaren Fahrzeuge (value) pro Kategorie (key)
      */
     // Durchzählen von verfügbaren Fahrzeugen (pro Kategorie)
